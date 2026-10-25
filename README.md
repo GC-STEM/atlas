@@ -14,12 +14,12 @@
 ## Table of Contents <!-- omit from toc -->
 
 1. [STEM Computing Baseline](#stem-computing-baseline)
-2. [Automation Scripts](#automation-scripts)
+2. [Repo Automation Scripts](#repo-automation-scripts)
 3. [Shared Libraries](#shared-libraries)
 
 ## STEM Computing Baseline
 
-## Automation Scripts
+## Repo Automation Scripts
 
 ## Shared Libraries
 
