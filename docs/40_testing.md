@@ -1,4 +1,4 @@
-# {{CS-000}} {{Task Code}} | Software Test Plan
+# {{CRS-000}} {{Task Code}} | Software Test Plan
 
 <!-- TODO: Replace the title placeholders with the course code, task code, and task title. -->
 
@@ -209,7 +209,7 @@ This **Software Test Plan (STP)** defines the scope, objectives, strategy, envir
 <!-- TODO: List external sources, standards, frameworks, libraries, documentation, or other references used to develop this document. Use the citation style required by the course. Delete this section if references are not required. -->
 
 <!--
-title: "{{CS-000}} {{Task Code}} | {{Task Title}}"
+title: "{{CRS-000}} {{Task Code}} | {{Task Title}}"
 description: "<Brief summary of this document's purpose and scope.>"
 document_type: "Software Test Plan (STP)"
 owner: "GC-STEM, Computer Science"

@@ -1,4 +1,4 @@
-# {{CS-000}} {{Task Code}} | {{Document Title}}
+# {{CRS-000}} {{Task Code}} | {{Document Title}}
 
 <!-- TODO: Use this generic template only for a required project document that does not fit requirements.md, architecture.md, design.md, construction_plan.md, or test_plan.md. Rename temp.md to a descriptive filename in the course or assignment repository. -->
 <!-- omit from toc -->
@@ -55,7 +55,7 @@
 <!-- TODO: List external sources, standards, frameworks, libraries, documentation, or other references used to develop this document. Use the citation style required by the course. Delete this section if references are not required. -->
 
 <!--
-title: "{{CS-000}} {{Task Code}} | {{Task Title}}"
+title: "{{CRS-000}} {{Task Code}} | {{Task Title}}"
 description: "<Brief summary of this document's purpose and scope.>"
 document_type: "Supplemental Technical Document"
 owner: "GC-STEM, Computer Science"

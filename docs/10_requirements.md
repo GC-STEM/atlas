@@ -25,11 +25,11 @@ The RAS package supports the STEM Computing Baseline (SCB) and course-specific t
 The RAS package consists of coordinated platform implementations, listed below in lifecycle order:
 
 1. `bootstrap.<ext> atlas` provides the platform-native bootstrap commands that acquire or refresh the ATLAS repo and RAS package and make the remaining lifecycle scripts available.
-2. `install.<ext> <cs000>` establishes or repairs the CS-000 CDE system-level software based on the course manifest.
-3. `configure.<ext> <cs000>` establishes or repairs the current user's CS-000 CDE settings.
-4. `verify.<ext> <cs000>` inspects the system and user layers without changing them.
-5. `update.<ext> <cs000>` maintains approved CS-000 CDE software and assets over time.
-6. `setup.<ext> <cs000>` orchestrates the overall setup process for the CS-000 CDE restarting as needed to ensure that all required components are installed, configured, and verified.
+2. `install.<ext> <crs000>` establishes or repairs the CRS-000 CDE system-level software based on the course manifest.
+3. `configure.<ext> <crs000>` establishes or repairs the current user's CRS-000 CDE settings.
+4. `verify.<ext> <crs000>` inspects the system and user layers without changing them.
+5. `update.<ext> <crs000>` maintains approved CRS-000 CDE software and assets over time.
+6. `setup.<ext> <crs000>` orchestrates the overall setup process for the CRS-000 CDE restarting as needed to ensure that all required components are installed, configured, and verified.
 
 On first use, the user copies and runs the documented bootstrap command block located in the repo README because the local `atlas` repo does not yet exist. After first use, the installed `bootstrap.<ext> atlas` artifact may be executed directly to refresh the automation package from the authorized course repository.
 
@@ -64,11 +64,11 @@ The concrete reference environment used to review this SRS and design the initia
 
 | Component | Primary responsibility | Expected user | May change system-level state? | May change user-specific state? |
 | --- | --- | --- | ---: | ---: |
-| `prepare.<ext> <cs000>` | Acquire or refresh the local automation package and make its scripts available. | Student or faculty standard user | No | Yes, only for course-managed files, logs, permissions, and user `PATH` entries |
-| `install.<ext> <cs000>` | Install or repair the supported system-level course IDE. | Administrator or approved standard user with controlled privilege elevation | Yes | No, except for the minimum files required to create its own log |
-| `configure.<ext> <cs000>` | Configure the current user's course environment and accounts. | Student or faculty user | No | Yes |
-| `verify.<ext> <cs000>` | Inspect both layers and report results. | Student, faculty, AI support, or technical support | No | No |
-| `update.<ext> <cs000>` | Update the supported environment and course-managed assets. | Student or faculty user with controlled privilege elevation when required | Yes | Yes, only for course-managed settings and tools |
+| `prepare.<ext> <crs000>` | Acquire or refresh the local automation package and make its scripts available. | Student or faculty standard user | No | Yes, only for course-managed files, logs, permissions, and user `PATH` entries |
+| `install.<ext> <crs000>` | Install or repair the supported system-level course IDE. | Administrator or approved standard user with controlled privilege elevation | Yes | No, except for the minimum files required to create its own log |
+| `configure.<ext> <crs000>` | Configure the current user's course environment and accounts. | Student or faculty user | No | Yes |
+| `verify.<ext> <crs000>` | Inspect both layers and report results. | Student, faculty, AI support, or technical support | No | No |
+| `update.<ext> <crs000>` | Update the supported environment and course-managed assets. | Student or faculty user with controlled privilege elevation when required | Yes | Yes, only for course-managed settings and tools |
 
 ### Scope Exclusions
 
@@ -82,7 +82,7 @@ The package shall not:
 - Treat student-selected optional software or unrelated user settings as course-managed assets.
 - Require an existing course manifest, package manager, version-control client, or previously installed lifecycle script before the first-use preparation commands can run.
 
-The **bootstrap command set** is the short, platform-native sequence represented by `prepare.<ext> <cs000>`. On first use, the sequence is copied and run as commands because the local package is not yet present. After installation, the same artifact may be executed directly to refresh the package.
+The **bootstrap command set** is the short, platform-native sequence represented by `prepare.<ext> <crs000>`. On first use, the sequence is copied and run as commands because the local package is not yet present. After installation, the same artifact may be executed directly to refresh the package.
 
 ### Terms and Abbreviations
 
@@ -91,7 +91,7 @@ The **bootstrap command set** is the short, platform-native sequence represented
 | AI | Artificial intelligence. AI support may interpret approved diagnostics but shall not receive secrets or unnecessary personal information. |
 | Artifact | A versioned file or generated record created or maintained during analysis, design, construction, logging, testing, release, or maintenance. |
 | API | Application Programming Interface. An API allows one program to request information or actions from another program or service. |
-| Bootstrap command set | The first-use, platform-native commands represented by `prepare.<ext> <cs000>` that obtain or refresh the local automation package without depending on that package. |
+| Bootstrap command set | The first-use, platform-native commands represented by `prepare.<ext> <crs000>` that obtain or refresh the local automation package without depending on that package. |
 | CLI | Command-Line Interface. A CLI is a text-based way to run and control software. |
 | Controlled configuration item | A file or data set whose changes require review, testing, approval, and release tracking. The manifest is controlled because it selects the products and versions used by the package. |
 | Course-supported deployment profile | A concrete local, virtual, or hosted environment—defined by operating-system family and release, architecture, deployment kind, desktop or session, and applicable platform implementation—that has completed required implementation, qualification testing, documentation, and approval for course use. |
@@ -148,11 +148,11 @@ A paragraph labeled **Why** explains the reason for a requirement. The explanati
 
 The package shall:
 
-- **PKG-FR-001** Provide one platform-native set of `prepare.<ext> <cs000>`, `install.<ext> <cs000>`, `configure.<ext> <cs000>`, `verify.<ext> <cs000>`, `update.<ext> <cs000>`, `setup.<ext> <cs000>` entry points for every platform implementation used by one or more designated course-supported deployment profiles. Multiple deployment profiles may reuse the same platform implementation.
+- **PKG-FR-001** Provide one platform-native set of `prepare.<ext> <crs000>`, `install.<ext> <crs000>`, `configure.<ext> <crs000>`, `verify.<ext> <crs000>`, `update.<ext> <crs000>`, `setup.<ext> <crs000>` entry points for every platform implementation used by one or more designated course-supported deployment profiles. Multiple deployment profiles may reuse the same platform implementation.
 
   **Why:** Users and support personnel need the same six-stage lifecycle for every supported deployment profile without requiring duplicate script families for profiles that share the same native implementation.
 
-- **PKG-FR-002** Use the filename pattern `<action>.<ext> <cs000>`, where `<action>` is `prepare`, `install`, `configure`, `verify`, `update`, or `setup`, and `<ext>` is the platform-appropriate script extension. Each implementation shall reside in the approved platform directory. `<cs000>` is the repository/course identifier.
+- **PKG-FR-002** Use the filename pattern `<action>.<ext> <crs000>`, where `<action>` is `prepare`, `install`, `configure`, `verify`, `update`, or `setup`, and `<ext>` is the platform-appropriate script extension. Each implementation shall reside in the approved platform directory. `<crs000>` is the repository/course identifier.
 
   **Why:** Predictable names reduce user error and simplify documentation and support.
 
@@ -160,7 +160,7 @@ The package shall:
 
   **Why:** A script written for another operating system could fail or damage the environment.
 
-- **PKG-FR-004** Read shared environment requirements from the ATLAS SCB manifest (`"$HOME/Repos/atlas/.config/scb_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<cs000>/.config/cde_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
+- **PKG-FR-004** Read shared environment requirements from the ATLAS SCB manifest (`"$HOME/Repos/atlas/.config/scb_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<crs000>/.config/cde_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
 
   **Why:** One set of authoritative lists prevents installation, configuration, verification, and maintenance from disagreeing.
 
@@ -172,7 +172,7 @@ The package shall:
 
   **Why:** Clear, consistent, simple context helps beginners confirm that they started the correct tool and helps support personnel interpret the transcript.
 
-- **PKG-FR-007** Save a timestamped transcript of each run under `"$HOME/Repos/<cs000>/logs/"` or the equivalent path derived from the current user's home folder.
+- **PKG-FR-007** Save a timestamped transcript of each run under `"$HOME/Repos/<crs000>/logs/"` or the equivalent path derived from the current user's home folder.
 
   **Why:** A saved transcript allows a problem to be reviewed after the terminal window closes.
 
@@ -210,11 +210,11 @@ The prepare component shall:
 
 {{SME/AI TODO: Bootstrap component should install `git`and clone the ATLAS repo to `"$HOME/Repos/atlas"` as quickly as reliable}}
 
-- **PRE-FR-001** Provide a platform-native first-use command set represented by `prepare.<ext> <cs000>` that can be copied and run without requiring the local course Repository Automation Script (RAS) to exist.
+- **PRE-FR-001** Provide a platform-native first-use command set represented by `prepare.<ext> <crs000>` that can be copied and run without requiring the local course Repository Automation Script (RAS) to exist.
 
   **Why:** The first-use commands must bootstrap the package before any installed course script is available.
 
-- **PRE-FR-002** Permit the installed `prepare.<ext> <cs000>` artifact to be executed directly after first use to refresh the local automation package.
+- **PRE-FR-002** Permit the installed `prepare.<ext> <crs000>` artifact to be executed directly after first use to refresh the local automation package.
 
   **Why:** Students and support personnel need a simple way to obtain corrected lifecycle scripts and controlled package files.
 
@@ -226,11 +226,11 @@ The prepare component shall:
 
   **Why:** Preparation must stop safely when the commands are run on the wrong platform or with an unsafe privilege context.
 
-- **PRE-FR-005** Derive the current user's home folder, create `"$HOME/Repos/<cs000>/"`, `"$HOME/Repos/<cs000>/logs/"`, and a unique temporary staging location as needed, and preserve existing contents not owned by the course automation.
+- **PRE-FR-005** Derive the current user's home folder, create `"$HOME/Repos/<crs000>/"`, `"$HOME/Repos/<crs000>/logs/"`, and a unique temporary staging location as needed, and preserve existing contents not owned by the course automation.
 
   **Why:** Preparation must work for different account names and must not erase student work.
 
-- **PRE-FR-006** Create a timestamped preparation log under `"$HOME/Repos/<cs000>/logs/"` and record the artifact SemVer version, version date-time group, current user, purpose, and exact log path before network retrieval begins.
+- **PRE-FR-006** Create a timestamped preparation log under `"$HOME/Repos/<crs000>/logs/"` and record the artifact SemVer version, version date-time group, current user, purpose, and exact log path before network retrieval begins.
 
   **Why:** First-use and refresh failures must be diagnosable even when later lifecycle scripts are unavailable.
 
@@ -242,11 +242,11 @@ The prepare component shall:
 
   **Why:** A structurally incomplete or incorrect archive must not replace a usable package.
 
-- **PRE-FR-009** Copy or refresh repository-managed files under `"$HOME/Repos/<cs000>/"` without deleting user-owned files, assignment content, or nested student repositories.
+- **PRE-FR-009** Copy or refresh repository-managed files under `"$HOME/Repos/<crs000>/"` without deleting user-owned files, assignment content, or nested student repositories.
 
   **Why:** Refreshing automation assets must not endanger coursework.
 
-- **PRE-FR-010** Remove only the downloaded package's top-level repository metadata from `"$HOME/Repos/<cs000>/"` and shall not remove version-control metadata from nested student repositories.
+- **PRE-FR-010** Remove only the downloaded package's top-level repository metadata from `"$HOME/Repos/<crs000>/"` and shall not remove version-control metadata from nested student repositories.
 
   **Why:** The installed course root is not intended to remain a clone of the main course repository, but student repositories must be preserved.
 
@@ -258,7 +258,7 @@ The prepare component shall:
 
   **Why:** Temporary package files should not consume space or expose stale content.
 
-- **PRE-FR-013** Report the installed course root, preparation log path, resolved workflow identifier, workflow starting state, operating role, and exact next-step command after successful preparation. The default local next step shall remain `install.<ext> <cs000>`; both approved CVD initial workflows shall identify `update.sh` as the next step.
+- **PRE-FR-013** Report the installed course root, preparation log path, resolved workflow identifier, workflow starting state, operating role, and exact next-step command after successful preparation. The default local next step shall remain `install.<ext> <crs000>`; both approved CVD initial workflows shall identify `update.sh` as the next step.
 
   **Why:** Beginners and administrators need an unambiguous transition that matches the actual deployment state rather than a universal hard-coded Install transition.
 
@@ -316,9 +316,9 @@ The install script shall:
 
 - **INS-FR-011** Avoid source-code-hosting authentication, version-control identity configuration, user-specific IDE settings, user-scoped extensions or plug-ins, and other personal configuration.
 
-  **Why:** These items belong to the individual account and are the responsibility of `configure.<ext> <cs000>`.
+  **Why:** These items belong to the individual account and are the responsibility of `configure.<ext> <crs000>`.
 
-- **INS-FR-012** Recommend running the matching `configure.<ext> <cs000>` script after successful system installation.
+- **INS-FR-012** Recommend running the matching `configure.<ext> <crs000>` script after successful system installation.
 
   **Why:** System installation alone does not complete the current user's course environment.
 
@@ -346,7 +346,7 @@ The configure script shall:
 
   **Why:** User configuration cannot succeed reliably when installation is incomplete.
 
-- **CFG-FR-003** Create the required course folders under the current user's home folder, including `"$HOME/Repos/<cs000>/"` and `"$HOME/Repos/<cs000>/logs/"`, without deleting existing contents.
+- **CFG-FR-003** Create the required course folders under the current user's home folder, including `"$HOME/Repos/<crs000>/"` and `"$HOME/Repos/<crs000>/logs/"`, without deleting existing contents.
 
   **Why:** A consistent folder structure simplifies instructions while preserving prior work.
 
@@ -402,7 +402,7 @@ The configure script shall:
 
   **Why:** Configure also serves as the approved repair method for user-specific settings.
 
-- **CFG-FR-017** Recommend running the matching `verify.<ext> <cs000>` script after successful configuration.
+- **CFG-FR-017** Recommend running the matching `verify.<ext> <crs000>` script after successful configuration.
 
 - **CFG-FR-018** Create or preserve the current user's repository workspace at `"$HOME/Repos/"` or the exact platform-equivalent path. Configure shall create the parent directory when missing but shall not traverse or modify existing child repositories or files.
 
@@ -452,7 +452,7 @@ The verify script shall:
 
   **Why:** Consistent result labels make the report easier to scan and interpret.
 
-- **VER-FR-009** Identify the related requirement and recommend `prepare.<ext> <cs000>`, `install.<ext> <cs000>`, `configure.<ext> <cs000>`, or `update.<ext> <cs000>` for every failed required check.
+- **VER-FR-009** Identify the related requirement and recommend `prepare.<ext> <crs000>`, `install.<ext> <crs000>`, `configure.<ext> <crs000>`, or `update.<ext> <crs000>` for every failed required check.
 
   **Why:** A diagnosis is most useful when it tells the user how to correct the problem.
 
@@ -498,7 +498,7 @@ The update script shall:
 
 - **UPD-FR-003** Obtain the latest approved manifest and course-managed maintenance assets within the update scope from the authorized course source.
 
-  **Why:** The update stage maintains the installed course IDE, while `prepare.<ext> <cs000>` remains the approved mechanism for refreshing the lifecycle script package itself.
+  **Why:** The update stage maintains the installed course IDE, while `prepare.<ext> <crs000>` remains the approved mechanism for refreshing the lifecycle script package itself.
 
 - **UPD-FR-004** Download managed assets to a temporary staging location, validate them, and replace installed assets only after validation succeeds.
 
@@ -556,7 +556,7 @@ The update script shall:
 
 The package shall:
 
-- **PKG-FR-011** Store the shared manifest as valid UTF-8 JSON at `"$HOME/Repos/<cs000>/.config/cde_manifest.json"`.
+- **PKG-FR-011** Store the shared manifest as valid UTF-8 JSON at `"$HOME/Repos/<crs000>/.config/cde_manifest.json"`.
 
   **Why:** A standard text format can be read on all supported platforms and reviewed in source control.
 
@@ -753,7 +753,7 @@ The package shall:
 
   **Why:** JSON is readable, portable, and supported by all target scripting environments.
 
-- **PKG-TC-005** Store logs and support bundles under the current user's `"$HOME/Repos/<cs000>/logs/` folder or the exact platform-equivalent path derived from the home folder.
+- **PKG-TC-005** Store logs and support bundles under the current user's `"$HOME/Repos/<crs000>/logs/` folder or the exact platform-equivalent path derived from the home folder.
 
   **Why:** A standard location helps students and support personnel find diagnostic files.
 
@@ -787,7 +787,7 @@ The reference-platform implementation shall:
 
 - **REF-TC-005** Derive user paths from the running environment and shall not hardcode a user name or home-directory path.
 
-- **REF-TC-006** Place system-wide policies, package sources, and application registrations in `install.<ext> <cs000>`, while placing user preferences, user launchers, IDE settings, and user-scoped extensions or plug-ins in `configure.<ext> <cs000>`.
+- **REF-TC-006** Place system-wide policies, package sources, and application registrations in `install.<ext> <crs000>`, while placing user preferences, user launchers, IDE settings, and user-scoped extensions or plug-ins in `configure.<ext> <crs000>`.
 
 - **REF-TC-007** Obtain products only through the vendor, project, operating-system, or institutional distribution channels approved by the manifest.
 
@@ -798,9 +798,9 @@ The package is designed so additional deployment profiles can be considered sele
 A new deployment profile shall not be marked course-supported until it:
 
 - Implements all applicable requirements in this SRS.
-- Provides `prepare.<ext> <cs000>`, `install.<ext> <cs000>`, `configure.<ext> <cs000>`, `verify.<ext> <cs000>`, and `update.<ext> <cs000>` in the approved platform directory.
+- Provides `prepare.<ext> <crs000>`, `install.<ext> <crs000>`, `configure.<ext> <crs000>`, `verify.<ext> <crs000>`, and `update.<ext> <crs000>` in the approved platform directory.
 - Has an approved platform abbreviation and native script extension.
-- Documents the first-use `prepare.<ext> <cs000>` command set and later direct-refresh use.
+- Documents the first-use `prepare.<ext> <crs000>` command set and later direct-refresh use.
 - Has platform-specific technology constraints.
 - Passes the full acceptance-test set on a clean supported environment.
 - Produces equivalent required outcomes to the reference platform.
@@ -811,7 +811,7 @@ A new deployment profile shall not be marked course-supported until it:
 
 The package shall:
 
-- **PKG-QOS-001** Make `prepare.<ext> <cs000>`, `install.<ext> <cs000>`, `configure.<ext> <cs000>`, and `update.<ext> <cs000>` idempotent.
+- **PKG-QOS-001** Make `prepare.<ext> <crs000>`, `install.<ext> <crs000>`, `configure.<ext> <crs000>`, and `update.<ext> <crs000>` idempotent.
 
 - **PKG-QOS-002** Keep `verify` read-only, including when a check fails.
 
@@ -886,36 +886,36 @@ The exact wording may vary by platform, but every implementation shall communica
 
 ```text
 ============================================================
-CS-000 COURSE AUTOMATION PREPARE
+CRS-000 COURSE AUTOMATION PREPARE
 ============================================================
 Artifact version : 0.2.0
 Version date-time group     : 2026-07-31
 Platform         : ref
 Current user     : student
-Log file         : ~/cs000/logs/prepare_ide_20260731_112000.log
+Log file         : ~/crs000/logs/prepare_ide_20260731_112000.log
 
-[INFO] Downloading the current CS-000 course automation package...
+[INFO] Downloading the current CRS-000 course automation package...
 [SUCCESS] The approved package archive was downloaded and validated.
-[INFO] Refreshing repository-managed files under ~/cs000/...
-[SUCCESS] The current CS-000 course automation package is available.
+[INFO] Refreshing repository-managed files under ~/crs000/...
+[SUCCESS] The current CRS-000 course automation package is available.
 [SUCCESS] The platform script directory is available in the current and future user PATH.
 
 Next step: Run install.sh
-Log file : ~/cs000/logs/prepare_ide_20260731_112000.log
+Log file : ~/crs000/logs/prepare_ide_20260731_112000.log
 ```
 
 ### Install: Successful System Installation
 
 ```text
 ============================================================
-CS-000 COURSE DEVELOPMENT ENVIRONMENT INSTALL
+CRS-000 COURSE DEVELOPMENT ENVIRONMENT INSTALL
 ============================================================
 Script version  : 0.2.0
 Version date-time group    : 2026-07-31
 Platform        : ref
 Operating system: Approved reference release
 Current user    : student
-Log file        : ~/cs000/logs/install_ref_20260731_113000.log
+Log file        : ~/crs000/logs/install_ref_20260731_113000.log
 
 [INFO] Checking operating system, architecture, disk space, network access, and privilege-elevation capability...
 [SUCCESS] Install prerequisites passed.
@@ -932,20 +932,20 @@ INSTALL SUMMARY
 Required operations: PASS
 Warnings           : 0
 Next step          : Run configure.sh
-Log file           : ~/cs000/logs/install_ref_20260731_113000.log
+Log file           : ~/crs000/logs/install_ref_20260731_113000.log
 ```
 
 ### 5.3 Configure: First User Configuration
 
 ```text
 ============================================================
-CS-000 COURSE DEVELOPMENT ENVIRONMENT CONFIGURATION
+CRS-000 COURSE DEVELOPMENT ENVIRONMENT CONFIGURATION
 ============================================================
 Script version: 0.2.0
 Version date-time group  : 2026-07-31
 Platform      : ref
 Current user  : student
-Log file      : ~/cs000/logs/configure_ref_20260731_114500.log
+Log file      : ~/crs000/logs/configure_ref_20260731_114500.log
 
 [INFO] Required system components are present.
 [INFO] The approved source-code-hosting CLI is not currently authenticated.
@@ -972,7 +972,7 @@ Next step: Run verify.sh
 
 ```text
 ============================================================
-CS-000 COURSE DEVELOPMENT ENVIRONMENT VERIFICATION
+CRS-000 COURSE DEVELOPMENT ENVIRONMENT VERIFICATION
 ============================================================
 Script version   : 0.2.0
 Version date-time group     : 2026-07-31
@@ -983,7 +983,7 @@ PASS    Operating system: approved reference release
 PASS    Programming-language runtime: required version available
 PASS    Source-code-hosting CLI: authenticated
 FAIL    IDE extension: required formatter extension is missing
-PASS    Course automation folder: ~/cs000
+PASS    Course automation folder: ~/crs000
 PASS    Repository workspace: ~/Repos
 PASS    Desktop Repos shortcut: target is correct
 PASS    Development workspace marker: correct or not applicable by platform
@@ -1002,16 +1002,16 @@ Failed        : 1
 Not applicable: 0
 Result        : NOT COMPLIANT
 Exit code     : 1
-Log file      : ~/cs000/logs/verify_ref_20260731_120000.log
+Log file      : ~/crs000/logs/verify_ref_20260731_120000.log
 
-Course continuity: You can continue your CS-000 coursework in the Codio Virtual Desktop (CVD) while this local course IDE issue is resolved.
+Course continuity: You can continue your CRS-000 coursework in the Codio Virtual Desktop (CVD) while this local course IDE issue is resolved.
 ```
 
 ### 5.5 Update: Successful Maintenance with Restart Guidance
 
 ```text
 ============================================================
-CS-000 COURSE DEVELOPMENT ENVIRONMENT UPDATE
+CRS-000 COURSE DEVELOPMENT ENVIRONMENT UPDATE
 ============================================================
 Script version: 0.2.0
 Version date-time group  : 2026-07-31
@@ -1035,7 +1035,7 @@ Required operations: PASS
 Warnings           : 0
 Restart required   : Yes
 Next step          : Save your work, restart the reference environment, and run verify.sh.
-Log file           : ~/cs000/logs/update_ref_20260731_121500.log
+Log file           : ~/crs000/logs/update_ref_20260731_121500.log
 Exit code           : 0
 ```
 
@@ -1047,7 +1047,7 @@ An **acceptance test** checks whether the completed software meets an agreed req
 
 | Test ID | Requirements | Test input or condition | Expected result and pass criteria |
 | --- | --- | --- | --- |
-| AT-PKG-001 | PKG-FR-001, PKG-FR-002 | Inspect one fully supported platform implementation. | Exactly five correctly named artifacts—`prepare.<ext> <cs000>`, `install.<ext> <cs000>`, `configure.<ext> <cs000>`, `verify.<ext> <cs000>`, and `update.<ext> <cs000>`—are present in the approved platform directory, documented, and usable by the intended user. |
+| AT-PKG-001 | PKG-FR-001, PKG-FR-002 | Inspect one fully supported platform implementation. | Exactly five correctly named artifacts—`prepare.<ext> <crs000>`, `install.<ext> <crs000>`, `configure.<ext> <crs000>`, `verify.<ext> <crs000>`, and `update.<ext> <crs000>`—are present in the approved platform directory, documented, and usable by the intended user. |
 | AT-PKG-002 | PKG-FR-003, PKG-QOS-014 | Run a platform component on a different or unsupported OS. | The component makes no managed change, explains the mismatch, writes a log when possible, and exits with code `2`. |
 | AT-PKG-003 | PKG-FR-004, PKG-FR-005, PKG-FR-019 | Replace the manifest with invalid JSON. | Each manifest-dependent script stops before managed changes, identifies the invalid manifest, and exits with code `5`; first-use prepare remains independent of the manifest. |
 | AT-PKG-004 | PKG-FR-006 through PKG-FR-009 | Run each component under a normal supported condition. | Each run shows required opening information, including SemVer and version date-time group, creates a timestamped log, ends with the required completion information, and returns the documented result. |
@@ -1062,13 +1062,13 @@ An **acceptance test** checks whether the completed software meets an agreed req
 
 | Test ID | Requirements | Test input or condition | Expected result and pass criteria |
 | --- | --- | --- | --- |
-| AT-PRE-001 | PRE-FR-001, PRE-FR-003, PRE-FR-005 through PRE-FR-013 | On a clean supported local user account with no local `"$HOME/Repos/<cs000>/` package, run the documented first-use command set. | The commands use only baseline native utilities, create the course root and log, download and validate the approved archive, install all five platform artifacts, establish permissions and `PATH`, clean temporary files, resolve the local workflow, and identify the exact Install next step. |
+| AT-PRE-001 | PRE-FR-001, PRE-FR-003, PRE-FR-005 through PRE-FR-013 | On a clean supported local user account with no local `"$HOME/Repos/<crs000>/` package, run the documented first-use command set. | The commands use only baseline native utilities, create the course root and log, download and validate the approved archive, install all five platform artifacts, establish permissions and `PATH`, clean temporary files, resolve the local workflow, and identify the exact Install next step. |
 | AT-PRE-011 | PRE-FR-008, PRE-FR-013, PKG-FR-022 | Run Prepare on the CVD provider baseline master as the authorized CVD administrator. | Prepare validates the CVD lifecycle entry points, resolves `cvd_provider_baseline_administrator`, and reports `update.sh` as the exact next step. |
 | AT-PRE-012 | PRE-FR-008, PRE-FR-013, PKG-FR-022 | Run Prepare on the Codio course master as a CVD student. | Prepare validates the CVD student lifecycle entry points, resolves `cvd_course_master_student`, and reports `update.sh` as the exact next step. |
 | AT-PRE-002 | PRE-FR-002, PRE-FR-009 through PRE-FR-011, PKG-QOS-001 | Place an older installed automation package beside student files and a nested student repository, then execute the installed prepare artifact twice. | Repository-managed package files refresh to the approved versions, the second run creates no duplicate `PATH` entry, and student files and nested repository history remain unchanged. |
 | AT-PRE-003 | PRE-FR-007, PRE-FR-008, PRE-FR-014, PKG-QOS-003, PKG-QOS-004 | Interrupt the download or provide a truncated archive. | The incomplete archive is not activated, the prior valid package remains usable, temporary files are cleaned when safe, the failure is logged, and the result is nonzero. |
 | AT-PRE-004 | PRE-FR-004 | Run the prepare commands on an unsupported OS or in a prohibited root or administrator context. | Preparation stops before replacing package files, explains the platform or privilege mismatch, and returns the applicable nonzero result. |
-| AT-PRE-005 | PRE-FR-008 | Provide a structurally valid archive that omits the matching `install.<ext> <cs000>` artifact. | Preparation rejects the archive, preserves the installed package, records the failed structural check, and returns a validation failure. |
+| AT-PRE-005 | PRE-FR-008 | Provide a structurally valid archive that omits the matching `install.<ext> <crs000>` artifact. | Preparation rejects the archive, preserves the installed package, records the failed structural check, and returns a validation failure. |
 | AT-PRE-006 | PRE-FR-015 | Inspect system software, external-service authentication, and IDE settings before and after prepare. | Prepare changes only the automation package, log, required permissions, and user `PATH`; it does not install IDE software, authenticate services, or write IDE settings. |
 
 ### 6.3 Install Acceptance Tests
@@ -1107,8 +1107,8 @@ An **acceptance test** checks whether the completed software meets an agreed req
 | Test ID | Requirements | Test input or condition | Expected result and pass criteria |
 | --- | --- | --- | --- |
 | AT-VER-001 | VER-FR-003 through VER-FR-012 | Run verify on a fully compliant supported environment. | All required checks pass, summary totals are correct, result is compliant, and exit code is `0`. |
-| AT-VER-002 | VER-FR-005, VER-FR-008 through VER-FR-012 | Remove one required system application. | Verify reports `FAIL`, names the related requirement, recommends `install.<ext> <cs000>`, and exits with code `1`. |
-| AT-VER-003 | VER-FR-006, VER-FR-009, VER-FR-015 through VER-FR-018 | Remove one required user setting or extension, remove the desktop `Repos` link, or on CVD change the Visual Studio Code launch argument away from `"$HOME/Repos/`. | Verify reports `FAIL`, recommends `configure.<ext> <cs000>`, and does not recommend Install. |
+| AT-VER-002 | VER-FR-005, VER-FR-008 through VER-FR-012 | Remove one required system application. | Verify reports `FAIL`, names the related requirement, recommends `install.<ext> <crs000>`, and exits with code `1`. |
+| AT-VER-003 | VER-FR-006, VER-FR-009, VER-FR-015 through VER-FR-018 | Remove one required user setting or extension, remove the desktop `Repos` link, or on CVD change the Visual Studio Code launch argument away from `"$HOME/Repos/`. | Verify reports `FAIL`, recommends `configure.<ext> <crs000>`, and does not recommend Install. |
 | AT-VER-004 | VER-FR-001, VER-FR-002, PKG-QOS-002 | Record checksums and modification times of managed files before and after verify. | No managed file or setting changes, and verify does not request administrative privilege. |
 | AT-VER-005 | VER-FR-008, VER-FR-010 | Omit an optional component. | Verify reports `WARNING` or `NOT APPLICABLE`, does not classify the environment as failed solely for that item, and uses the correct exit code. |
 | AT-VER-006 | VER-FR-013, PKG-QOS-021, PKG-QOS-022 | Request a support bundle from a test environment containing student source files. | The bundle is created only after explicit request and contains approved diagnostics but no student source, repository content, version-control history, or authentication data. |

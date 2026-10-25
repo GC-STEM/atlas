@@ -22,5 +22,5 @@ insecure = false
 # Manually verify while signed in with faculty access before adding this
 # exception, and whenever the destination or access policy changes.
 exclude = [
-    '^https://github\.com/GC-STEM/cs000-faculty/wiki/Support-for-Faculty$',
+    '^https://github\.com/GC-STEM/crs000-faculty/wiki/Support-for-Faculty$',
 ]

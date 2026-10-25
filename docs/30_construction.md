@@ -1,4 +1,4 @@
-# {{CS-000}} {{Task Code}} | Software Construction Plan
+# {{CRS-000}} {{Task Code}} | Software Construction Plan
 
 <!-- TODO: Replace the title placeholders with the course code, task code, and task title. -->
 
@@ -180,7 +180,7 @@ src/
 <!-- TODO: List external sources, standards, frameworks, libraries, documentation, or other references used to develop this document. Use the citation style required by the course. Delete this section if references are not required. -->
 
 <!--
-title: "{{CS-000}} {{Task Code}} | {{Task Title}}"
+title: "{{CRS-000}} {{Task Code}} | {{Task Title}}"
 description: "<Brief summary of this document's purpose and scope.>"
 document_type: "Software Construction Plan (SCP)"
 owner: "GC-STEM, Computer Science"
