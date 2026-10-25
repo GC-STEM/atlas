@@ -5,7 +5,7 @@
 ---
 
 > [!WARNING]
-> 🚧 This repository is under active development and may change frequently. It is not ready for student or faculty use
+> This repository is under active development and may change frequently. It is not ready for student or faculty use
 
 ---
 
