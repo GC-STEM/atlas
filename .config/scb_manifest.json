@@ -1,20 +1,22 @@
 {
-  "schema_version": "2.3",
-  "automation_release": "1.0.4",
-  "course": {
-    "course_id": "ATLAS",
-    "course_title": "STEM Computing Environment",
-    "environment_name": "Atlas SCB"
+  "$schema": "https://raw.githubusercontent.com/GC-STEM/.github/refs/heads/main/schemas/manifest.schema.json",
+  "schema_version": "3.0",
+  "manifest_type": "scb",
+  "baseline": {
+    "baseline_id": "stem_computing_baseline",
+    "display_name": "STEM Computing Baseline",
+    "version": "1.0.0"
   },
+  "automation_release": "1.0.4",
   "control": {
     "status": "draft",
     "source_repository": "https://github.com/GC-STEM/atlas",
-    "source_revision": "dbde859f90b1b957b05aa03e25b867563c113bb2",
-    "change_summary": "Complete the schema 2.2 manifest-contract repair by replacing invalid runtime verification version_adapter_id fields with schema-native version_rule objects across all platform bindings."
+    "source_revision": "3a1340dec18215194ff83da177ba4725d336492f",
+    "change_summary": "Generalize the shared Atlas SCB for all STEM courses. Preserve compatible installed tools, accept supported Python 3 versions, and leave Python test packages and virtual environments for courses to opt into. Remove pilot identity and obsolete self-updating manifest assets."
   },
   "policy": {
-    "course_root": "${HOME}/atlas",
-    "script_root": "${COURSE_ROOT}/scripts",
+    "course_root": "${HOME}/Repos/${COURSE_REPOSITORY}",
+    "script_root": "${ATLAS_ROOT}/scripts",
     "minimum_free_space_bytes": 5368709120,
     "network_timeout_seconds": 60,
     "allow_os_release_upgrade": false,
@@ -25,7 +27,9 @@
       "COURSE_ROOT",
       "SCRIPT_ROOT",
       "LOG_DIR",
-      "TEMP"
+      "TEMP",
+      "COURSE_REPOSITORY",
+      "ATLAS_ROOT"
     ],
     "retry_profiles": {
       "bounded_default": {
@@ -43,7 +47,12 @@
       "package_signature",
       "repository_signature",
       "provider_verified"
-    ]
+    ],
+    "version_management": {
+      "strategy": "satisfy_requirements",
+      "preserve_compatible_installations": true,
+      "allow_automatic_downgrade": false
+    }
   },
   "capabilities": {
     "version_control_system": {
@@ -66,22 +75,22 @@
       "display_name": "Programming Language Runtime",
       "required": true,
       "implementation_kind": "programming_runtime",
-      "student_use": "Write, run, and debug Python programs using the course-approved language version."
+      "student_use": "Run course software using a supported Python interpreter; courses may declare additional runtimes or stricter requirements when needed."
     },
     "test_runner": {
       "display_name": "Test Runner",
-      "required": true,
+      "required": false,
       "implementation_kind": "language_package",
-      "student_use": "Run course-provided automated tests and review the results.",
+      "student_use": "Optional course-selected test runner, installed in that course's Python virtual environment.",
       "depends_on": [
         "programming_language_runtime"
       ]
     },
     "coverage_reporter": {
       "display_name": "Coverage Reporter",
-      "required": true,
+      "required": false,
       "implementation_kind": "language_package",
-      "student_use": "Run course-provided coverage checks and review which program statements were exercised.",
+      "student_use": "Optional course-selected coverage reporting, installed in that course's Python virtual environment.",
       "depends_on": [
         "programming_language_runtime",
         "test_runner"
@@ -159,7 +168,7 @@
         "version_control_system"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "license_identifier": "GPL-2.0-only",
@@ -175,7 +184,7 @@
         "source_hosting_client"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "license_identifier": "MIT",
@@ -183,8 +192,8 @@
       "homepage": "https://cli.github.com/",
       "documentation_uri": "https://cli.github.com/manual/"
     },
-    "python_3_12": {
-      "display_name": "Python 3.12",
+    "python": {
+      "display_name": "Python 3",
       "vendor_or_project": "Python Software Foundation",
       "product_kind": "programming_runtime",
       "capability_roles": [
@@ -192,14 +201,14 @@
       ],
       "version_rule": {
         "comparison": "compatible_range",
-        "value": ">=3.12,<3.13",
+        "value": ">=3.12,<4",
         "comparison_adapter_id": "pep440_version"
       },
       "student_availability": "no_cost",
       "license_identifier": "PSF-2.0",
       "open_source": true,
       "homepage": "https://www.python.org/",
-      "documentation_uri": "https://docs.python.org/3.12/"
+      "documentation_uri": "https://docs.python.org/3/"
     },
     "pytest": {
       "display_name": "pytest",
@@ -209,7 +218,7 @@
         "test_runner"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "license_identifier": "MIT",
@@ -225,7 +234,7 @@
         "coverage_reporter"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "license_identifier": "MIT",
@@ -241,7 +250,7 @@
         "source_code_ide"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "license_identifier": "LicenseRef-Microsoft-Visual-Studio-Code",
@@ -257,7 +266,7 @@
         "language_support"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=ms-python.python",
@@ -271,7 +280,7 @@
         "code_quality_tool"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff",
@@ -285,7 +294,7 @@
         "diagram_support"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio",
@@ -299,7 +308,7 @@
         "pseudocode_support"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=i2p-hub.i2p-pseudo",
@@ -313,7 +322,7 @@
         "spell_checker"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker",
@@ -327,7 +336,7 @@
         "file_viewer"
       ],
       "version_rule": {
-        "comparison": "managed_latest"
+        "comparison": "presence_only"
       },
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-office",
@@ -335,10 +344,10 @@
     }
   },
   "software_sources": {
-    "course_repository": {
-      "display_name": "IT 140 Course Repository",
+    "atlas_repository": {
+      "display_name": "Atlas Shared Baseline and Automation Repository",
       "source_type": "source_repository",
-      "base_uri": "https://github.com/GC-STEM/it140",
+      "base_uri": "https://github.com/GC-STEM/atlas",
       "adapter_id": "github_repository_source",
       "allowed_hosts": [
         "github.com",
@@ -587,7 +596,7 @@
           "required": true,
           "source_id": "microsoft_app_installer",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "windows_appx",
@@ -605,7 +614,7 @@
           "category": "package_management_support"
         }
       },
-      "course_ide_bindings": {
+      "cde_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -648,7 +657,7 @@
           ]
         },
         "programming_language_runtime": {
-          "product_id": "python_3_12",
+          "product_id": "python",
           "required": true,
           "installation_scope": "system",
           "installer_adapter_id": "winget_package",
@@ -659,50 +668,12 @@
             "executable_names": [
               "python.exe"
             ],
-            "package_identifiers": [
-              "Python.Python.3.12"
-            ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<3.13",
+              "value": ">=3.12,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
-        },
-        "test_runner": {
-          "product_id": "pytest",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime"
-          ]
-        },
-        "coverage_reporter": {
-          "product_id": "pytest_cov",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest-cov",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest-cov"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime",
-            "test_runner"
-          ]
         },
         "source_code_ide": {
           "product_id": "visual_studio_code",
@@ -884,7 +855,7 @@
           "required": true,
           "source_id": "apple_software_update",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apple_command_line_tools",
@@ -898,7 +869,7 @@
           "category": "bootstrap_prerequisite"
         }
       },
-      "course_ide_bindings": {
+      "cde_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -941,7 +912,7 @@
           ]
         },
         "programming_language_runtime": {
-          "product_id": "python_3_12",
+          "product_id": "python",
           "required": true,
           "installation_scope": "system",
           "installer_adapter_id": "homebrew_formula",
@@ -950,52 +921,15 @@
           "verification": {
             "adapter_id": "homebrew_formula",
             "executable_names": [
-              "python3.12"
-            ],
-            "package_identifiers": [
-              "python@3.12"
+              "python3",
+              "python"
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<3.13",
+              "value": ">=3.12,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
-        },
-        "test_runner": {
-          "product_id": "pytest",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime"
-          ]
-        },
-        "coverage_reporter": {
-          "product_id": "pytest_cov",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest-cov",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest-cov"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime",
-            "test_runner"
-          ]
         },
         "source_code_ide": {
           "product_id": "visual_studio_code",
@@ -1170,7 +1104,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1190,7 +1124,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1213,7 +1147,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1229,26 +1163,6 @@
           ],
           "category": "security_support"
         },
-        "python_venv_support": {
-          "display_name": "Python 3.12 Virtual Environment Support",
-          "purpose": "Provide the standard-library venv module for the course-managed Python environment.",
-          "package_identifier": "python3.12-venv",
-          "required": true,
-          "source_id": "ubuntu_archive",
-          "version_rule": {
-            "comparison": "managed_latest"
-          },
-          "verification": {
-            "adapter_id": "apt_package",
-            "package_identifiers": [
-              "python3.12-venv"
-            ]
-          },
-          "architectures": [
-            "x86_64"
-          ],
-          "category": "runtime_support"
-        },
         "xdg_utils": {
           "display_name": "XDG Utilities",
           "purpose": "Provide desktop integration helpers for MIME and URL handling.",
@@ -1256,7 +1170,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1280,7 +1194,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1304,7 +1218,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1324,7 +1238,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1347,7 +1261,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1370,7 +1284,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1393,7 +1307,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1407,7 +1321,7 @@
           "category": "desktop_integration"
         }
       },
-      "course_ide_bindings": {
+      "cde_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -1450,61 +1364,24 @@
           ]
         },
         "programming_language_runtime": {
-          "product_id": "python_3_12",
+          "product_id": "python",
           "required": true,
           "installation_scope": "system",
           "installer_adapter_id": "apt_package",
           "source_id": "ubuntu_archive",
-          "package_identifier": "python3.12",
+          "package_identifier": "python3",
           "verification": {
             "adapter_id": "apt_package",
             "executable_names": [
-              "python3.12"
-            ],
-            "package_identifiers": [
-              "python3.12"
+              "python3",
+              "python"
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<3.13",
+              "value": ">=3.12,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
-        },
-        "test_runner": {
-          "product_id": "pytest",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime"
-          ]
-        },
-        "coverage_reporter": {
-          "product_id": "pytest_cov",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest-cov",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest-cov"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime",
-            "test_runner"
-          ]
         },
         "source_code_ide": {
           "product_id": "visual_studio_code",
@@ -1679,7 +1556,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1699,7 +1576,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1722,7 +1599,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1738,26 +1615,6 @@
           ],
           "category": "security_support"
         },
-        "python_venv_support": {
-          "display_name": "Python 3.12 Virtual Environment Support",
-          "purpose": "Provide the standard-library venv module for the course-managed Python environment.",
-          "package_identifier": "python3.12-venv",
-          "required": true,
-          "source_id": "ubuntu_archive",
-          "version_rule": {
-            "comparison": "managed_latest"
-          },
-          "verification": {
-            "adapter_id": "apt_package",
-            "package_identifiers": [
-              "python3.12-venv"
-            ]
-          },
-          "architectures": [
-            "x86_64"
-          ],
-          "category": "runtime_support"
-        },
         "xdg_utils": {
           "display_name": "XDG Utilities",
           "purpose": "Provide desktop integration helpers for MIME and URL handling.",
@@ -1765,7 +1622,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1789,7 +1646,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1813,7 +1670,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1833,7 +1690,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1856,7 +1713,7 @@
           "required": true,
           "source_id": "ubuntu_archive",
           "version_rule": {
-            "comparison": "managed_latest"
+            "comparison": "presence_only"
           },
           "verification": {
             "adapter_id": "apt_package",
@@ -1873,7 +1730,7 @@
           "category": "desktop_integration"
         }
       },
-      "course_ide_bindings": {
+      "cde_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -1916,61 +1773,24 @@
           ]
         },
         "programming_language_runtime": {
-          "product_id": "python_3_12",
+          "product_id": "python",
           "required": true,
           "installation_scope": "system",
           "installer_adapter_id": "apt_package",
           "source_id": "ubuntu_archive",
-          "package_identifier": "python3.12",
+          "package_identifier": "python3",
           "verification": {
             "adapter_id": "apt_package",
             "executable_names": [
-              "python3.12"
-            ],
-            "package_identifiers": [
-              "python3.12"
+              "python3",
+              "python"
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<3.13",
+              "value": ">=3.12,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
-        },
-        "test_runner": {
-          "product_id": "pytest",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime"
-          ]
-        },
-        "coverage_reporter": {
-          "product_id": "pytest_cov",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "python_venv_package",
-          "source_id": "pypi",
-          "package_identifier": "pytest-cov",
-          "verification": {
-            "adapter_id": "python_venv_package",
-            "package_identifiers": [
-              "pytest-cov"
-            ]
-          },
-          "dependencies": [
-            "programming_language_runtime",
-            "test_runner"
-          ]
         },
         "source_code_ide": {
           "product_id": "visual_studio_code",
@@ -2117,7 +1937,7 @@
         "cvd_course_master_student",
         "cvd_periodic_maintenance"
       ],
-      "notes": "Reference deployment profile for the provider baseline master and IT 140 course master workflows.",
+      "notes": "Reference deployment profile for the provider baseline master and STEM course master workflows.",
       "provider_name": "Codio",
       "profile_adapter_id": "codio_virtual_desktop"
     },
@@ -2260,14 +2080,14 @@
       }
     },
     "cvd_course_master_student": {
-      "display_name": "CVD IT 140 Course Master Student Initialization",
+      "display_name": "CVD STEM Course Master Student Initialization",
       "deployment_profile_ids": [
         "codio_cvd"
       ],
       "operating_roles": [
         "cvd_student"
       ],
-      "starting_state_id": "it140_course_master",
+      "starting_state_id": "course_master",
       "ordered_actions": [
         "prepare",
         "update",
@@ -2305,7 +2125,7 @@
   },
   "managed_settings": {
     "git_course_defaults": {
-      "display_name": "IT 140 Git Defaults",
+      "display_name": "STEM Git Defaults",
       "target_capability_role": "version_control_system",
       "scope": "user",
       "settings_adapter_id": "git_global_config",
@@ -2325,7 +2145,7 @@
       "verification_adapter_id": "git_global_config_verify"
     },
     "vscode_course_defaults": {
-      "display_name": "IT 140 Visual Studio Code Defaults",
+      "display_name": "STEM Visual Studio Code Defaults",
       "target_capability_role": "source_code_ide",
       "scope": "user",
       "settings_adapter_id": "vscode_user_settings",
@@ -2339,8 +2159,6 @@
       "values": {
         "files.eol": "\n",
         "editor.formatOnSave": true,
-        "python.testing.pytestEnabled": true,
-        "python.testing.unittestEnabled": false,
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff"
         },
@@ -2351,40 +2169,7 @@
       "verification_adapter_id": "vscode_user_settings_verify"
     }
   },
-  "managed_assets": {
-    "course_manifest": {
-      "display_name": "IT 140 Course Automation Manifest",
-      "asset_type": "manifest",
-      "scope": "user",
-      "source_id": "course_repository",
-      "source_path": "scripts/.manifest/it140_manifest.json",
-      "destination": "${SCRIPT_ROOT}/.manifest/it140_manifest.json",
-      "integrity": {
-        "method": "provider_verified"
-      },
-      "replacement_mode": "atomic_replace",
-      "managed_by": [
-        "update"
-      ],
-      "executable": false
-    },
-    "manifest_schema": {
-      "display_name": "IT 140 Manifest JSON Schema",
-      "asset_type": "manifest_schema",
-      "scope": "user",
-      "source_id": "course_repository",
-      "source_path": "scripts/.manifest/it140_manifest.schema.json",
-      "destination": "${SCRIPT_ROOT}/.manifest/it140_manifest.schema.json",
-      "integrity": {
-        "method": "provider_verified"
-      },
-      "replacement_mode": "atomic_replace",
-      "managed_by": [
-        "update"
-      ],
-      "executable": false
-    }
-  },
+  "managed_assets": {},
   "obsolete_components": {},
   "logging": {
     "format_version": "1",
@@ -2425,5 +2210,6 @@
       ]
     }
   },
-  "automation_release_date_time_group": "2026-09-07-14-30"
+  "automation_release_date_time_group": "2026-09-07-14-30",
+  "override_permissions": {}
 }
