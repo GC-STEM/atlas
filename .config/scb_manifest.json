@@ -201,7 +201,7 @@
       ],
       "version_rule": {
         "comparison": "compatible_range",
-        "value": ">=3.12,<4",
+        "value": ">=3.10,<4",
         "comparison_adapter_id": "pep440_version"
       },
       "student_availability": "no_cost",
