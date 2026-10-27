@@ -8,7 +8,7 @@
     ".github/ci/README.md",
     ".github/ci/requirements.txt",
     ".github/ci/test_ci.py",
-    ".github/workflows/dependabot.yml",
+    ".github/workflows/dependabot.yml.txt",
     ".github/workflows/external-links.yml",
     ".github/workflows/internal-links.yml",
     ".github/workflows/readme-commands.yml",
