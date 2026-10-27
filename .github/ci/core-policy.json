@@ -22,7 +22,6 @@
     ".editorconfig",
     ".gitattributes",
     ".gitignore",
-    "LICENSE",
     "pyproject.toml",
     "README.md"
 
