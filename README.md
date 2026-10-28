@@ -13,10 +13,10 @@
 
 ## Table of Contents <!-- omit from toc -->
 
-1. [Standard Operating Environment](#stem-computing-baseline)
+1. [Standard Operating Environment](#standard-operating-environment)
 2. [STEM Shared Libraries](#stem-shared-libraries)
-3. [CSO Automation Scripts](#cde-automation-scripts)
-4. [CSO Isolation](#cde-isolation)
+3. [CSO Automation Scripts](#cso-automation-scripts)
+4. [CSO Isolation](#cso-isolation)
 
 ## Standard Operating Environment
 
