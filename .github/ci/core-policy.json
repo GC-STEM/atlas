@@ -20,7 +20,7 @@
     ".github/workflows/tests.yml",
     ".github/CHANGELOG.md",
     ".github/CODEOWNERS",
-    ".vscode/check_dev_env.py",
+    "scripts/python/check_dev_env.py",
     ".vscode/extensions.json",
     ".vscode/launch.json",
     ".vscode/settings.json",
@@ -33,9 +33,9 @@
     ".github/ci/test_soe.py",
     ".github/ci/smoke_codespaces.py",
     ".github/workflows/codespaces.yml",
-    "scripts/soe.py",
-    "scripts/devcontainer_config.py",
-    "scripts/launch_codespaces.py"
+    "scripts/python/soe.py",
+    "scripts/python/devcontainer_config.py",
+    "scripts/python/launch_codespaces.py"
   ],
   "ide_samples": {
     "c": "example.c",
