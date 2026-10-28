@@ -26,7 +26,7 @@ Patch updates within the manifest-selected Ubuntu release and Python minor serie
 
 GitHub Codespaces is the default development container for temporary student access and faculty verification. It provides a headless runtime with VS Code. See [Codespaces setup and launch](.devcontainer/README.md) for instructions, course-specific overlays (CSO), and verification.
 
-Click to learn more [about the Standard Operating Environment]([#stem-standard-operating-environment](https://github.com/GC-STEM/atlas/wiki/About-the-SOE))
+Click to learn more [about the Standard Operating Environment](https://github.com/GC-STEM/atlas/wiki/About-the-SOE)
 
 ## STEM Shared Libraries
 
