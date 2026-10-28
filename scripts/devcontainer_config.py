@@ -11,7 +11,7 @@ def configuration(plan, image=None):
         "/opt/gc-stem/atlas/scripts/soe.py",
     ]
     result = {
-        "name": "GC-STEM SOE - Ubuntu 22.04 / Python 3.10",
+        "name": "GC-STEM SOE - Ubuntu 24.04 / Python 3.12",
         "remoteUser": "vscode",
         "containerUser": "vscode",
         "init": True,

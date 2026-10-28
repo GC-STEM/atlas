@@ -2,6 +2,7 @@
 
 import json
 import os
+import platform
 import subprocess
 import tempfile
 from pathlib import Path
@@ -17,6 +18,8 @@ def execute(*args):
 
 def main():
     assert os.geteuid() != 0, "Smoke test must exercise the development user"
+    assert platform.python_implementation() == "CPython"
+    assert platform.python_version_tuple()[:2] == ("3", "12")
     runtime = "/opt/gc-stem/runtime/bin/python"
     script = ATLAS / "scripts/soe.py"
     execute(runtime, script, "verify", "--workspace", ATLAS, "--mode", "soe")
@@ -65,7 +68,10 @@ def main():
         execute(
             workspace / ".venv/bin/python",
             "-c",
-            "import pytest; assert pytest.__version__ == '8.4.2'",
+            "import platform,sys,pytest; "
+            "assert sys.version_info[:2] == (3,12); "
+            "assert platform.python_implementation() == 'CPython'; "
+            "assert pytest.__version__ == '8.4.2'",
         )
         execute(
             "/usr/bin/python3",

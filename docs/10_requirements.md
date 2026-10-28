@@ -37,6 +37,8 @@ The five components form one software package because they share requirements, f
 
 ### Product Scope
 
+The STEM SOE standard shall follow **current Ubuntu LTS − 1**: the Ubuntu LTS release immediately preceding the latest LTS and that release's default CPython minor version. Codio Boxes/VMs, reference containers, and native Ubuntu environments shall target this pair; native Windows/macOS shall select the same CPython minor series. The SOE manifest shall record the concrete release selections. Patch updates within the approved lines are permitted. A change to a new LTS/Python minor requires a reviewed and qualified SOE release. Setup shall report an incompatible deployment/interpreter without automatically upgrading an OS release or replacing/downgrading a system interpreter.
+
 The package shall provide a consistent, supportable course integrated development environment (IDE) across designated course-supported deployment profiles. It shall reduce manual preparation, installation, and configuration steps, identify configuration problems, and provide useful diagnostic information to students, faculty, artificial intelligence (AI) support tools, and university technical support.
 
 The requirements shall minimize unnecessary platform-specific assumptions and isolate platform-dependent behavior so that another deployment profile for which the complete required software stack has a viable implementation path can be added without redesigning the platform-independent lifecycle. The project is not required to discover, implement, test, or maintain every platform that upstream products might technically support. A deployment profile becomes course-supported only after its implementation, qualification testing, documentation, and approval are complete. Technical compatibility, vendor support, or successful unqualified use does not by itself imply course support.
@@ -1161,7 +1163,7 @@ Where the repository baseline did not pin an exact product version, this appendi
 | Category | Reference selection at the baseline |
 | --- | --- |
 | Virtual desktop provider | Codio Virtual Desktop |
-| Operating system | Ubuntu 24.04 Long-Term Support (LTS) |
+| Operating system | Current Ubuntu LTS − 1, as selected by the SOE manifest |
 | Graphical desktop | Xfce |
 | Shell scripting language | Bash |
 | System package manager | Advanced Package Tool (APT) |
@@ -1171,26 +1173,26 @@ Where the repository baseline did not pin an exact product version, this appendi
 
 | Capability | Reference product or component | Version or policy at the baseline | Course purpose |
 | --- | --- | --- | --- |
-| Secure source retrieval | `ca-certificates`, `curl`, and `gpg` | Ubuntu 24.04 approved package versions | Retrieve and validate approved software sources. |
-| Project environment loading | `direnv` | Ubuntu 24.04 approved package version | Apply approved project-specific environment settings when present. |
-| Version control | Git | Ubuntu 24.04 approved package version | Track file changes and interact with repositories. |
+| Secure source retrieval | `ca-certificates`, `curl`, and `gpg` | SOE-approved Ubuntu package versions | Retrieve and validate approved software sources. |
+| Project environment loading | `direnv` | SOE-approved Ubuntu package version | Apply approved project-specific environment settings when present. |
+| Version control | Git | SOE-approved Ubuntu package version | Track file changes and interact with repositories. |
 | Source-code hosting | GitHub | Hosted service release | Store course and student repositories and support collaboration. |
 | Source-code-hosting CLI | GitHub CLI (`gh`) | Current approved release from the official GitHub package source | Authenticate and perform approved repository actions from the terminal. |
-| Programming-language runtime | Python 3.12 | Python 3.12 major and minor version | Write, run, and test CSO programs. |
+| Programming-language runtime | CPython | Default Python minor version of current Ubuntu LTS − 1, as selected by the SOE manifest | Write, run, and test CSO programs. |
 | Language package and environment tools | `pip` and `venv` | Versions compatible with the approved Python runtime | Install course tools and create isolated environments when required. |
 | Integrated development environment | Visual Studio Code (`code`) | Current approved stable release from the official product source | Edit, run, test, debug, and manage course files. |
 | Web browser | Google Chrome | Version included in the approved reference image | Access course resources and approved authentication flows. |
-| Folder display utility | `tree` | Ubuntu 24.04 approved package version | Display folder structures in a readable form. |
-| Clipboard utility | `xclip` | Ubuntu 24.04 approved package version | Support clipboard operations in the graphical desktop. |
-| Keyboard-state utility | `numlockx` | Ubuntu 24.04 approved package version | Apply the approved Num Lock desktop behavior. |
+| Folder display utility | `tree` | SOE-approved Ubuntu package version | Display folder structures in a readable form. |
+| Clipboard utility | `xclip` | SOE-approved Ubuntu package version | Support clipboard operations in the graphical desktop. |
+| Keyboard-state utility | `numlockx` | SOE-approved Ubuntu package version | Apply the approved Num Lock desktop behavior. |
 
 ### Reference Programming-Language Tools
 
 | Tool | Version or policy at the baseline | Course purpose |
 | --- | --- | --- |
-| pytest | Current manifest-approved version compatible with Python 3.12 | Run tests supplied with course activities. |
-| pytest-cov | Current manifest-approved version compatible with Python 3.12 | Report test coverage when included with supplied tests. |
-| Ruff | Current manifest-approved version compatible with Python 3.12 | Identify code-quality issues and format code consistently. |
+| pytest | Current manifest-approved version compatible with the SOE-selected Python runtime | Run tests supplied with course activities. |
+| pytest-cov | Current manifest-approved version compatible with the SOE-selected Python runtime | Report test coverage when included with supplied tests. |
+| Ruff | Current manifest-approved version compatible with the SOE-selected Python runtime | Identify code-quality issues and format code consistently. |
 
 Students are expected to run provided tests; this package does not require students to create their own tests.
 

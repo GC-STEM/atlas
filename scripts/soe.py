@@ -450,7 +450,7 @@ def make_plan(resolved, schema, workspace, profile_id):
         )
         product = resolved["products"][binding["product_id"]]
         for rule in version_rules(product, binding):
-            version_ok("3.10.0", rule)
+            version_ok("0", rule)
         require(
             key in product["capability_roles"],
             f"Product does not implement capability: {key}",
@@ -748,14 +748,30 @@ def contains_settings(actual, expected):
     )
 
 
+def python_runtime_version(python):
+    result = run(
+        [
+            python,
+            "-c",
+            "import json, platform; print(json.dumps({"
+            "'version': platform.python_version(), "
+            "'implementation': platform.python_implementation()}))",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    facts = json.loads(result.stdout)
+    require(
+        facts["implementation"] == "CPython",
+        "The approved SOE interpreter must be CPython",
+    )
+    return facts["version"]
+
+
 def verify_course_interpreter(plan, environment):
     python = interpreter(environment)
     require(python.is_file(), "Missing course environment")
-    version = run(
-        [python, "-c", "import platform; print(platform.python_version())"],
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
+    version = python_runtime_version(python)
     runtime = plan["bindings"]["programming_language_runtime"]
     product = plan["resolved"]["products"][runtime["product_id"]]
     require(
@@ -840,6 +856,7 @@ def setup(plan, workspace, atlas_root, mode):
 
 def verify(plan, editor=False, course_packages=True):
     check_host(plan)
+    verified_python = "not selected"
     if course_packages:
         for environment in plan["environments"].values():
             verify_course_interpreter(plan, environment)
@@ -875,18 +892,10 @@ def verify(plan, editor=False, course_packages=True):
                     binding["product_id"] == "python",
                     "Unsupported runtime verification",
                 )
-                result = run(
-                    [
-                        "/usr/bin/python3",
-                        "-c",
-                        "import platform; print(platform.python_version())",
-                    ],
-                    capture_output=True,
-                    text=True,
-                )
+                verified_python = python_runtime_version("/usr/bin/python3")
                 require(
                     all(
-                        version_ok(result.stdout.strip(), rule)
+                        version_ok(verified_python, rule)
                         for rule in version_rules(product, binding)
                     ),
                     "Python version does not satisfy the selected requirements",
@@ -927,7 +936,8 @@ def verify(plan, editor=False, course_packages=True):
             )
     print(
         f"Verified {plan['configuration_kind'].upper()} runtime: "
-        "Ubuntu 22.04, Python 3.10; "
+        f"Ubuntu {plan['profile']['os_release_id']}, "
+        f"CPython {verified_python}; "
         + (
             "editor extensions verified."
             if editor

@@ -11,7 +11,7 @@
   "control": {
     "status": "draft",
     "source_repository": "https://github.com/GC-STEM/atlas",
-    "change_summary": "Implement the headless Codespaces emergency/faculty-verification environment and repository-aware launcher. Use Ubuntu 22.04 and Python 3.10 as the SOE baseline/minimum; preserve compatible newer native installations. Adopt SOE/CSO schema 3.2 names and paths. VM launchers remain deferred and Vagrant optional. This remains a development draft, not an approved institutional release."
+    "change_summary": "Implement STEM leadership's approved previous-Ubuntu-LTS policy (latest LTS minus one): Ubuntu 24.04 LTS and its CPython 3.12.x runtime. Apply the same version line to Codio Boxes/VMs, native platform bindings, Codespaces and local Docker. Allow patch updates within the approved lines; changes to a new LTS/Python minor require a reviewed SOE release. Existing provider environments still require migration/qualification. Do not perform OS release upgrades or automatic interpreter downgrades. This implementation remains a draft pending release qualification."
   },
   "policy": {
     "course_root": "${WORKSPACE_ROOT}",
@@ -335,7 +335,7 @@
       "documentation_uri": "https://cli.github.com/manual/"
     },
     "python": {
-      "display_name": "Python 3",
+      "display_name": "CPython 3.12",
       "vendor_or_project": "Python Software Foundation",
       "product_kind": "programming_runtime",
       "capability_roles": [
@@ -343,14 +343,15 @@
       ],
       "version_rule": {
         "comparison": "compatible_range",
-        "value": ">=3.10,<4",
+        "value": ">=3.12,<3.13",
         "comparison_adapter_id": "pep440_version"
       },
       "student_availability": "no_cost",
       "license_identifier": "PSF-2.0",
       "open_source": true,
       "homepage": "https://www.python.org/",
-      "documentation_uri": "https://docs.python.org/3/"
+      "documentation_uri": "https://docs.python.org/3/",
+      "notes": "The approved STEM runtime is CPython 3.12.x on every platform. Patch updates within 3.12 are allowed; another minor series is not accepted as the SOE interpreter. Select an installed 3.12 interpreter or install it alongside other versions without replacing OS Python."
     },
     "pytest": {
       "display_name": "pytest",
@@ -994,7 +995,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.10,<4",
+              "value": ">=3.12,<3.13",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -1444,7 +1445,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.10,<4",
+              "value": ">=3.12,<3.13",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -1780,12 +1781,6 @@
         "name": "Ubuntu",
         "releases": [
           {
-            "release_id": "22.04",
-            "display_name": "Ubuntu 22.04 LTS",
-            "support_end_date": "2027-05-31",
-            "security_updates_required": true
-          },
-          {
             "release_id": "24.04",
             "display_name": "Ubuntu 24.04 LTS",
             "support_end_date": "2029-05-31",
@@ -2115,7 +2110,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.10,<4",
+              "value": ">=3.12,<3.13",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -2416,7 +2411,7 @@
           }
         }
       },
-      "notes": "Ubuntu 22.04/Python 3.10 is the Codio/zyBooks compatibility baseline. Compatible newer native releases are allowed; the reference container uses 22.04."
+      "notes": "Approved STEM Linux standard: Ubuntu 24.04 LTS and CPython 3.12.x under the previous-LTS policy. Provision a matching image or OS; setup does not upgrade/downgrade an OS release."
     },
     "ubuntu_gnome": {
       "display_name": "Ubuntu Desktop GNOME",
@@ -2428,12 +2423,6 @@
         "family": "linux",
         "name": "Ubuntu",
         "releases": [
-          {
-            "release_id": "22.04",
-            "display_name": "Ubuntu 22.04 LTS",
-            "support_end_date": "2027-05-31",
-            "security_updates_required": true
-          },
           {
             "release_id": "24.04",
             "display_name": "Ubuntu 24.04 LTS",
@@ -2722,7 +2711,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.10,<4",
+              "value": ">=3.12,<3.13",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -3045,7 +3034,7 @@
           }
         }
       },
-      "notes": "Ubuntu 22.04/Python 3.10 is the Codio/zyBooks compatibility baseline. Compatible newer native releases are allowed; the reference container uses 22.04."
+      "notes": "Approved STEM Linux standard: Ubuntu 24.04 LTS and CPython 3.12.x under the previous-LTS policy. Provision a matching image or OS; setup does not upgrade/downgrade an OS release."
     },
     "ubuntu_headless": {
       "display_name": "Ubuntu Headless Runtime",
@@ -3058,9 +3047,9 @@
         "name": "Ubuntu",
         "releases": [
           {
-            "release_id": "22.04",
-            "display_name": "Ubuntu 22.04 LTS",
-            "support_end_date": "2027-05-31",
+            "release_id": "24.04",
+            "display_name": "Ubuntu 24.04 LTS",
+            "support_end_date": "2029-05-31",
             "security_updates_required": true
           }
         ],
@@ -3299,7 +3288,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.10,<3.11",
+              "value": ">=3.12,<3.13",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -3570,7 +3559,7 @@
           }
         }
       },
-      "notes": "Headless Ubuntu 22.04 Codespaces runtime with provider-managed VS Code. No desktop services or Vagrant."
+      "notes": "Approved STEM Linux standard: Ubuntu 24.04 LTS and CPython 3.12.x under the previous-LTS policy. Provision a matching image or OS; setup does not upgrade/downgrade an OS release. Headless runtime; Codespaces manages VS Code."
     }
   },
   "deployment_profiles": {
@@ -3582,7 +3571,7 @@
       "deployment_kind": "hosted_virtual_desktop",
       "desktop_environment": "Xfce",
       "session_type": "remote_desktop",
-      "os_release_id": "22.04",
+      "os_release_id": "24.04",
       "architecture": "x86_64",
       "reset_method": "provider_reset",
       "allowed_workflow_ids": [
@@ -3590,7 +3579,7 @@
         "cvd_course_master_student",
         "cvd_periodic_maintenance"
       ],
-      "notes": "Reference deployment profile for the provider baseline master and STEM course master workflows.",
+      "notes": "Reference CVD/VM deployment target: Ubuntu 24.04 LTS with CPython 3.12.x. Codio Boxes and VMs are being standardized on this pair; provision and qualify the matching provider image.",
       "provider_name": "Codio",
       "profile_adapter_id": "codio_virtual_desktop",
       "execution_context": "hosted"
@@ -3653,14 +3642,14 @@
       "deployment_kind": "bare_metal",
       "desktop_environment": "GNOME",
       "session_type": "local_desktop",
-      "os_release_id": "22.04",
+      "os_release_id": "24.04",
       "architecture": "x86_64",
       "reset_method": "fresh_os_install",
       "allowed_workflow_ids": [
         "local_initial_install",
         "local_periodic_maintenance"
       ],
-      "notes": "Native Ubuntu GNOME deployment; Ubuntu 22.04 is the minimum baseline.",
+      "notes": "Native Ubuntu GNOME deployment using the approved Ubuntu 24.04 LTS/CPython 3.12.x standard.",
       "execution_context": "local"
     },
     "ubuntu_vagrant_guest": {
@@ -3672,7 +3661,7 @@
       "execution_context": "local",
       "session_type": "local_desktop",
       "desktop_environment": "GNOME",
-      "os_release_id": "22.04",
+      "os_release_id": "24.04",
       "architecture": "x86_64",
       "profile_adapter_id": "vagrant_guest",
       "reset_method": "image_reset",
@@ -3690,7 +3679,7 @@
       "deployment_kind": "container",
       "execution_context": "codespaces",
       "session_type": "browser_editor",
-      "os_release_id": "22.04",
+      "os_release_id": "24.04",
       "architecture": "x86_64",
       "provider_name": "GitHub Codespaces",
       "profile_adapter_id": "codespaces_devcontainer",
@@ -3699,7 +3688,7 @@
         "runtime_initial_install",
         "runtime_verify"
       ],
-      "notes": "Headless emergency student environment and faculty reference verification using Ubuntu 22.04/Python 3.10 and the selected course CSO. Access and funding remain subject to actual GitHub account/organization policy."
+      "notes": "Headless emergency student environment and faculty verification using the approved Ubuntu 24.04 LTS/CPython 3.12.x standard and selected course CSO. Access and funding remain subject to actual GitHub account/organization policy."
     },
     "github_actions_ubuntu": {
       "display_name": "GitHub Actions Ubuntu Verification Runtime",

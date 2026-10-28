@@ -59,7 +59,7 @@ configure.<ext> <repo>
 
 ### Update Script
 
-The purpose of the update script is to update the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) to the latest versions.
+The purpose of the update script is to apply updates allowed by the selected Standard Operating Environment (SOE) and Course-specific overlay (CSO) manifests. The SOE follows current Ubuntu LTS − 1 and that release's default CPython minor version; updates may advance patches within the manifest-selected lines. A different Ubuntu LTS or Python minor version requires a reviewed SOE release rather than an automatic lifecycle update.
 
 ```shell
 update.<ext> <repo>

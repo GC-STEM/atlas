@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import os
 import subprocess
 import sys
@@ -109,7 +110,7 @@ class ResolverTests(unittest.TestCase):
     def test_headless_soe_excludes_desktop_and_vagrant(self):
         plan = self.plan()
         self.assertEqual(plan["configuration_kind"], "soe")
-        self.assertEqual(plan["profile"]["os_release_id"], "22.04")
+        self.assertEqual(plan["profile"]["os_release_id"], "24.04")
         self.assertTrue({"git", "gh", "python3-venv"} <= set(plan["packages"]))
         self.assertFalse(
             {"code", "vagrant", "xfce4", "xclip"} & set(plan["packages"])
@@ -212,24 +213,39 @@ class ResolverTests(unittest.TestCase):
         with self.assertRaises(ConfigurationError):
             environment_path(ROOT, {"path": "${COURSE_ROOT}/../../outside"})
 
-    def test_reference_python_and_native_minimum(self):
-        self.assertTrue(
-            version_ok(
-                "3.10.12",
-                {"comparison": "compatible_range", "value": ">=3.10,<3.11"},
-            )
+    def test_python_312_series_is_required_on_every_platform(self):
+        rules = {"product": self.soe["products"]["python"]["version_rule"]}
+        rules.update(
+            {
+                name: platform["capability_bindings"][
+                    "programming_language_runtime"
+                ]["verification"]["version_rule"]
+                for name, platform in self.soe["platforms"].items()
+            }
         )
-        self.assertFalse(
-            version_ok(
-                "3.12.0",
-                {"comparison": "compatible_range", "value": ">=3.10,<3.11"},
-            )
-        )
-        for platform in self.soe["platforms"].values():
-            rule = platform["capability_bindings"][
-                "programming_language_runtime"
-            ]["verification"]["version_rule"]
-            self.assertTrue(version_ok("3.10.12", rule))
+        for name, rule in rules.items():
+            with self.subTest(platform=name):
+                for version in ("3.12.0", "3.12.3", "3.12.99"):
+                    self.assertTrue(version_ok(version, rule))
+                for version in ("3.10.12", "3.11.9", "3.13.0", "3.14.4"):
+                    self.assertFalse(version_ok(version, rule))
+
+    def test_all_linux_targets_use_ubuntu_2404(self):
+        for name, platform in self.soe["platforms"].items():
+            if platform["os"]["family"] == "linux":
+                with self.subTest(platform=name):
+                    self.assertEqual(
+                        [
+                            release["release_id"]
+                            for release in platform["os"]["releases"]
+                        ],
+                        ["24.04"],
+                    )
+        for name, profile in self.soe["deployment_profiles"].items():
+            platform = self.soe["platforms"][profile["platform_id"]]
+            if platform["os"]["family"] == "linux":
+                with self.subTest(deployment=name):
+                    self.assertEqual(profile["os_release_id"], "24.04")
 
     def test_soe_extensions_match_workspace_recommendations(self):
         recommendations = read_json(ROOT / ".vscode/extensions.json")[
@@ -269,12 +285,33 @@ class ResolverTests(unittest.TestCase):
             patch("soe.shutil.which", return_value="/usr/bin/python3"),
             patch("soe.run") as execute,
         ):
-            execute.return_value.stdout = "3.10.12\n"
+            execute.return_value.stdout = json.dumps(
+                {
+                    "version": "3.12.3",
+                    "implementation": "CPython",
+                }
+            )
             verify(plan)
             for call in execute.call_args_list:
                 command = call.args[0]
                 self.assertNotIn("install", command)
                 self.assertNotIn("sudo", command)
+
+    def test_matching_version_from_other_interpreter_is_rejected(self):
+        with (
+            patch("soe.check_host"),
+            patch("soe.apt_installed", return_value=True),
+            patch("soe.shutil.which", return_value="/usr/bin/python3"),
+            patch("soe.run") as execute,
+        ):
+            execute.return_value.stdout = json.dumps(
+                {
+                    "version": "3.12.3",
+                    "implementation": "PyPy",
+                }
+            )
+            with self.assertRaisesRegex(ConfigurationError, "CPython"):
+                verify(self.plan())
 
 
 class SchemaSourceTests(unittest.TestCase):
@@ -354,7 +391,7 @@ class LauncherTests(unittest.TestCase):
                 (ROOT / ".devcontainer/devcontainer.json").read_text()
             )
             (workspace / ".devcontainer/Dockerfile").write_text(
-                "FROM ubuntu:22.04\n"
+                "FROM ubuntu:24.04\n"
             )
             for command in (
                 ("init",),

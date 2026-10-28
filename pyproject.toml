@@ -13,9 +13,8 @@ line-length = 80
 # Python uses four spaces per indentation level.
 indent-width = 4
 
-# Set this to the Python version used by the SOE.
-# Examples: "py311", "py312", "py313"
-# target-version = "py312"
+# Approved STEM SOE language target: CPython 3.12.x.
+target-version = "py312"
 
 
 [tool.ruff.lint]

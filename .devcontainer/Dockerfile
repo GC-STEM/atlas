@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # Headless emergency/reference SOE. Desktop Docker is a separate future profile.
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL org.opencontainers.image.title="GC-STEM SOE (headless)" \
       org.opencontainers.image.source="https://github.com/GC-STEM/atlas" \
-      org.opencontainers.image.description="Ubuntu 22.04 / Python 3.10 SOE for Codespaces"
+      org.opencontainers.image.description="Ubuntu 24.04 / Python 3.12 SOE for Codespaces"
 
 ENV LANG=C.UTF-8 TZ=Etc/UTC ATLAS_ROOT=/opt/gc-stem/atlas \
     SOE_SCHEMA_PATH=/opt/gc-stem/schema/manifest.schema.json \
@@ -41,8 +41,15 @@ RUN chmod 0755 /opt/gc-stem/schema \
         install-system --workspace /opt/gc-stem/atlas --mode soe \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && groupadd --gid 1000 vscode \
-    && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash vscode \
+    && if getent group 1000 > /dev/null; then \
+        groupmod --new-name vscode "$(getent group 1000 | cut -d: -f1)"; \
+       else groupadd --gid 1000 vscode; fi \
+    && if getent passwd 1000 > /dev/null; then \
+        usermod --login vscode --gid 1000 --home /home/vscode \
+            --move-home --shell /bin/bash \
+            "$(getent passwd 1000 | cut -d: -f1)"; \
+       else useradd --uid 1000 --gid 1000 --create-home \
+            --shell /bin/bash vscode; fi \
     && echo 'vscode ALL=(root) NOPASSWD:ALL' > /etc/sudoers.d/vscode \
     && chmod 440 /etc/sudoers.d/vscode \
     && mkdir -p /workspaces /home/vscode/Repos \

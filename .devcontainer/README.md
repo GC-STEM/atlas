@@ -1,14 +1,27 @@
 # Codespaces SOE
 
 GitHub Codespaces is the default devcontainer for emergency student access
-and faculty verification of course code. The image uses Ubuntu 22.04 and
-Python 3.10.x, matching the Codio/zyBooks baseline. It includes manifest-selected
-command-line tools and provider-managed VS Code extensions. It does not run
-a Linux desktop. The Codio deployment remains the primary overall reference.
+and faculty verification of course code. The image follows current Ubuntu
+LTS − 1 and that release's default CPython minor version, the approved target
+for Codio Boxes and VMs. It includes manifest-selected command-line tools
+and provider-managed VS Code extensions. It does not run a Linux desktop.
+The Codio deployment remains the primary overall reference.
 
 SOE extension identifiers match the `recommendations` list in
 `.vscode/extensions.json` on every platform. CI checks that alignment
 and the generated Codespaces configuration. CSOs may add course extensions.
+
+Current Ubuntu LTS − 1 means the Ubuntu LTS immediately preceding the
+latest LTS, paired with its default Python minor version. The SOE manifest
+records the concrete releases. Patch updates are allowed within those
+lines. A different LTS or Python minor requires a reviewed, qualified SOE
+release; moving `latest` tags do not select the baseline.
+
+Rebuild existing local containers and Codespaces to use the new image.
+Recreate course virtual environments with the manifest-selected Python
+interpreter and reinstall their declared packages when they were created
+using another Python minor.
+The image update does not migrate existing Codio provider environments.
 
 ## Open the environment
 
@@ -18,8 +31,10 @@ a codespace using the default configuration. GitHub confirms repository
 access, available machines, and the account responsible for usage. The
 repository does not grant access or promise unlimited free usage.
 
-For a local launcher, install the shared automation dependencies into an
-isolated Python environment, then run from the selected checkout:
+For a local launcher, select the CPython interpreter required by the SOE
+manifest and make sure `python` invokes it. Install the shared automation
+dependencies into an isolated environment, then run from the selected
+checkout:
 
 ```bash
 python -m venv .venv
@@ -168,7 +183,7 @@ docker run --rm \
 ```
 
 The Codespaces workflow builds the image and checks SOE-only resolution,
-course composition, Python 3.10 compatibility, course package isolation,
+course composition, approved Python compatibility, course package isolation,
 repeated setup, and launcher identity. A GitHub-hosted editor attachment is
 still needed to check the actual managed editor and extension installation.
 

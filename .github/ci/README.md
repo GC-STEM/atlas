@@ -9,7 +9,7 @@ tests and student assessment logic belong in the applicable course repository.
 | Workflow | Checks | Runs |
 | -------- | ------ | ---- |
 | Core Validation | Required files, configuration syntax, EoL policy agreement, Python automation, regression tests, and GitHub Actions syntax | Push, pull request, or manual |
-| Codespaces SOE | Ubuntu 22.04/Python 3.10 image build, resolver tests, and non-root course setup/isolation | Push, pull request, or manual |
+| Codespaces SOE | Current Ubuntu LTS − 1/default Python image build, resolver tests, and non-root course setup/isolation | Push, pull request, or manual |
 | Documentation Command Syntax | Bash code-block syntax on Linux, macOS, and Windows Git Bash | Push, pull request, or manual |
 | Internal Links | Local file, image, directory, and heading links | Push, pull request, manual, and weekly |
 | External Links | HTTP/HTTPS destinations and supported heading anchors | Manual and weekly |
@@ -95,7 +95,7 @@ reason in lychee.toml, and document how it will be reviewed.
 
 ## Run Locally
 
-Use Python 3.12 and Git from the repository root:
+Use the Python interpreter selected by the SOE manifest for current Ubuntu LTS − 1, and Git, from the repository root. Ensure `python` invokes that interpreter:
 
 ```bash
 python -m pip install -r .github/ci/requirements.txt

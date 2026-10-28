@@ -1,9 +1,10 @@
 """Read-only checks for the course-specific overlay (CSO)."""
 
 import json
+import platform
 import shutil
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -119,8 +120,15 @@ def check_extensions():
 def main():
     print("Course-specific overlay readiness check\n")
 
-    if sys.version_info.major != 3:
-        print("MISSING  Python 3")
+    if (
+        sys.version_info[:2] != (3, 12)
+        or platform.python_implementation() != "CPython"
+    ):
+        print(
+            f"INCOMPATIBLE  {platform.python_implementation()} "
+            f"{sys.version.split()[0]}; requires CPython 3.12.x"
+        )
+        print("Select a Python 3.12 interpreter and rerun this check.")
         return 1
 
     print(f"OK       Python: {sys.version.split()[0]}")
@@ -134,7 +142,9 @@ def main():
     print()
     valid_extensions = check_extensions()
 
-    print("\nRESULT:", "READY" if ready and valid_extensions else "ACTION NEEDED")
+    print(
+        "\nRESULT:", "READY" if ready and valid_extensions else "ACTION NEEDED"
+    )
     return 0 if ready and valid_extensions else 1
 
 

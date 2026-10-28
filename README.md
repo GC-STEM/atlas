@@ -20,7 +20,9 @@
 
 ## STEM Standard Operating Environment
 
-The STEM Standard Operating Environment (SOE) baseline is Ubuntu 22.04 and Python 3.10, matching current Codio boxes and zyBooks Labs. Supported native systems may use compatible newer Ubuntu and Python versions. The Codespaces reference container uses Python 3.10.x to match Codio.
+The STEM Standard Operating Environment (SOE) follows **current Ubuntu LTS − 1**: the Ubuntu LTS release immediately preceding the latest LTS, together with that release's default CPython minor version. This target applies to Codio Boxes and VMs, Codespaces, local Docker, and native Ubuntu installations. Windows and macOS use the same CPython minor series on their native OS. The SOE manifest records the concrete release selections.
+
+Patch updates within the manifest-selected Ubuntu release and Python minor series are allowed. Future LTS/Python-minor changes require a reviewed SOE release. Existing Codio environments must be migrated and qualified; this policy does not change provider images automatically. Course instructions and grading runtimes, including zyBooks where used, must be checked against the approved target.
 
 GitHub Codespaces is the default development container for temporary student access and faculty verification. It provides a headless runtime with VS Code. See [Codespaces setup and launch](.devcontainer/README.md) for instructions, course-specific overlays (CSO), and verification.
 
