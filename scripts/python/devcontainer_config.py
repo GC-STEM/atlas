@@ -13,7 +13,7 @@ def configuration(
         )
     common = [
         "/opt/gc-stem/runtime/bin/python",
-        "/opt/gc-stem/atlas/scripts/soe.py",
+        "/opt/gc-stem/atlas/scripts/python/soe.py",
     ]
     result: dict[str, Any] = {
         "name": "GC-STEM SOE - Ubuntu 24.04 / Python 3.12",

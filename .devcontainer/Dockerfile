@@ -35,9 +35,9 @@ RUN python3 -m venv /opt/gc-stem/runtime \
 # Fetch the single schema source; keep the build artifact outside Atlas.
 ADD --chmod=0444 https://raw.githubusercontent.com/GC-STEM/.github/refs/heads/main/schemas/manifest.schema.json /opt/gc-stem/schema/manifest.schema.json
 COPY .config/soe_manifest.json /opt/gc-stem/atlas/.config/
-COPY scripts/soe.py scripts/devcontainer_config.py scripts/launch_codespaces.py /opt/gc-stem/atlas/scripts/
+COPY scripts/python/soe.py scripts/python/devcontainer_config.py scripts/python/launch_codespaces.py /opt/gc-stem/atlas/scripts/python/
 RUN chmod 0755 /opt/gc-stem/schema \
-    && /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py \
+    && /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/python/soe.py \
         install-system --workspace /opt/gc-stem/atlas --mode soe \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -59,7 +59,7 @@ USER vscode
 # Local Compose bind-mounts the host's Repos folder at /home/vscode/Repos.
 # Codespaces supplies its workspace mount and working directory separately.
 WORKDIR /workspaces
-RUN /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py \
+RUN /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/python/soe.py \
     verify --workspace /opt/gc-stem/atlas --mode soe
 
 # VS Code and extensions are provided by Codespaces at editor attachment.

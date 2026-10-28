@@ -4024,7 +4024,7 @@
       "deployment_profile_id": "github_codespaces",
       "devcontainer_path": ".devcontainer/devcontainer.json",
       "launch_uri_template": "https://codespaces.new/{owner}/{repository}",
-      "notes": "Implemented by scripts/launch_codespaces.py. Resolves the selected checkout's origin and branch; validates its Codespaces configuration before opening GitHub's creation page. GitHub confirms access, machine selection, and billing."
+      "notes": "Implemented by scripts/python/launch_codespaces.py. Resolves the selected checkout's origin and branch; validates its Codespaces configuration before opening GitHub's creation page. GitHub confirms access, machine selection, and billing."
     },
     "vscode_web": {
       "display_name": "Edit in VS Code for Web",

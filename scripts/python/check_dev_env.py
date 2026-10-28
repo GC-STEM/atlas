@@ -38,7 +38,7 @@ def check_command(label: str, executable: str) -> bool:
 
 def check_extensions() -> bool:
     """Check installed extensions against workspace recommendations."""
-    config = Path(__file__).resolve().parent / "extensions.json"
+    config = Path(__file__).resolve().parents[2] / ".vscode" / "extensions.json"
 
     try:
         data = json.loads(config.read_text(encoding="utf-8"))

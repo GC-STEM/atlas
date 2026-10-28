@@ -21,7 +21,7 @@ def main():
     assert platform.python_implementation() == "CPython"
     assert platform.python_version_tuple()[:2] == ("3", "12")
     runtime = "/opt/gc-stem/runtime/bin/python"
-    script = ATLAS / "scripts/soe.py"
+    script = ATLAS / "scripts/python/soe.py"
     execute(runtime, script, "verify", "--workspace", ATLAS, "--mode", "soe")
     with tempfile.TemporaryDirectory() as directory:
         workspace = Path(directory)

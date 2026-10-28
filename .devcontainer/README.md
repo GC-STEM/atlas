@@ -39,7 +39,7 @@ checkout:
 ```bash
 python -m venv .venv
 .venv/bin/python -m pip install -r .config/requirements-automation.txt
-.venv/bin/python scripts/launch_codespaces.py --print-url
+.venv/bin/python scripts/python/launch_codespaces.py --print-url
 ```
 
 On Windows, use `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
@@ -65,8 +65,8 @@ Starting the environment does not upgrade packages or launch authentication.
 Run an explicit check inside the container:
 
 ```bash
-/opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py verify
-/opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py verify --editor
+/opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/python/soe.py verify
+/opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/python/soe.py verify --editor
 ```
 
 The editor check requires an attached VS Code session. The runtime check does
@@ -128,7 +128,7 @@ SOE image to the chosen registry, generate a course configuration from its
 resolved requirements, supplying that image's immutable reference:
 
 ```bash
-python /path/to/atlas/scripts/soe.py devcontainer \
+python /path/to/atlas/scripts/python/soe.py devcontainer \
   --atlas-root /path/to/atlas --workspace /path/to/course \
   --image registry.example/soe@sha256:REPLACE_WITH_PUBLISHED_DIGEST
 ```

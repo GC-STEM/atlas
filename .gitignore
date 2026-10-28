@@ -205,7 +205,6 @@ cython_debug/
 # .vscode/
 # Visual Studio Code
 .vscode/*
-!.vscode/check_dev_env.py
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json

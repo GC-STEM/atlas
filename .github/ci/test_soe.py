@@ -15,10 +15,12 @@ from unittest.mock import patch
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "scripts" / "python"))
 
+from check_dev_env import check_extensions  # noqa: E402
 from devcontainer_config import configuration  # noqa: E402
 from launch_codespaces import github_identity, launch_url  # noqa: E402
+from launch_codespaces import main as launch_main  # noqa: E402
 from soe import (  # noqa: E402
     CANONICAL_SCHEMA_URI,
     ConfigurationError,
@@ -32,6 +34,7 @@ from soe import (  # noqa: E402
     verify,
     version_ok,
 )
+from soe import main as soe_main  # noqa: E402
 
 
 def course_manifest():
@@ -272,10 +275,19 @@ class ResolverTests(unittest.TestCase):
                     self.assertTrue(self.soe["capabilities"][key]["required"])
 
     def test_generated_configuration_matches_manifest(self):
+        generated = configuration(self.plan())
         self.assertEqual(
             read_json(ROOT / ".devcontainer/devcontainer.json"),
-            configuration(self.plan()),
+            generated,
         )
+        for hook in (
+            "postCreateCommand", "postStartCommand", "postAttachCommand"
+        ):
+            with self.subTest(hook=hook):
+                script = Path(generated[hook][1]).relative_to(
+                    "/opt/gc-stem/atlas"
+                )
+                self.assertTrue((ROOT / script).is_file())
 
     def test_verify_is_read_only(self):
         plan = self.plan()
@@ -360,6 +372,48 @@ class SchemaSourceTests(unittest.TestCase):
 
     def test_atlas_has_no_repository_schema_copy(self):
         self.assertFalse((ROOT / ".config/manifest.schema.json").exists())
+
+
+class EntryPointTests(unittest.TestCase):
+    def test_resolver_defaults_to_atlas_root(self):
+        with (
+            patch.dict(os.environ),
+            patch("soe.load_plan", return_value={}) as load,
+            patch("sys.stdout"),
+        ):
+            os.environ.pop("ATLAS_ROOT", None)
+            self.assertEqual(soe_main(["plan"]), 0)
+            self.assertEqual(load.call_args.args[0], ROOT)
+
+    def test_resolver_honors_configured_atlas_root(self):
+        selected = ROOT / "selected-atlas"
+        with (
+            patch.dict(os.environ, {"ATLAS_ROOT": str(selected)}),
+            patch("soe.load_plan", return_value={}) as load,
+            patch("sys.stdout"),
+        ):
+            self.assertEqual(soe_main(["plan"]), 0)
+            self.assertEqual(load.call_args.args[0], selected)
+
+    def test_launcher_defaults_to_atlas_root(self):
+        with (
+            patch("launch_codespaces.launch_url") as launch,
+            patch("launch_codespaces.webbrowser.open") as browser,
+            patch("sys.stdout"),
+            patch("sys.stderr"),
+        ):
+            launch.return_value = "https://codespaces.new/GC-STEM/atlas"
+            self.assertEqual(launch_main(["--print-url"]), 0)
+            self.assertEqual(launch.call_args.args[1], ROOT)
+            browser.assert_not_called()
+
+    def test_extensions_resolve_from_repository_configuration(self):
+        with (
+            patch("check_dev_env.shutil.which", return_value=None) as which,
+            patch("sys.stdout"),
+        ):
+            self.assertTrue(check_extensions())
+            which.assert_called_once_with("code")
 
 
 class LauncherTests(unittest.TestCase):

@@ -1023,7 +1023,7 @@ def main(argv: list[str] | None = None) -> int:
         "--atlas-root",
         type=Path,
         default=Path(
-            os.environ.get("ATLAS_ROOT", Path(__file__).resolve().parents[1])
+            os.environ.get("ATLAS_ROOT", Path(__file__).resolve().parents[2])
         ),
     )
     parser.add_argument("--workspace", type=Path, default=Path.cwd())
