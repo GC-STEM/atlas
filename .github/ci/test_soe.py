@@ -228,6 +228,30 @@ class ResolverTests(unittest.TestCase):
             ]["verification"]["version_rule"]
             self.assertTrue(version_ok("3.10.12", rule))
 
+    def test_soe_extensions_match_workspace_recommendations(self):
+        recommendations = read_json(ROOT / ".vscode/extensions.json")[
+            "recommendations"
+        ]
+        self.assertEqual(len(recommendations), len(set(recommendations)))
+        for platform_id, platform in self.soe["platforms"].items():
+            with self.subTest(platform=platform_id):
+                bindings = {
+                    key: binding
+                    for key, binding in platform["capability_bindings"].items()
+                    if binding["installer_adapter_id"]
+                    in {"vscode_extension", "devcontainer_extension"}
+                }
+                self.assertCountEqual(
+                    [
+                        binding["package_identifier"]
+                        for binding in bindings.values()
+                    ],
+                    recommendations,
+                )
+                for key, binding in bindings.items():
+                    self.assertTrue(binding["required"])
+                    self.assertTrue(self.soe["capabilities"][key]["required"])
+
     def test_generated_configuration_matches_manifest(self):
         self.assertEqual(
             read_json(ROOT / ".devcontainer/devcontainer.json"),

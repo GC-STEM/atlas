@@ -34,12 +34,17 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "EditorConfig.EditorConfig",
+        "bierner.markdown-preview-github-styles",
         "charliermarsh.ruff",
-        "cweijan.vscode-office",
+        "davidanson.vscode-markdownlint",
         "hediet.vscode-drawio",
-        "i2p-hub.i2p-pseudo",
         "ms-python.python",
-        "streetsidesoftware.code-spell-checker"
+        "ms-python.vscode-pylance",
+        "ms-vscode.powershell",
+        "streetsidesoftware.code-spell-checker",
+        "yzane.markdown-pdf",
+        "yzhang.markdown-all-in-one"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/bin/python3",

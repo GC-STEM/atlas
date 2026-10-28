@@ -1198,12 +1198,17 @@ Students are expected to run provided tests; this package does not require stude
 
 | Extension identifier | Reference product or capability | Course purpose |
 | --- | --- | --- |
-| `ms-python.python` | Python language support | Provide programming-language support in the IDE. |
-| `charliermarsh.ruff` | Ruff integration | Integrate code checking and formatting. |
-| `hediet.vscode-drawio` | Draw.io diagram support | View and edit approved diagrams. |
-| `streetsidesoftware.code-spell-checker` | Code Spell Checker | Identify likely spelling errors in comments and documentation. |
-| `i2p-hub.i2p-pseudo` | I2P Pseudo | Support course pseudoscript files. |
-| `cweijan.vscode-office` | Office Viewer | View supported office-document formats in the IDE. |
+| `EditorConfig.EditorConfig` | EditorConfig | Apply repository EditorConfig formatting conventions in the editor. |
+| `ms-vscode.powershell` | PowerShell | Provide PowerShell language editing and debugging integration. |
+| `ms-python.python` | Python language support | Provide Python editing, interpreter selection, and debugging support. |
+| `ms-python.vscode-pylance` | Pylance | Provide Python completion, type analysis, and language services. |
+| `charliermarsh.ruff` | Ruff integration | Integrate Python linting and formatting in the editor. |
+| `hediet.vscode-drawio` | Draw.io diagram support | View and edit course diagrams in the editor. |
+| `bierner.markdown-preview-github-styles` | GitHub Markdown preview styles | Style Markdown previews to resemble GitHub rendering. |
+| `davidanson.vscode-markdownlint` | Markdownlint | Check Markdown documents against configured style rules. |
+| `yzhang.markdown-all-in-one` | Markdown All in One | Provide Markdown authoring shortcuts and table-of-contents tools. |
+| `yzane.markdown-pdf` | Markdown PDF | Provide Markdown-to-PDF export integration in the editor. |
+| `streetsidesoftware.code-spell-checker` | Code Spell Checker | Identify likely spelling errors in documentation and comments. |
 
 ### Initial Managed-Asset Categories
 

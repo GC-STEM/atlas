@@ -159,43 +159,11 @@
         ]
       }
     },
-    "pseudocode_support": {
-      "display_name": "Pseudocode Support",
-      "required": true,
-      "implementation_kind": "ide_extension",
-      "student_use": "Open and edit course pseudocode files with appropriate language support.",
-      "depends_on": [
-        "source_code_ide"
-      ],
-      "applies_to": {
-        "session_types": [
-          "local_desktop",
-          "remote_desktop",
-          "browser_editor"
-        ]
-      }
-    },
     "spell_checker": {
       "display_name": "Spell Checker",
       "required": true,
       "implementation_kind": "ide_extension",
       "student_use": "Identify likely spelling errors in documentation, comments, and source files.",
-      "depends_on": [
-        "source_code_ide"
-      ],
-      "applies_to": {
-        "session_types": [
-          "local_desktop",
-          "remote_desktop",
-          "browser_editor"
-        ]
-      }
-    },
-    "file_viewer": {
-      "display_name": "Course File Viewer",
-      "required": true,
-      "implementation_kind": "ide_extension",
-      "student_use": "Open common office and course-document formats inside the IDE.",
       "depends_on": [
         "source_code_ide"
       ],
@@ -215,6 +183,120 @@
       "applies_to": {
         "deployment_kinds": [
           "bare_metal"
+        ]
+      }
+    },
+    "editorconfig_support": {
+      "display_name": "EditorConfig",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Apply repository EditorConfig formatting conventions in the editor.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "powershell_language_support": {
+      "display_name": "PowerShell",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Provide PowerShell language editing and debugging integration.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "python_language_services": {
+      "display_name": "Pylance",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Provide Python completion, type analysis, and language services.",
+      "depends_on": [
+        "source_code_ide",
+        "programming_language_runtime",
+        "language_support"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "markdown_preview_styles": {
+      "display_name": "GitHub Markdown preview styles",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Style Markdown previews to resemble GitHub rendering.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "markdown_linting": {
+      "display_name": "Markdownlint",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Check Markdown documents against configured style rules.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "markdown_authoring": {
+      "display_name": "Markdown All in One",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Provide Markdown authoring shortcuts and table-of-contents tools.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
+        ]
+      }
+    },
+    "markdown_pdf_export": {
+      "display_name": "Markdown PDF",
+      "required": true,
+      "implementation_kind": "ide_extension",
+      "student_use": "Provide Markdown-to-PDF export integration in the editor.",
+      "depends_on": [
+        "source_code_ide"
+      ],
+      "applies_to": {
+        "session_types": [
+          "local_desktop",
+          "remote_desktop",
+          "browser_editor"
         ]
       }
     }
@@ -360,20 +442,6 @@
       "homepage": "https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio",
       "documentation_uri": "https://github.com/hediet/vscode-drawio"
     },
-    "vscode_pseudo": {
-      "display_name": "I2P Pseudocode Support",
-      "vendor_or_project": "i2p-hub",
-      "product_kind": "ide_extension",
-      "capability_roles": [
-        "pseudocode_support"
-      ],
-      "version_rule": {
-        "comparison": "presence_only"
-      },
-      "student_availability": "no_cost",
-      "homepage": "https://marketplace.visualstudio.com/items?itemName=i2p-hub.i2p-pseudo",
-      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=i2p-hub.i2p-pseudo"
-    },
     "vscode_spell_checker": {
       "display_name": "Code Spell Checker",
       "vendor_or_project": "Street Side Software",
@@ -387,20 +455,6 @@
       "student_availability": "no_cost",
       "homepage": "https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker",
       "documentation_uri": "https://streetsidesoftware.com/vscode-spell-checker/"
-    },
-    "vscode_office": {
-      "display_name": "Office Viewer for Visual Studio Code",
-      "vendor_or_project": "cweijan",
-      "product_kind": "ide_extension",
-      "capability_roles": [
-        "file_viewer"
-      ],
-      "version_rule": {
-        "comparison": "presence_only"
-      },
-      "student_availability": "no_cost",
-      "homepage": "https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-office",
-      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-office"
     },
     "vagrant": {
       "display_name": "Vagrant CLI",
@@ -416,6 +470,104 @@
       "homepage": "https://developer.hashicorp.com/vagrant",
       "documentation_uri": "https://developer.hashicorp.com/vagrant/docs",
       "notes": "Optional deferred VM tooling; never required by SOE setup."
+    },
+    "vscode_editorconfig": {
+      "display_name": "EditorConfig",
+      "vendor_or_project": "EditorConfig",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "editorconfig_support"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig"
+    },
+    "vscode_powershell": {
+      "display_name": "PowerShell",
+      "vendor_or_project": "ms-vscode",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "powershell_language_support"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=ms-vscode.powershell",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=ms-vscode.powershell"
+    },
+    "vscode_pylance": {
+      "display_name": "Pylance",
+      "vendor_or_project": "ms-python",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "python_language_services"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance"
+    },
+    "vscode_markdown_preview_styles": {
+      "display_name": "GitHub Markdown preview styles",
+      "vendor_or_project": "bierner",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "markdown_preview_styles"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=bierner.markdown-preview-github-styles",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=bierner.markdown-preview-github-styles"
+    },
+    "vscode_markdownlint": {
+      "display_name": "Markdownlint",
+      "vendor_or_project": "davidanson",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "markdown_linting"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=davidanson.vscode-markdownlint",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=davidanson.vscode-markdownlint"
+    },
+    "vscode_markdown_all_in_one": {
+      "display_name": "Markdown All in One",
+      "vendor_or_project": "yzhang",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "markdown_authoring"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one"
+    },
+    "vscode_markdown_pdf": {
+      "display_name": "Markdown PDF",
+      "vendor_or_project": "yzane",
+      "product_kind": "ide_extension",
+      "capability_roles": [
+        "markdown_pdf_export"
+      ],
+      "version_rule": {
+        "comparison": "presence_only"
+      },
+      "student_availability": "no_cost",
+      "homepage": "https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf",
+      "documentation_uri": "https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf"
     }
   },
   "software_sources": {
@@ -948,30 +1100,6 @@
             ]
           }
         },
-        "pseudocode_support": {
-          "product_id": "vscode_pseudo",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "i2p-hub.i2p-pseudo",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "i2p-hub.i2p-pseudo"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
         "spell_checker": {
           "product_id": "vscode_spell_checker",
           "required": true,
@@ -983,30 +1111,6 @@
             "adapter_id": "vscode_extension",
             "package_identifiers": [
               "streetsidesoftware.code-spell-checker"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
-        "file_viewer": {
-          "product_id": "vscode_office",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "cweijan.vscode-office",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "cweijan.vscode-office"
             ]
           },
           "dependencies": [
@@ -1039,6 +1143,176 @@
           "applies_to": {
             "deployment_kinds": [
               "bare_metal"
+            ]
+          }
+        },
+        "editorconfig_support": {
+          "product_id": "vscode_editorconfig",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "EditorConfig.EditorConfig",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "EditorConfig.EditorConfig"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "powershell_language_support": {
+          "product_id": "vscode_powershell",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-vscode.powershell",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-vscode.powershell"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "python_language_services": {
+          "product_id": "vscode_pylance",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-python.vscode-pylance",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-python.vscode-pylance"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide",
+            "programming_language_runtime",
+            "language_support"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_preview_styles": {
+          "product_id": "vscode_markdown_preview_styles",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "bierner.markdown-preview-github-styles",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "bierner.markdown-preview-github-styles"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_linting": {
+          "product_id": "vscode_markdownlint",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "davidanson.vscode-markdownlint",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "davidanson.vscode-markdownlint"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_authoring": {
+          "product_id": "vscode_markdown_all_in_one",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzhang.markdown-all-in-one",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzhang.markdown-all-in-one"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_pdf_export": {
+          "product_id": "vscode_markdown_pdf",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzane.markdown-pdf",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzane.markdown-pdf"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
             ]
           }
         }
@@ -1276,30 +1550,6 @@
             ]
           }
         },
-        "pseudocode_support": {
-          "product_id": "vscode_pseudo",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "i2p-hub.i2p-pseudo",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "i2p-hub.i2p-pseudo"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
         "spell_checker": {
           "product_id": "vscode_spell_checker",
           "required": true,
@@ -1311,30 +1561,6 @@
             "adapter_id": "vscode_extension",
             "package_identifiers": [
               "streetsidesoftware.code-spell-checker"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
-        "file_viewer": {
-          "product_id": "vscode_office",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "cweijan.vscode-office",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "cweijan.vscode-office"
             ]
           },
           "dependencies": [
@@ -1367,6 +1593,176 @@
           "applies_to": {
             "deployment_kinds": [
               "bare_metal"
+            ]
+          }
+        },
+        "editorconfig_support": {
+          "product_id": "vscode_editorconfig",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "EditorConfig.EditorConfig",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "EditorConfig.EditorConfig"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "powershell_language_support": {
+          "product_id": "vscode_powershell",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-vscode.powershell",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-vscode.powershell"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "python_language_services": {
+          "product_id": "vscode_pylance",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-python.vscode-pylance",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-python.vscode-pylance"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide",
+            "programming_language_runtime",
+            "language_support"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_preview_styles": {
+          "product_id": "vscode_markdown_preview_styles",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "bierner.markdown-preview-github-styles",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "bierner.markdown-preview-github-styles"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_linting": {
+          "product_id": "vscode_markdownlint",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "davidanson.vscode-markdownlint",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "davidanson.vscode-markdownlint"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_authoring": {
+          "product_id": "vscode_markdown_all_in_one",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzhang.markdown-all-in-one",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzhang.markdown-all-in-one"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_pdf_export": {
+          "product_id": "vscode_markdown_pdf",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzane.markdown-pdf",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzane.markdown-pdf"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
             ]
           }
         }
@@ -1825,30 +2221,6 @@
             ]
           }
         },
-        "pseudocode_support": {
-          "product_id": "vscode_pseudo",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "i2p-hub.i2p-pseudo",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "i2p-hub.i2p-pseudo"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
         "spell_checker": {
           "product_id": "vscode_spell_checker",
           "required": true,
@@ -1873,17 +2245,163 @@
             ]
           }
         },
-        "file_viewer": {
-          "product_id": "vscode_office",
+        "editorconfig_support": {
+          "product_id": "vscode_editorconfig",
           "required": true,
           "installation_scope": "user",
           "installer_adapter_id": "vscode_extension",
           "source_id": "vscode_marketplace",
-          "package_identifier": "cweijan.vscode-office",
+          "package_identifier": "EditorConfig.EditorConfig",
           "verification": {
             "adapter_id": "vscode_extension",
             "package_identifiers": [
-              "cweijan.vscode-office"
+              "EditorConfig.EditorConfig"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "powershell_language_support": {
+          "product_id": "vscode_powershell",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-vscode.powershell",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-vscode.powershell"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "python_language_services": {
+          "product_id": "vscode_pylance",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-python.vscode-pylance",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-python.vscode-pylance"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide",
+            "programming_language_runtime",
+            "language_support"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_preview_styles": {
+          "product_id": "vscode_markdown_preview_styles",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "bierner.markdown-preview-github-styles",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "bierner.markdown-preview-github-styles"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_linting": {
+          "product_id": "vscode_markdownlint",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "davidanson.vscode-markdownlint",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "davidanson.vscode-markdownlint"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_authoring": {
+          "product_id": "vscode_markdown_all_in_one",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzhang.markdown-all-in-one",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzhang.markdown-all-in-one"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_pdf_export": {
+          "product_id": "vscode_markdown_pdf",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzane.markdown-pdf",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzane.markdown-pdf"
             ]
           },
           "dependencies": [
@@ -2310,30 +2828,6 @@
             ]
           }
         },
-        "pseudocode_support": {
-          "product_id": "vscode_pseudo",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "i2p-hub.i2p-pseudo",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "i2p-hub.i2p-pseudo"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
         "spell_checker": {
           "product_id": "vscode_spell_checker",
           "required": true,
@@ -2345,30 +2839,6 @@
             "adapter_id": "vscode_extension",
             "package_identifiers": [
               "streetsidesoftware.code-spell-checker"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "local_desktop",
-              "remote_desktop",
-              "browser_editor"
-            ]
-          }
-        },
-        "file_viewer": {
-          "product_id": "vscode_office",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "vscode_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "cweijan.vscode-office",
-          "verification": {
-            "adapter_id": "vscode_extension",
-            "package_identifiers": [
-              "cweijan.vscode-office"
             ]
           },
           "dependencies": [
@@ -2401,6 +2871,176 @@
           "applies_to": {
             "deployment_kinds": [
               "bare_metal"
+            ]
+          }
+        },
+        "editorconfig_support": {
+          "product_id": "vscode_editorconfig",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "EditorConfig.EditorConfig",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "EditorConfig.EditorConfig"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "powershell_language_support": {
+          "product_id": "vscode_powershell",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-vscode.powershell",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-vscode.powershell"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "python_language_services": {
+          "product_id": "vscode_pylance",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-python.vscode-pylance",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "ms-python.vscode-pylance"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide",
+            "programming_language_runtime",
+            "language_support"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_preview_styles": {
+          "product_id": "vscode_markdown_preview_styles",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "bierner.markdown-preview-github-styles",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "bierner.markdown-preview-github-styles"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_linting": {
+          "product_id": "vscode_markdownlint",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "davidanson.vscode-markdownlint",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "davidanson.vscode-markdownlint"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_authoring": {
+          "product_id": "vscode_markdown_all_in_one",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzhang.markdown-all-in-one",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzhang.markdown-all-in-one"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_pdf_export": {
+          "product_id": "vscode_markdown_pdf",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "vscode_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzane.markdown-pdf",
+          "verification": {
+            "adapter_id": "vscode_extension",
+            "package_identifiers": [
+              "yzane.markdown-pdf"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "local_desktop",
+              "remote_desktop",
+              "browser_editor"
             ]
           }
         }
@@ -2751,28 +3391,6 @@
             ]
           }
         },
-        "pseudocode_support": {
-          "product_id": "vscode_pseudo",
-          "required": true,
-          "installation_scope": "user",
-          "installer_adapter_id": "devcontainer_extension",
-          "source_id": "vscode_marketplace",
-          "package_identifier": "i2p-hub.i2p-pseudo",
-          "verification": {
-            "adapter_id": "devcontainer_extension",
-            "package_identifiers": [
-              "i2p-hub.i2p-pseudo"
-            ]
-          },
-          "dependencies": [
-            "source_code_ide"
-          ],
-          "applies_to": {
-            "session_types": [
-              "browser_editor"
-            ]
-          }
-        },
         "spell_checker": {
           "product_id": "vscode_spell_checker",
           "required": true,
@@ -2795,17 +3413,151 @@
             ]
           }
         },
-        "file_viewer": {
-          "product_id": "vscode_office",
+        "editorconfig_support": {
+          "product_id": "vscode_editorconfig",
           "required": true,
           "installation_scope": "user",
           "installer_adapter_id": "devcontainer_extension",
           "source_id": "vscode_marketplace",
-          "package_identifier": "cweijan.vscode-office",
+          "package_identifier": "EditorConfig.EditorConfig",
           "verification": {
             "adapter_id": "devcontainer_extension",
             "package_identifiers": [
-              "cweijan.vscode-office"
+              "EditorConfig.EditorConfig"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "powershell_language_support": {
+          "product_id": "vscode_powershell",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-vscode.powershell",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "ms-vscode.powershell"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "python_language_services": {
+          "product_id": "vscode_pylance",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "ms-python.vscode-pylance",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "ms-python.vscode-pylance"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide",
+            "programming_language_runtime",
+            "language_support"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_preview_styles": {
+          "product_id": "vscode_markdown_preview_styles",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "bierner.markdown-preview-github-styles",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "bierner.markdown-preview-github-styles"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_linting": {
+          "product_id": "vscode_markdownlint",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "davidanson.vscode-markdownlint",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "davidanson.vscode-markdownlint"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_authoring": {
+          "product_id": "vscode_markdown_all_in_one",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzhang.markdown-all-in-one",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "yzhang.markdown-all-in-one"
+            ]
+          },
+          "dependencies": [
+            "source_code_ide"
+          ],
+          "applies_to": {
+            "session_types": [
+              "browser_editor"
+            ]
+          }
+        },
+        "markdown_pdf_export": {
+          "product_id": "vscode_markdown_pdf",
+          "required": true,
+          "installation_scope": "user",
+          "installer_adapter_id": "devcontainer_extension",
+          "source_id": "vscode_marketplace",
+          "package_identifier": "yzane.markdown-pdf",
+          "verification": {
+            "adapter_id": "devcontainer_extension",
+            "package_identifiers": [
+              "yzane.markdown-pdf"
             ]
           },
           "dependencies": [
@@ -3184,9 +3936,6 @@
         "editor.formatOnSave": true,
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff"
-        },
-        "files.associations": {
-          "*.pseudo": "pseudo"
         }
       },
       "verification_adapter_id": "vscode_user_settings_verify",

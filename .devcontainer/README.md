@@ -6,6 +6,10 @@ Python 3.10.x, matching the Codio/zyBooks baseline. It includes manifest-selecte
 command-line tools and provider-managed VS Code extensions. It does not run
 a Linux desktop. The Codio deployment remains the primary overall reference.
 
+SOE extension identifiers match the `recommendations` list in
+`.vscode/extensions.json` on every platform. CI checks that alignment
+and the generated Codespaces configuration. CSOs may add course extensions.
+
 ## Open the environment
 
 Push the implementation and its configuration to the branch you intend to
