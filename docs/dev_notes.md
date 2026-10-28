@@ -3,9 +3,9 @@
 ## Table of Contents <!-- omit from toc -->
 
 1. [GC-STEM Repositories](#gc-stem-repositories)
-2. [Standard Operating Environment](#stem-computing-baseline)
-3. [Course-specific overlay](#course-development-environment)
-4. [CSO Automation Scripts](#cde-automation-scripts)
+2. [Standard Operating Environment](#standard-operating-environment)
+3. [Course-specific overlay](#course-specific-overlay)
+4. [CSO Automation Scripts](#cso-automation-scripts)
 
 ## GC-STEM Repositories
 
