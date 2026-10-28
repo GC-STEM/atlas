@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import os
 import subprocess
 import sys
 import tempfile
@@ -18,10 +19,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from devcontainer_config import configuration  # noqa: E402
 from launch_codespaces import github_identity, launch_url  # noqa: E402
 from soe import (  # noqa: E402
+    CANONICAL_SCHEMA_URI,
     ConfigurationError,
     compose,
     environment_path,
     load_plan,
+    load_schema,
     make_plan,
     read_json,
     validate,
@@ -93,7 +96,7 @@ def python_overlay():
 class ResolverTests(unittest.TestCase):
     def setUp(self):
         self.soe = read_json(ROOT / ".config/soe_manifest.json")
-        self.schema = read_json(ROOT / ".config/manifest.schema.json")
+        self.schema = load_schema()
 
     def plan(self, course=None, soe=None):
         return make_plan(
@@ -272,6 +275,54 @@ class ResolverTests(unittest.TestCase):
                 command = call.args[0]
                 self.assertNotIn("install", command)
                 self.assertNotIn("sudo", command)
+
+
+class SchemaSourceTests(unittest.TestCase):
+    def schema(self):
+        return {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": CANONICAL_SCHEMA_URI,
+            "type": "object",
+        }
+
+    def test_explicit_canonical_file_takes_precedence(self):
+        source = Path("selected/.github/schemas/manifest.schema.json")
+        with (
+            patch.dict(os.environ, {"SOE_SCHEMA_PATH": "other/schema.json"}),
+            patch("soe.read_json", return_value=self.schema()) as read,
+            patch("soe.read_published_schema") as fetch,
+        ):
+            self.assertEqual(load_schema(source), self.schema())
+            read.assert_called_once_with(source)
+            fetch.assert_not_called()
+
+    def test_default_uses_published_canonical_schema(self):
+        with (
+            patch.dict(os.environ),
+            patch(
+                "soe.read_published_schema", return_value=self.schema()
+            ) as fetch,
+        ):
+            os.environ.pop("SOE_SCHEMA_PATH", None)
+            self.assertEqual(load_schema(), self.schema())
+            fetch.assert_called_once_with()
+
+    def test_missing_selected_file_does_not_fall_back_to_network(self):
+        with (
+            patch("soe.read_json", side_effect=FileNotFoundError),
+            patch("soe.read_published_schema") as fetch,
+        ):
+            with self.assertRaises(FileNotFoundError):
+                load_schema(Path("missing/schema.json"))
+            fetch.assert_not_called()
+
+    def test_other_schema_identity_is_rejected(self):
+        with patch("soe.read_json", return_value={"$id": "other"}):
+            with self.assertRaisesRegex(ConfigurationError, "canonical"):
+                load_schema(Path("other/schema.json"))
+
+    def test_atlas_has_no_repository_schema_copy(self):
+        self.assertFalse((ROOT / ".config/manifest.schema.json").exists())
 
 
 class LauncherTests(unittest.TestCase):

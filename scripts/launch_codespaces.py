@@ -55,8 +55,8 @@ def git(workspace, *args):
     ).stdout.strip()
 
 
-def launch_url(workspace, atlas_root, branch=None):
-    plan = load_plan(atlas_root, workspace)
+def launch_url(workspace, atlas_root, branch=None, schema_path=None):
+    plan = load_plan(atlas_root, workspace, schema_path=schema_path)
     launcher = plan["resolved"]["launch_profiles"].get("github_codespaces")
     require(
         launcher and launcher["enabled"] and launcher["kind"] == "codespaces",
@@ -109,10 +109,18 @@ def main(argv=None):
         "--branch", help="Explicit branch, including for a detached checkout"
     )
     parser.add_argument("--print-url", action="store_true")
+    parser.add_argument(
+        "--schema",
+        type=Path,
+        help="Canonical schema file in the .github checkout",
+    )
     args = parser.parse_args(argv)
     try:
         url = launch_url(
-            args.workspace.resolve(), args.atlas_root.resolve(), args.branch
+            args.workspace.resolve(),
+            args.atlas_root.resolve(),
+            args.branch,
+            schema_path=args.schema,
         )
         print(url)
         print(

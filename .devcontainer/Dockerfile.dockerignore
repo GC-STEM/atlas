@@ -1,7 +1,6 @@
 **
 !.config/
 !.config/soe_manifest.json
-!.config/manifest.schema.json
 !.config/requirements-automation.txt
 !scripts/
 !scripts/soe.py

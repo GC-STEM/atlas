@@ -137,10 +137,23 @@ course composition, Python 3.10 compatibility, course package isolation,
 repeated setup, and launcher identity. A GitHub-hosted editor attachment is
 still needed to check the actual managed editor and extension installation.
 
-The schema's canonical source is `GC-STEM/.github/schemas/manifest.schema.json`.
-Atlas includes a matching offline snapshot in `.config/manifest.schema.json`
-so image builds and resolution do not depend on a moving remote schema.
-Update both copies together when changing the contract.
+The schema is maintained only in
+`GC-STEM/.github/schemas/manifest.schema.json`. Atlas does not carry a
+repository copy. The manifest's `$schema` reference points to that canonical
+published file.
+
+Local validation uses the published schema by default. To validate offline
+or against unpublished schema changes, pass `--schema` with the actual file
+in your selected `.github` checkout, or set `SOE_SCHEMA_PATH` to that file.
+The resolver and launcher both support `--schema`; an invalid selected path
+fails rather than silently switching to the network.
+
+Image builds fetch the canonical published schema into
+`/opt/gc-stem/schema/manifest.schema.json`, outside the Atlas checkout, and
+set `SOE_SCHEMA_PATH` to it. This is a generated runtime dependency, not a
+second maintained source. The built environment can validate offline.
+Publish schema changes in `.github` before building a container that needs
+them; rebuilding the image retrieves the current published schema.
 
 The first qualified container architecture is Linux AMD64. Native ARM64 and
 the optional Xfce Docker desktop remain separate work. VM launchers remain

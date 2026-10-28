@@ -1,6 +1,5 @@
 {
   "required_files": [
-    ".config/manifest.schema.json",
     ".config/soe_manifest.json",
     ".config/requirements.txt",
     ".config/requirements-automation.txt",

@@ -11,9 +11,12 @@ import re
 import shutil
 import subprocess
 import sys
+from functools import lru_cache
 from pathlib import Path
+from urllib.request import urlopen
 
 from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import SchemaError
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 
@@ -34,6 +37,10 @@ CATALOGS = (
 PACKAGE = re.compile(r"[a-z0-9][a-z0-9+.-]*(?::(?:amd64|arm64))?\Z")
 EXTENSION = re.compile(r"[A-Za-z0-9-]+\.[A-Za-z0-9._-]+\Z")
 PIP_PACKAGE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
+CANONICAL_SCHEMA_URI = (
+    "https://raw.githubusercontent.com/GC-STEM/.github/"
+    "refs/heads/main/schemas/manifest.schema.json"
+)
 SOURCES = {
     "ubuntu_archive": "https://archive.ubuntu.com/ubuntu",
     "github_cli_packages": "https://cli.github.com/packages",
@@ -65,6 +72,41 @@ def read_json(path):
         Path(path).read_text(encoding="utf-8-sig"),
         object_pairs_hook=unique_object,
     )
+
+
+@lru_cache(maxsize=1)
+def read_published_schema():
+    """Read the canonical published schema once per invocation."""
+    try:
+        with urlopen(CANONICAL_SCHEMA_URI, timeout=60) as response:
+            return json.loads(
+                response.read().decode("utf-8-sig"),
+                object_pairs_hook=unique_object,
+            )
+    except (OSError, ValueError) as error:
+        raise ConfigurationError(
+            "Cannot read the canonical schema. Use --schema or "
+            "SOE_SCHEMA_PATH to select its file in the .github checkout."
+        ) from error
+
+
+def load_schema(schema_path=None):
+    """Use an explicitly selected canonical file or its published URL."""
+    source = schema_path or os.environ.get("SOE_SCHEMA_PATH")
+    schema = (
+        read_json(source) if source else copy.deepcopy(read_published_schema())
+    )
+    require(
+        isinstance(schema, dict) and schema.get("$id") == CANONICAL_SCHEMA_URI,
+        "Expected the canonical GC-STEM/.github manifest schema",
+    )
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError as error:
+        raise ConfigurationError(
+            f"Invalid canonical schema: {error.message}"
+        ) from error
+    return schema
 
 
 def validate(data, schema, definition=None):
@@ -566,10 +608,15 @@ def make_plan(resolved, schema, workspace, profile_id):
 
 
 def load_plan(
-    atlas_root, workspace, mode="auto", profile_id="github_codespaces"
+    atlas_root,
+    workspace,
+    mode="auto",
+    profile_id="github_codespaces",
+    schema_path=None,
 ):
     atlas_root, workspace = atlas_root.resolve(), workspace.resolve()
-    schema = read_json(atlas_root / ".config/manifest.schema.json")
+    schema_path = schema_path or os.environ.get("SOE_SCHEMA_PATH")
+    schema = load_schema(schema_path)
     soe = read_json(atlas_root / ".config/soe_manifest.json")
     course_path = workspace / ".config/cso_manifest.json"
     if mode == "auto":
@@ -581,9 +628,13 @@ def load_plan(
             "choose --mode soe explicitly for an SOE-only workspace",
         )
     course = read_json(course_path) if mode == "cso" else None
-    return make_plan(
+    plan = make_plan(
         compose(soe, course, schema), schema, workspace, profile_id
     )
+    plan["schema_path"] = (
+        str(Path(schema_path).resolve()) if schema_path else None
+    )
+    return plan
 
 
 def run(args, **kwargs):
@@ -734,6 +785,7 @@ def setup(plan, workspace, atlas_root, mode):
                 "--mode",
                 mode,
             ]
+            + (["--schema", plan["schema_path"]] if plan["schema_path"] else [])
         )
     verify(plan, editor=False, course_packages=False)
     for environment in plan["environments"].values():
@@ -902,6 +954,12 @@ def main(argv=None):
         "--mode", choices=("auto", "soe", "cso"), default="auto"
     )
     parser.add_argument("--deployment", default="github_codespaces")
+    parser.add_argument(
+        "--schema",
+        type=Path,
+        help="Canonical schema file in the .github checkout; "
+        "defaults to SOE_SCHEMA_PATH or the published canonical URL",
+    )
     parser.add_argument("--editor", action="store_true")
     parser.add_argument(
         "--image", help="Published SOE image for a course devcontainer"
@@ -914,7 +972,11 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         plan = load_plan(
-            args.atlas_root, args.workspace, args.mode, args.deployment
+            args.atlas_root,
+            args.workspace,
+            args.mode,
+            args.deployment,
+            schema_path=args.schema,
         )
         if args.action == "plan":
             print(

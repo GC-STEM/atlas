@@ -13,21 +13,18 @@
 
 ## Table of Contents <!-- omit from toc -->
 
-1. [Standard Operating Environment](#standard-operating-environment)
+1. [STEM Standard Operating Environment](#stem-standard-operating-environment)
 2. [STEM Shared Libraries](#stem-shared-libraries)
 3. [CSO Automation Scripts](#cso-automation-scripts)
 4. [CSO Isolation](#cso-isolation)
 
-## Standard Operating Environment
+## STEM Standard Operating Environment
 
-The SOE baseline is Ubuntu 22.04 and Python 3.10, matching the current Codio
-boxes and zyBooks Labs. Supported native systems may use compatible newer
-Python versions. The Codespaces reference container uses Python 3.10.x.
+The STEM Standard Operating Environment (SOE) baseline is Ubuntu 22.04 and Python 3.10, matching current Codio boxes and zyBooks Labs. Supported native systems may use compatible newer Ubuntu and Python versions. The Codespaces reference container uses Python 3.10.x to match Codio.
 
-GitHub Codespaces is the default development container for temporary student
-access and faculty verification. It provides a headless runtime with VS Code.
-See [Codespaces setup and launch](.devcontainer/README.md) for instructions,
-course-specific overlays (CSO), and verification.
+GitHub Codespaces is the default development container for temporary student access and faculty verification. It provides a headless runtime with VS Code. See [Codespaces setup and launch](.devcontainer/README.md) for instructions, course-specific overlays (CSO), and verification.
+
+Click to learn more [about the Standard Operating Environment]([#stem-standard-operating-environment](https://github.com/GC-STEM/atlas/wiki/About-the-SOE))
 
 ## STEM Shared Libraries
 

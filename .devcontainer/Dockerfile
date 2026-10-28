@@ -8,6 +8,7 @@ LABEL org.opencontainers.image.title="GC-STEM SOE (headless)" \
       org.opencontainers.image.description="Ubuntu 22.04 / Python 3.10 SOE for Codespaces"
 
 ENV LANG=C.UTF-8 TZ=Etc/UTC ATLAS_ROOT=/opt/gc-stem/atlas \
+    SOE_SCHEMA_PATH=/opt/gc-stem/schema/manifest.schema.json \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Installer and Dev Containers bootstrap prerequisites only.
@@ -31,9 +32,12 @@ RUN python3 -m venv /opt/gc-stem/runtime \
     && /opt/gc-stem/runtime/bin/python -m pip install --no-cache-dir \
         -r /opt/gc-stem/requirements-automation.txt
 
-COPY .config/soe_manifest.json .config/manifest.schema.json /opt/gc-stem/atlas/.config/
+# Fetch the single schema source; keep the build artifact outside Atlas.
+ADD --chmod=0444 https://raw.githubusercontent.com/GC-STEM/.github/refs/heads/main/schemas/manifest.schema.json /opt/gc-stem/schema/manifest.schema.json
+COPY .config/soe_manifest.json /opt/gc-stem/atlas/.config/
 COPY scripts/soe.py scripts/devcontainer_config.py scripts/launch_codespaces.py /opt/gc-stem/atlas/scripts/
-RUN /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py \
+RUN chmod 0755 /opt/gc-stem/schema \
+    && /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py \
         install-system --workspace /opt/gc-stem/atlas --mode soe \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
