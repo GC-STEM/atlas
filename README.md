@@ -20,6 +20,15 @@
 
 ## Standard Operating Environment
 
+The SOE baseline is Ubuntu 22.04 and Python 3.10, matching the current Codio
+boxes and zyBooks Labs. Supported native systems may use compatible newer
+Python versions. The Codespaces reference container uses Python 3.10.x.
+
+GitHub Codespaces is the default development container for temporary student
+access and faculty verification. It provides a headless runtime with VS Code.
+See [Codespaces setup and launch](.devcontainer/README.md) for instructions,
+course-specific overlays (CSO), and verification.
+
 ## STEM Shared Libraries
 
 ## CSO Automation Scripts

@@ -160,7 +160,7 @@ The package shall:
 
   **Why:** A script written for another operating system could fail or damage the environment.
 
-- **PKG-FR-004** Read shared environment requirements from the ATLAS SOE manifest (`"$HOME/Repos/atlas/.config/scb_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<crs000>/.config/cde_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
+- **PKG-FR-004** Read shared environment requirements from the ATLAS SOE manifest (`"$HOME/Repos/atlas/.config/soe_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<crs000>/.config/cso_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
 
   **Why:** One set of authoritative lists prevents installation, configuration, verification, and maintenance from disagreeing.
 
@@ -556,7 +556,7 @@ The update script shall:
 
 The package shall:
 
-- **PKG-FR-011** Store the shared manifest as valid UTF-8 JSON at `"$HOME/Repos/<crs000>/.config/cde_manifest.json"`.
+- **PKG-FR-011** Store the shared manifest as valid UTF-8 JSON at `"$HOME/Repos/<crs000>/.config/cso_manifest.json"`.
 
   **Why:** A standard text format can be read on all supported platforms and reviewed in source control.
 
@@ -1152,7 +1152,7 @@ An **acceptance test** checks whether the completed software meets an agreed req
 {{SME/AI TODO: Update for all STEM courses}}
 This appendix records the concrete environment used to review this SRS and design the initial acceptance tests at repository baseline commit `dbde859f90b1b957b05aa03e25b867563c113bb2`. **Nonnormative** means that this appendix provides context but does not create binding requirements.
 
-The controlled `cde_manifest.json` file is the sole authoritative source for products, services, identifiers, versions, approved sources, provider profiles, and supported platform releases. When this appendix and the manifest differ, the manifest controls. Deployment approval requires a complete, valid, and approved manifest.
+The controlled `cso_manifest.json` file is the sole authoritative source for products, services, identifiers, versions, approved sources, provider profiles, and supported platform releases. When this appendix and the manifest differ, the manifest controls. Deployment approval requires a complete, valid, and approved manifest.
 
 Where the repository baseline did not pin an exact product version, this appendix records the approved version policy instead of inventing a version number.
 
@@ -1208,7 +1208,7 @@ Students are expected to run provided tests; this package does not require stude
 ### Initial Managed-Asset Categories
 
 - Automation scripts
-- `cde_manifest.json`
+- `cso_manifest.json`
 - Course workspace configuration
 - Documentation explicitly marked as course-managed
 - Required extension definitions

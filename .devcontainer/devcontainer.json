@@ -1,0 +1,58 @@
+{
+  "name": "GC-STEM SOE - Ubuntu 22.04 / Python 3.10",
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "init": true,
+  "updateRemoteUserUID": true,
+  "overrideCommand": true,
+  "containerEnv": {
+    "ATLAS_ROOT": "/opt/gc-stem/atlas"
+  },
+  "postCreateCommand": [
+    "/opt/gc-stem/runtime/bin/python",
+    "/opt/gc-stem/atlas/scripts/soe.py",
+    "setup",
+    "--workspace",
+    "${containerWorkspaceFolder}"
+  ],
+  "postStartCommand": [
+    "/opt/gc-stem/runtime/bin/python",
+    "/opt/gc-stem/atlas/scripts/soe.py",
+    "verify",
+    "--workspace",
+    "${containerWorkspaceFolder}"
+  ],
+  "postAttachCommand": [
+    "/opt/gc-stem/runtime/bin/python",
+    "/opt/gc-stem/atlas/scripts/soe.py",
+    "verify",
+    "--editor",
+    "--workspace",
+    "${containerWorkspaceFolder}"
+  ],
+  "waitFor": "postCreateCommand",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "cweijan.vscode-office",
+        "hediet.vscode-drawio",
+        "i2p-hub.i2p-pseudo",
+        "ms-python.python",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  }
+}

@@ -33,8 +33,8 @@ jobs:
         run: python .github/ci/check_repository.py
       - name: Check Core Python automation
         run: |
-          python -m compileall -q .github/ci
-          python -m ruff check --isolated --select E,F,I --line-length 80 --output-format github .github/ci
+          python -m compileall -q .github/ci scripts
+          python -m ruff check --isolated --select E,F,I --line-length 80 --output-format github .github/ci scripts
       - name: Install pinned Lychee for link regression tests
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:

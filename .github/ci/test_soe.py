@@ -1,0 +1,306 @@
+"""Regression tests for SOE/CSO resolution and Codespaces launch identity."""
+
+from __future__ import annotations
+
+import copy
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from jsonschema import Draft202012Validator
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from devcontainer_config import configuration  # noqa: E402
+from launch_codespaces import github_identity, launch_url  # noqa: E402
+from soe import (  # noqa: E402
+    ConfigurationError,
+    compose,
+    environment_path,
+    load_plan,
+    make_plan,
+    read_json,
+    validate,
+    verify,
+    version_ok,
+)
+
+
+def course_manifest():
+    return {
+        "schema_version": "3.2",
+        "manifest_type": "course",
+        "course": {
+            "course_id": "CS-101",
+            "course_title": "Test Course",
+            "environment_name": "Test CSO",
+            "repository_name": "test-course",
+        },
+        "baseline": {
+            "path": "${ATLAS_ROOT}/.config/soe_manifest.json",
+            "baseline_id": "stem_computing_baseline",
+        },
+        "control": {
+            "status": "draft",
+            "source_repository": "https://github.com/GC-STEM/test-course",
+        },
+        "additions": {},
+        "overrides": [],
+    }
+
+
+def python_overlay():
+    course = course_manifest()
+    course["course_environments"] = {
+        "course_python": {
+            "kind": "python_venv",
+            "path": "${COURSE_ROOT}/.venv",
+            "runtime_capability_id": "programming_language_runtime",
+        },
+    }
+    course["additions"] = {
+        "platform_extensions": {
+            "ubuntu_headless": {
+                "capability_bindings": {
+                    "test_runner": {
+                        "product_id": "pytest",
+                        "required": True,
+                        "installation_scope": "course_environment",
+                        "installer_adapter_id": "python_venv_package",
+                        "source_id": "pypi",
+                        "package_identifier": "pytest",
+                        "environment_id": "course_python",
+                        "version_rule_override": {
+                            "comparison": "exact",
+                            "value": "8.4.2",
+                        },
+                        "verification": {
+                            "adapter_id": "python_venv_package",
+                            "package_identifiers": ["pytest"],
+                        },
+                    }
+                },
+            }
+        }
+    }
+    return course
+
+
+class ResolverTests(unittest.TestCase):
+    def setUp(self):
+        self.soe = read_json(ROOT / ".config/soe_manifest.json")
+        self.schema = read_json(ROOT / ".config/manifest.schema.json")
+
+    def plan(self, course=None, soe=None):
+        return make_plan(
+            compose(soe or self.soe, course, self.schema),
+            self.schema,
+            ROOT,
+            "github_codespaces",
+        )
+
+    def test_headless_soe_excludes_desktop_and_vagrant(self):
+        plan = self.plan()
+        self.assertEqual(plan["configuration_kind"], "soe")
+        self.assertEqual(plan["profile"]["os_release_id"], "22.04")
+        self.assertTrue({"git", "gh", "python3-venv"} <= set(plan["packages"]))
+        self.assertFalse(
+            {"code", "vagrant", "xfce4", "xclip"} & set(plan["packages"])
+        )
+
+    def test_schema_is_valid(self):
+        Draft202012Validator.check_schema(self.schema)
+
+    def test_changed_source_configuration_is_not_ignored(self):
+        self.soe["software_sources"]["pypi"]["base_uri"] = (
+            "https://example.com/simple"
+        )
+        with self.assertRaisesRegex(ConfigurationError, "source configuration"):
+            self.plan()
+
+    def test_baseline_only_course(self):
+        self.assertEqual(
+            self.plan(course_manifest())["configuration_kind"], "cso"
+        )
+
+    def test_course_venv_binding(self):
+        plan = self.plan(python_overlay())
+        self.assertIn("course_python", plan["environments"])
+        self.assertNotIn("pytest", plan["packages"])
+        generated = configuration(plan, image="example/soe:test")
+        self.assertEqual(
+            generated["customizations"]["vscode"]["settings"][
+                "python.defaultInterpreterPath"
+            ],
+            "${workspaceFolder}/.venv/bin/python",
+        )
+
+    def test_missing_course_manifest_is_not_silently_soe(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ConfigurationError):
+                load_plan(ROOT, Path(directory))
+
+    def test_duplicate_addition_rejected(self):
+        course = course_manifest()
+        course["additions"] = {
+            "products": {"git": copy.deepcopy(self.soe["products"]["git"])}
+        }
+        with self.assertRaisesRegex(ConfigurationError, "Duplicate catalog"):
+            self.plan(course)
+
+    def test_unauthorized_override_rejected(self):
+        course = course_manifest()
+        course["overrides"] = [
+            {
+                "permission_id": "not_granted",
+                "target": "/products/git",
+                "reason": "Test override",
+                "value": self.soe["products"]["git"],
+            }
+        ]
+        with self.assertRaisesRegex(ConfigurationError, "Unauthorized"):
+            self.plan(course)
+
+    def test_filtered_dependency_rejected(self):
+        self.soe["capabilities"]["version_control_system"]["applies_to"] = {
+            "session_types": ["headless"]
+        }
+        with self.assertRaisesRegex(ConfigurationError, "dependency"):
+            self.plan()
+
+    def test_unknown_selector_rejected(self):
+        self.soe["capabilities"]["vm_orchestration"]["applies_to"] = {
+            "deployment_profile_ids": ["missing_profile"]
+        }
+        with self.assertRaisesRegex(
+            ConfigurationError, "Unknown applicability"
+        ):
+            self.plan()
+
+    def test_disabled_deployment_rejected(self):
+        self.soe["deployment_profiles"]["github_codespaces"]["enabled"] = False
+        with self.assertRaisesRegex(ConfigurationError, "disabled"):
+            self.plan()
+
+    def test_unknown_installer_rejected_before_execution(self):
+        self.soe["platforms"]["ubuntu_headless"]["capability_bindings"][
+            "version_control_system"
+        ]["installer_adapter_id"] = "arbitrary_shell"
+        with self.assertRaisesRegex(ConfigurationError, "Unsupported"):
+            self.plan()
+
+    def test_duplicate_json_keys_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "duplicate.json"
+            path.write_text('{"schema_version":"3.2","schema_version":"3.1"}')
+            with self.assertRaisesRegex(ConfigurationError, "Duplicate JSON"):
+                read_json(path)
+
+    def test_legacy_schema_is_explicitly_rejected(self):
+        self.soe["schema_version"] = "3.1"
+        with self.assertRaises(ConfigurationError):
+            validate(self.soe, self.schema)
+
+    def test_environment_cannot_escape_workspace(self):
+        with self.assertRaises(ConfigurationError):
+            environment_path(ROOT, {"path": "${COURSE_ROOT}/../../outside"})
+
+    def test_reference_python_and_native_minimum(self):
+        self.assertTrue(
+            version_ok(
+                "3.10.12",
+                {"comparison": "compatible_range", "value": ">=3.10,<3.11"},
+            )
+        )
+        self.assertFalse(
+            version_ok(
+                "3.12.0",
+                {"comparison": "compatible_range", "value": ">=3.10,<3.11"},
+            )
+        )
+        for platform in self.soe["platforms"].values():
+            rule = platform["capability_bindings"][
+                "programming_language_runtime"
+            ]["verification"]["version_rule"]
+            self.assertTrue(version_ok("3.10.12", rule))
+
+    def test_generated_configuration_matches_manifest(self):
+        self.assertEqual(
+            read_json(ROOT / ".devcontainer/devcontainer.json"),
+            configuration(self.plan()),
+        )
+
+    def test_verify_is_read_only(self):
+        plan = self.plan()
+        with (
+            patch("soe.check_host"),
+            patch("soe.apt_installed", return_value=True),
+            patch("soe.shutil.which", return_value="/usr/bin/python3"),
+            patch("soe.run") as execute,
+        ):
+            execute.return_value.stdout = "3.10.12\n"
+            verify(plan)
+            for call in execute.call_args_list:
+                command = call.args[0]
+                self.assertNotIn("install", command)
+                self.assertNotIn("sudo", command)
+
+
+class LauncherTests(unittest.TestCase):
+    def test_github_remote_forms(self):
+        for remote in (
+            "https://github.com/GC-STEM/atlas.git",
+            "git@github.com:GC-STEM/atlas.git",
+            "ssh://git@github.com/GC-STEM/atlas.git",
+        ):
+            self.assertEqual(github_identity(remote), "GC-STEM/atlas")
+
+    def test_credentials_and_other_hosts_rejected(self):
+        for remote in (
+            "https://github.com.evil.test/a/b",
+            "https://secret@github.com/a/b",
+            "https://github.com/a/b?token=secret",
+            "git@gitlab.com:a/b",
+        ):
+            with self.assertRaises(ConfigurationError):
+                github_identity(remote)
+
+    def test_launch_uses_selected_repository_and_branch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            (workspace / ".config").mkdir()
+            (workspace / ".devcontainer").mkdir()
+            (workspace / ".config/soe_manifest.json").write_text("{}")
+            (workspace / ".devcontainer/devcontainer.json").write_text(
+                (ROOT / ".devcontainer/devcontainer.json").read_text()
+            )
+            (workspace / ".devcontainer/Dockerfile").write_text(
+                "FROM ubuntu:22.04\n"
+            )
+            for command in (
+                ("init",),
+                (
+                    "remote",
+                    "add",
+                    "origin",
+                    "git@github.com:student/assignment.git",
+                ),
+                ("symbolic-ref", "HEAD", "refs/heads/course/topic"),
+            ):
+                subprocess.run(
+                    ["git", "-C", str(workspace), *command],
+                    check=True,
+                    capture_output=True,
+                )
+            self.assertEqual(
+                launch_url(workspace, ROOT),
+                "https://codespaces.new/student/assignment/tree/course%2Ftopic",
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

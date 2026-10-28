@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/GC-STEM/.github/refs/heads/main/schemas/manifest.schema.json",
-  "schema_version": "3.1",
-  "manifest_type": "scb",
+  "schema_version": "3.2",
+  "manifest_type": "soe",
   "baseline": {
     "baseline_id": "stem_computing_baseline",
     "display_name": "Standard Operating Environment",
@@ -11,7 +11,7 @@
   "control": {
     "status": "draft",
     "source_repository": "https://github.com/GC-STEM/atlas",
-    "change_summary": "Extend the shared SOE with deployment-aware requirements; require Vagrant CLI only on bare-metal installs without prescribing a hypervisor. Declare VirtualBox as the default/reference Vagrant provider and plan GitHub Releases box distribution, Codespaces, GitHub Actions, and browser editing. New compute/box launch profiles remain disabled pending implementations and published artifacts. Preserve the existing Codio reference and baseline/automation release metadata; this is an uncommitted schema 3.1 draft, not a newly approved automation release."
+    "change_summary": "Implement the headless Codespaces emergency/faculty-verification environment and repository-aware launcher. Use Ubuntu 22.04 and Python 3.10 as the SOE baseline/minimum; preserve compatible newer native installations. Adopt SOE/CSO schema 3.2 names and paths. VM launchers remain deferred and Vagrant optional. This remains a development draft, not an approved institutional release."
   },
   "policy": {
     "course_root": "${WORKSPACE_ROOT}",
@@ -209,7 +209,7 @@
     },
     "vm_orchestration": {
       "display_name": "Virtual Machine Orchestration",
-      "required": true,
+      "required": false,
       "implementation_kind": "command_line_tool",
       "student_use": "Launch the SOE or course environment using an installed, compatible Vagrant provider and box.",
       "applies_to": {
@@ -415,7 +415,7 @@
       "student_availability": "no_cost",
       "homepage": "https://developer.hashicorp.com/vagrant",
       "documentation_uri": "https://developer.hashicorp.com/vagrant/docs",
-      "notes": "Required on bare-metal SOE installations only. A working launch also requires a compatible installed provider and provider/architecture-specific box. No hypervisor is installed automatically."
+      "notes": "Optional deferred VM tooling; never required by SOE setup."
     }
   },
   "software_sources": {
@@ -786,7 +786,7 @@
           "category": "package_management_support"
         }
       },
-      "cde_bindings": {
+      "capability_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -842,7 +842,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<4",
+              "value": ">=3.10,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -1022,7 +1022,7 @@
         },
         "vm_orchestration": {
           "product_id": "vagrant",
-          "required": true,
+          "required": false,
           "installation_scope": "system",
           "installer_adapter_id": "winget_package",
           "source_id": "winget_default",
@@ -1113,7 +1113,7 @@
           "category": "bootstrap_prerequisite"
         }
       },
-      "cde_bindings": {
+      "capability_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -1170,7 +1170,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<4",
+              "value": ">=3.10,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -1350,7 +1350,7 @@
         },
         "vm_orchestration": {
           "product_id": "vagrant",
-          "required": true,
+          "required": false,
           "installation_scope": "system",
           "installer_adapter_id": "homebrew_cask",
           "source_id": "hashicorp_homebrew",
@@ -1384,9 +1384,15 @@
         "name": "Ubuntu",
         "releases": [
           {
+            "release_id": "22.04",
+            "display_name": "Ubuntu 22.04 LTS",
+            "support_end_date": "2027-05-31",
+            "security_updates_required": true
+          },
+          {
             "release_id": "24.04",
             "display_name": "Ubuntu 24.04 LTS",
-            "support_end_date": "2029-04-30",
+            "support_end_date": "2029-05-31",
             "security_updates_required": true
           }
         ],
@@ -1656,7 +1662,7 @@
           ]
         }
       },
-      "cde_bindings": {
+      "capability_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -1713,7 +1719,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<4",
+              "value": ">=3.10,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -1892,7 +1898,7 @@
           }
         }
       },
-      "notes": "Codio Ubuntu 24.04 LTS with Xfce remains the reference course environment."
+      "notes": "Ubuntu 22.04/Python 3.10 is the Codio/zyBooks compatibility baseline. Compatible newer native releases are allowed; the reference container uses 22.04."
     },
     "ubuntu_gnome": {
       "display_name": "Ubuntu Desktop GNOME",
@@ -1905,9 +1911,15 @@
         "name": "Ubuntu",
         "releases": [
           {
+            "release_id": "22.04",
+            "display_name": "Ubuntu 22.04 LTS",
+            "support_end_date": "2027-05-31",
+            "security_updates_required": true
+          },
+          {
             "release_id": "24.04",
             "display_name": "Ubuntu 24.04 LTS",
-            "support_end_date": "2029-04-30",
+            "support_end_date": "2029-05-31",
             "security_updates_required": true
           }
         ],
@@ -2135,7 +2147,7 @@
           ]
         }
       },
-      "cde_bindings": {
+      "capability_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -2192,7 +2204,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<4",
+              "value": ">=3.10,<4",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -2372,7 +2384,7 @@
         },
         "vm_orchestration": {
           "product_id": "vagrant",
-          "required": true,
+          "required": false,
           "installation_scope": "system",
           "installer_adapter_id": "apt_package",
           "source_id": "hashicorp_apt",
@@ -2393,12 +2405,12 @@
           }
         }
       },
-      "notes": "Ubuntu 24.04 LTS with GNOME is a supported local Linux conformance environment."
+      "notes": "Ubuntu 22.04/Python 3.10 is the Codio/zyBooks compatibility baseline. Compatible newer native releases are allowed; the reference container uses 22.04."
     },
     "ubuntu_headless": {
       "display_name": "Ubuntu Headless Runtime",
       "abbreviation": "uhl",
-      "enabled": false,
+      "enabled": true,
       "reference_platform": false,
       "platform_adapter_id": "ubuntu_headless",
       "os": {
@@ -2406,9 +2418,9 @@
         "name": "Ubuntu",
         "releases": [
           {
-            "release_id": "24.04",
-            "display_name": "Ubuntu 24.04 LTS",
-            "support_end_date": "2029-04-30",
+            "release_id": "22.04",
+            "display_name": "Ubuntu 22.04 LTS",
+            "support_end_date": "2027-05-31",
             "security_updates_required": true
           }
         ],
@@ -2540,9 +2552,60 @@
           "architectures": [
             "x86_64"
           ]
+        },
+        "python_command_alias": {
+          "display_name": "python-is-python3",
+          "purpose": "Provide the cross-platform python command.",
+          "package_identifier": "python-is-python3",
+          "required": true,
+          "source_id": "ubuntu_archive",
+          "category": "runtime_support",
+          "version_rule": {
+            "comparison": "presence_only"
+          },
+          "verification": {
+            "adapter_id": "apt_package",
+            "package_identifiers": [
+              "python-is-python3"
+            ]
+          }
+        },
+        "python_package_support": {
+          "display_name": "python3-pip",
+          "purpose": "Bootstrap isolated course package installation.",
+          "package_identifier": "python3-pip",
+          "required": true,
+          "source_id": "ubuntu_archive",
+          "category": "runtime_support",
+          "version_rule": {
+            "comparison": "presence_only"
+          },
+          "verification": {
+            "adapter_id": "apt_package",
+            "package_identifiers": [
+              "python3-pip"
+            ]
+          }
+        },
+        "archive_support": {
+          "display_name": "unzip",
+          "purpose": "Extract course and installation archives.",
+          "package_identifier": "unzip",
+          "required": true,
+          "source_id": "ubuntu_archive",
+          "category": "runtime_support",
+          "version_rule": {
+            "comparison": "presence_only"
+          },
+          "verification": {
+            "adapter_id": "apt_package",
+            "package_identifiers": [
+              "unzip"
+            ]
+          }
         }
       },
-      "cde_bindings": {
+      "capability_bindings": {
         "version_control_system": {
           "product_id": "git",
           "required": true,
@@ -2596,7 +2659,7 @@
             ],
             "version_rule": {
               "comparison": "compatible_range",
-              "value": ">=3.12,<4",
+              "value": ">=3.10,<3.11",
               "comparison_adapter_id": "pep440_version"
             }
           }
@@ -2755,7 +2818,7 @@
           }
         }
       },
-      "notes": "Planned Ubuntu 24.04 runtime for Codespaces and GitHub Actions. No GUI packages or Vagrant. Codespaces editor/extensions are provider-managed; implementation and qualification are required before enabling deployments."
+      "notes": "Headless Ubuntu 22.04 Codespaces runtime with provider-managed VS Code. No desktop services or Vagrant."
     }
   },
   "deployment_profiles": {
@@ -2767,7 +2830,7 @@
       "deployment_kind": "hosted_virtual_desktop",
       "desktop_environment": "Xfce",
       "session_type": "remote_desktop",
-      "os_release_id": "24.04",
+      "os_release_id": "22.04",
       "architecture": "x86_64",
       "reset_method": "provider_reset",
       "allowed_workflow_ids": [
@@ -2838,14 +2901,14 @@
       "deployment_kind": "bare_metal",
       "desktop_environment": "GNOME",
       "session_type": "local_desktop",
-      "os_release_id": "24.04",
+      "os_release_id": "22.04",
       "architecture": "x86_64",
       "reset_method": "fresh_os_install",
       "allowed_workflow_ids": [
         "local_initial_install",
         "local_periodic_maintenance"
       ],
-      "notes": "Clean Ubuntu 24.04 LTS installation with APT and GNOME used for platform conformance testing.",
+      "notes": "Native Ubuntu GNOME deployment; Ubuntu 22.04 is the minimum baseline.",
       "execution_context": "local"
     },
     "ubuntu_vagrant_guest": {
@@ -2857,7 +2920,7 @@
       "execution_context": "local",
       "session_type": "local_desktop",
       "desktop_environment": "GNOME",
-      "os_release_id": "24.04",
+      "os_release_id": "22.04",
       "architecture": "x86_64",
       "profile_adapter_id": "vagrant_guest",
       "reset_method": "image_reset",
@@ -2869,13 +2932,13 @@
     },
     "github_codespaces": {
       "display_name": "GitHub Codespaces SOE or CSO",
-      "enabled": false,
+      "enabled": true,
       "reference_profile": false,
       "platform_id": "ubuntu_headless",
       "deployment_kind": "container",
       "execution_context": "codespaces",
       "session_type": "browser_editor",
-      "os_release_id": "24.04",
+      "os_release_id": "22.04",
       "architecture": "x86_64",
       "provider_name": "GitHub Codespaces",
       "profile_adapter_id": "codespaces_devcontainer",
@@ -2884,7 +2947,7 @@
         "runtime_initial_install",
         "runtime_verify"
       ],
-      "notes": "Planned devcontainer using the same resolved SOE/CSO requirements, with a managed editor and applicable remote extensions. Enable after devcontainer implementation, qualification, and institution/account access and cost-policy checks."
+      "notes": "Headless emergency student environment and faculty reference verification using Ubuntu 22.04/Python 3.10 and the selected course CSO. Access and funding remain subject to actual GitHub account/organization policy."
     },
     "github_actions_ubuntu": {
       "display_name": "GitHub Actions Ubuntu Verification Runtime",
@@ -3189,10 +3252,10 @@
     "box_repository_source_id": "github_boxes_releases"
   },
   "box_artifacts": {
-    "scb_virtualbox_amd64": {
+    "soe_virtualbox_amd64": {
       "display_name": "Planned SOE VirtualBox AMD64 Box",
       "enabled": false,
-      "box_name": "GC-STEM/scb",
+      "box_name": "GC-STEM/soe",
       "provider_name": "virtualbox",
       "architecture": "amd64",
       "guest_deployment_profile_id": "ubuntu_vagrant_guest",
@@ -3201,7 +3264,7 @@
     }
   },
   "launch_profiles": {
-    "scb_vagrant": {
+    "soe_vagrant": {
       "display_name": "Launch SOE or CSO with Vagrant",
       "enabled": false,
       "kind": "vagrant",
@@ -3210,20 +3273,20 @@
       "vagrantfile_path": "Vagrantfile",
       "deployment_profile_id": "ubuntu_vagrant_guest",
       "box_artifact_ids": [
-        "scb_virtualbox_amd64"
+        "soe_virtualbox_amd64"
       ],
       "notes": "Planned entry point: run vagrant up in Atlas for the SOE or in a course checkout for its CSO. Respect explicit provider and environment preferences; prefer VirtualBox otherwise. Enable only after launcher, host acquisition, guest provisioning, and matching box artifacts are implemented and qualified."
     },
     "github_codespaces": {
       "display_name": "Run in GitHub Codespaces",
-      "enabled": false,
+      "enabled": true,
       "kind": "codespaces",
       "runtime_available": true,
       "repository_context": "selected_checkout",
       "deployment_profile_id": "github_codespaces",
       "devcontainer_path": ".devcontainer/devcontainer.json",
       "launch_uri_template": "https://codespaces.new/{owner}/{repository}",
-      "notes": "Planned full runtime. Resolve owner/repository from the selected checkout identity and enforce actual GitHub access. Enable after creating and qualifying the devcontainer. Student output must resolve its own identity, never inherit a faculty-repository link."
+      "notes": "Implemented by scripts/launch_codespaces.py. Resolves the selected checkout's origin and branch; validates its Codespaces configuration before opening GitHub's creation page. GitHub confirms access, machine selection, and billing."
     },
     "vscode_web": {
       "display_name": "Edit in VS Code for Web",

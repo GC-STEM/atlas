@@ -1,6 +1,13 @@
 {
   "required_files": [
-    ".config/scb_manifest.json",
+    ".config/manifest.schema.json",
+    ".config/soe_manifest.json",
+    ".config/requirements.txt",
+    ".config/requirements-automation.txt",
+    ".devcontainer/devcontainer.json",
+    ".devcontainer/Dockerfile",
+    ".devcontainer/Dockerfile.dockerignore",
+    ".devcontainer/README.md",
     ".github/ci/check_links.py",
     ".github/ci/check_readme_commands.py",
     ".github/ci/check_repository.py",
@@ -23,19 +30,36 @@
     ".gitattributes",
     ".gitignore",
     "pyproject.toml",
-    "README.md"
-
+    "README.md",
+    ".github/ci/test_soe.py",
+    ".github/ci/smoke_codespaces.py",
+    ".github/workflows/codespaces.yml",
+    "scripts/soe.py",
+    "scripts/devcontainer_config.py",
+    "scripts/launch_codespaces.py"
   ],
   "ide_samples": {
-    "c": "example.c", "cpp": "example.cpp", "csharp": "example.cs",
-    "go": "example.go", "java": "example.java",
-    "javascript": "example.js", "javascriptreact": "example.jsx",
-    "python": "example.py", "r": "example.r", "rust": "example.rs",
-    "typescript": "example.ts", "typescriptreact": "example.tsx",
-    "sql": "example.sql", "markdown": "example.md",
-    "plaintext": "example.txt", "html": "example.html",
-    "css": "example.css", "json": "example.json",
-    "yaml": "example.yml", "toml": "example.toml",
-    "shellscript": "example.sh", "powershell": "example.ps1"
+    "c": "example.c",
+    "cpp": "example.cpp",
+    "csharp": "example.cs",
+    "go": "example.go",
+    "java": "example.java",
+    "javascript": "example.js",
+    "javascriptreact": "example.jsx",
+    "python": "example.py",
+    "r": "example.r",
+    "rust": "example.rs",
+    "typescript": "example.ts",
+    "typescriptreact": "example.tsx",
+    "sql": "example.sql",
+    "markdown": "example.md",
+    "plaintext": "example.txt",
+    "html": "example.html",
+    "css": "example.css",
+    "json": "example.json",
+    "yaml": "example.yml",
+    "toml": "example.toml",
+    "shellscript": "example.sh",
+    "powershell": "example.ps1"
   }
 }

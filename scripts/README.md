@@ -11,6 +11,12 @@
 
 {{Welcome and overview}}
 
+The headless Codespaces implementation uses `soe.py` for SOE/CSO resolution,
+setup, and verification, `devcontainer_config.py` for editor configuration,
+and `launch_codespaces.py` for the selected checkout's launch page. See the
+[Codespaces guide](../.devcontainer/README.md). The platform lifecycle files
+below remain placeholders; they are not used by the Codespaces hooks.
+
 ## Table of Contents <!-- omit from toc -->
 
 1. [Lifecycle Scripts](#lifecycle-scripts)

@@ -1,0 +1,12 @@
+**
+!.config/
+!.config/soe_manifest.json
+!.config/manifest.schema.json
+!.config/requirements-automation.txt
+!scripts/
+!scripts/soe.py
+!scripts/devcontainer_config.py
+!scripts/launch_codespaces.py
+!.devcontainer/
+!.devcontainer/Dockerfile
+!.devcontainer/Dockerfile.dockerignore

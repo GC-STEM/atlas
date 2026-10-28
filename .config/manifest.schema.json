@@ -1,0 +1,4039 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/GC-STEM/.github/refs/heads/main/schemas/manifest.schema.json",
+  "title": "GC-STEM SOE and CSO Manifest",
+  "description": "Version 3.2 contract for the shared SOE in atlas/.config/soe_manifest.json and each course's .config/cso_manifest.json. Compose the SOE and course additions before deployment filtering. Courses consume the selected Atlas checkout; component requirements do not require identical versions across platforms or per-course baseline pins. Codespaces provides the headless emergency/faculty-verification deployment. JSON Schema defaults do not create data.",
+  "$comment": "Composition, target selection, launch readiness, authorization, and environment verification are automation responsibilities, not JSON Schema merge features. Canonical ownership remains GC-STEM/.github for the schema, GC-STEM/atlas for the SOE and shared automation, and the selected course for its required CSO file. Required resolver sequence: (1) Select explicit scb or cso mode and the actual Atlas/workspace checkouts. In soe mode read only the Atlas SOE; do not invent course identity or require a course manifest. In cso mode require and read both manifests, including a baseline-only course's CSO file. Reject duplicate JSON keys and unsupported schema versions; never execute manifest content. (2) Check approval/provenance under policy supplied by approved automation. A draft may omit source_revision; no generated draft is a released/approved configuration. A self-declared approval does not establish trust. Preserve compatible installed versions. Baseline releases are support metadata, not equality gates or per-course pins; validation does not fetch/update/switch Atlas. (3) Deep-copy SOE catalogs/policy/logging; add course entries by stable ID then platform_extensions. Duplicate existing IDs are conflicts even when identical. Arrays are atomic values, never implicit unions. Course virtualization policy changes require an existing baseline override permission; additions cannot authorize exceptions. (4) Overrides require matching named baseline permission, exact existing target, and course allowlist eligibility. Reject duplicate or ancestor/descendant targets, missing targets, additions overlapping replacement, and metadata/permission changes. Replace complete target objects. (5) Select a known deployment; disabled deployments/artifacts/launch profiles cannot execute. Validate the resolved soe/cso branch, selected target, exact Atlas revision when available, baseline release/control, and actual component versions without converting reports into course pins. WORKSPACE_ROOT is the actual Atlas checkout in soe mode and actual course checkout in cso mode; COURSE_ROOT exists only in cso mode. Resolve approved paths, reject unknown variables and boundary escapes, and do not assume HOME/Repos or a clone name. (6) Compose first, then intersect platform restrictions and applies_to. Missing applies_to means all otherwise applicable deployments. Within a selector, deployment_profile_ids, deployment_kinds, and session_types all match when supplied. Kind selectors include future course-added profiles of that deployment kind. required means required only when applicable; filtering is never authority to uninstall. Check all selector IDs, applicable dependency closure, capability coverage, product/source/provider/settings/environment/workflow/adapter references, version rules, source integrity, calendar dates, and conflicting settings/asset destinations before mutation. settings_profile_ids enumerate candidate profiles: unknown IDs are errors, but known settings excluded by target selection are skipped. Applicable bindings must not depend on filtered-out capabilities or course environments. Do not automatically downgrade to reproduce a reference machine. managed_latest refreshes only during an explicitly chosen update action. (7) Environment-bound packages use the selected course environment's own interpreter/package manager, never global pip or another course's directory. Reject cross-checkout shared environment paths and symlink escapes. (8) Validate release/architecture/workflow role/state/action/transition compatibility and bidirectional workflow authorization. Noninteractive workflows must not initiate browser/device login or write personal/global identity/editor settings; use approved runtime environment tokens without recording values. Exactly one enabled overall reference platform and linked overall reference deployment remain required. virtualization.reference_provider is independently scoped to VM launches and does not replace the overall reference designation. (9) Honor explicit Vagrant --provider and VAGRANT_DEFAULT_PROVIDER selection; prefer the configured default only when unspecified. Do not install a hypervisor automatically. Require a released compatible provider/architecture/box tuple. Acquire multipart boxes on the host before box import/VM creation: verify each part, contiguous unique sequence numbers and distinct URLs, reconstruct a complete .box, verify its final size/checksum, then import it. For binary concatenation part sizes sum to final size. Native Vagrant URL arrays are fallback downloads, not parts. Check extraction-tool requirements, available space, source-host/redirect boundaries, and GitHub's under-2-GiB asset limit. (10) Enabled launch profiles require implemented trusted adapters, existing Vagrantfile/devcontainer paths, qualified artifacts, and authorized repository access/funding under the existing student cost policy. Resolve launch URL owner/repository from the selected checkout, never an inherited template identity. vscode_web is editing-only and cannot establish runtime capability compliance. (11) GitHub enforces private faculty access for assigned faculty; JSON metadata does not grant access. Student publication exports a sanitized snapshot without faculty history, keeps only .faculty/README.md inside .faculty, removes source faculty/distribution metadata, and rewrites manifest/launch repository identity to the actual destination. Validate destination visibility and credentials externally. Structural validation cannot prove any of these semantic checks; unresolved conflicts are fatal, never file-order/last-writer-wins.",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/soeManifest"
+    },
+    {
+      "$ref": "#/$defs/courseManifest"
+    }
+  ],
+  "$defs": {
+    "soeManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri-reference",
+          "minLength": 1,
+          "maxLength": 2048,
+          "description": "Optional editor/validator association with the shared GC-STEM schema. This reference validates structure; it does not load or merge the SOE manifest."
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "manifest_type": {
+          "type": "string",
+          "const": "soe"
+        },
+        "baseline": {
+          "$ref": "#/$defs/baselineIdentity"
+        },
+        "automation_release": {
+          "$ref": "#/$defs/semanticVersion"
+        },
+        "automation_release_date_time_group": {
+          "$ref": "#/$defs/versionDateTimeGroup"
+        },
+        "control": {
+          "$ref": "#/$defs/control"
+        },
+        "policy": {
+          "$ref": "#/$defs/policy"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilityCatalog"
+        },
+        "products": {
+          "$ref": "#/$defs/productCatalog"
+        },
+        "software_sources": {
+          "$ref": "#/$defs/softwareSourceCatalog"
+        },
+        "provider_profiles": {
+          "$ref": "#/$defs/providerProfileCatalog"
+        },
+        "platforms": {
+          "$ref": "#/$defs/platformCatalog"
+        },
+        "deployment_profiles": {
+          "$ref": "#/$defs/deploymentProfileCatalog"
+        },
+        "lifecycle_workflows": {
+          "$ref": "#/$defs/lifecycleWorkflowCatalog"
+        },
+        "managed_settings": {
+          "$ref": "#/$defs/managedSettingsCatalog"
+        },
+        "managed_assets": {
+          "$ref": "#/$defs/managedAssetCatalog"
+        },
+        "obsolete_components": {
+          "$ref": "#/$defs/obsoleteComponentCatalog"
+        },
+        "logging": {
+          "$ref": "#/$defs/logging"
+        },
+        "override_permissions": {
+          "$ref": "#/$defs/overridePermissions"
+        },
+        "virtualization": {
+          "$ref": "#/$defs/virtualizationPolicy"
+        },
+        "box_artifacts": {
+          "$ref": "#/$defs/boxArtifactCatalog"
+        },
+        "launch_profiles": {
+          "$ref": "#/$defs/launchProfileCatalog"
+        }
+      },
+      "required": [
+        "schema_version",
+        "manifest_type",
+        "baseline",
+        "automation_release",
+        "automation_release_date_time_group",
+        "control",
+        "policy",
+        "capabilities",
+        "products",
+        "software_sources",
+        "provider_profiles",
+        "platforms",
+        "deployment_profiles",
+        "lifecycle_workflows",
+        "managed_settings",
+        "managed_assets",
+        "obsolete_components",
+        "logging",
+        "override_permissions"
+      ],
+      "description": "Shared SOE stored only in the selected Atlas checkout at .config/soe_manifest.json. It has no course identity or parent baseline. Its data selects common capabilities and compatible component requirements, without imposing identical machine versions."
+    },
+    "courseManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri-reference",
+          "minLength": 1,
+          "maxLength": 2048,
+          "description": "Optional editor/validator association with the shared GC-STEM schema. This reference validates structure; it does not load or merge the SOE manifest."
+        },
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "manifest_type": {
+          "type": "string",
+          "const": "course"
+        },
+        "course": {
+          "$ref": "#/$defs/course"
+        },
+        "baseline": {
+          "$ref": "#/$defs/baselineReference"
+        },
+        "control": {
+          "$ref": "#/$defs/control"
+        },
+        "additions": {
+          "$ref": "#/$defs/courseAdditions"
+        },
+        "overrides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/override"
+          },
+          "uniqueItems": true
+        },
+        "course_environments": {
+          "$ref": "#/$defs/courseEnvironmentCatalog"
+        },
+        "student_distribution": {
+          "$ref": "#/$defs/studentDistribution"
+        }
+      },
+      "required": [
+        "schema_version",
+        "manifest_type",
+        "course",
+        "baseline",
+        "control",
+        "additions",
+        "overrides"
+      ],
+      "description": "Required .config/cso_manifest.json in every STEM course repository. Set additions to {} and overrides to [] when the course uses only the SOE. Course-owned environments are optional and declared only when required by this course. JSON Schema defaults do not supply data.",
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "student_distribution"
+            ]
+          },
+          "then": {
+            "properties": {
+              "course": {
+                "properties": {
+                  "repository_visibility": {
+                    "const": "private"
+                  },
+                  "repository_audience": {
+                    "const": "assigned_faculty"
+                  }
+                },
+                "required": [
+                  "repository_visibility",
+                  "repository_audience"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resolvedConfiguration": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/resolvedSoeConfiguration"
+        },
+        {
+          "$ref": "#/$defs/resolvedCsoConfiguration"
+        }
+      ],
+      "description": "Explicit resolved SOE or CSO mode; validate this definition before any environment-changing action. This is not a third repository input file."
+    },
+    "baselineIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baseline_id": {
+          "type": "string",
+          "const": "stem_computing_baseline"
+        },
+        "display_name": {
+          "type": "string",
+          "const": "Standard Operating Environment"
+        },
+        "version": {
+          "$ref": "#/$defs/semanticVersion"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "display_name",
+        "version"
+      ],
+      "description": "Identity and release metadata of the common SOE. version is independent of schema_version and automation_release and is recorded for support; courses do not have to pin this version."
+    },
+    "baselineReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "const": "${ATLAS_ROOT}/.config/soe_manifest.json",
+          "description": "Shared SOE in the selected local Atlas checkout. Resolve ATLAS_ROOT from setup configuration or the selected checkout, not from a guessed home/sibling path. Validation does not fetch or update Atlas."
+        },
+        "baseline_id": {
+          "type": "string",
+          "const": "stem_computing_baseline"
+        }
+      },
+      "required": [
+        "path",
+        "baseline_id"
+      ],
+      "description": "Shared Atlas SOE dependency for every course. No per-course SOE copy, exact baseline version, or file digest is required. Component-specific requirements are expressed with version rules in the relevant products/bindings, not baseline equality constraints."
+    },
+    "course": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "course_id": {
+          "$ref": "#/$defs/courseId"
+        },
+        "course_title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "environment_name": {
+          "$ref": "#/$defs/nonEmptyString",
+          "description": "Name of this course's complete Course-specific overlay (CSO), including the SOE and any course-specific requirements."
+        },
+        "repository_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "description": "Course repository name, without an owner, .git suffix, or directory path. Exposed to approved path templates as ${COURSE_REPOSITORY}. A student's clone may use a different directory name; COURSE_ROOT is resolved at runtime."
+        },
+        "repository_visibility": {
+          "enum": [
+            "private",
+            "public",
+            "internal"
+          ],
+          "description": "Declared repository visibility, externally verified by GitHub. This field grants no access."
+        },
+        "repository_audience": {
+          "enum": [
+            "assigned_faculty",
+            "students"
+          ],
+          "description": "Assigned faculty is an access restriction enforced by GitHub; student output must rewrite the repository identity and audience."
+        }
+      },
+      "required": [
+        "course_id",
+        "course_title",
+        "environment_name",
+        "repository_name"
+      ],
+      "description": "Course identity belongs in each course's .config/cso_manifest.json, never in the reusable SOE.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "repository_name": {
+                "pattern": "-faculty$"
+              }
+            },
+            "required": [
+              "repository_name"
+            ]
+          },
+          "then": {
+            "properties": {
+              "repository_visibility": {
+                "const": "private"
+              },
+              "repository_audience": {
+                "const": "assigned_faculty"
+              }
+            },
+            "required": [
+              "repository_visibility",
+              "repository_audience"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "repository_audience": {
+                "const": "assigned_faculty"
+              }
+            },
+            "required": [
+              "repository_audience"
+            ]
+          },
+          "then": {
+            "properties": {
+              "repository_visibility": {
+                "const": "private"
+              }
+            },
+            "required": [
+              "repository_visibility"
+            ]
+          }
+        }
+      ]
+    },
+    "courseId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9]+(?:[- ][A-Za-z0-9]+)*$",
+      "examples": [
+        "CRS-000",
+        "IT-140",
+        "CYB-200",
+        "DAT-205",
+        "MAT-243",
+        "PHY-150"
+      ],
+      "description": "Institutional course identifier. No STEM subject prefix, course number range, or course title is hard-coded in the schema."
+    },
+    "courseAdditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/capabilityDefinition"
+          },
+          "minProperties": 1
+        },
+        "products": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/product"
+          },
+          "minProperties": 1
+        },
+        "software_sources": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/softwareSource"
+          },
+          "minProperties": 1
+        },
+        "provider_profiles": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/providerProfile"
+          },
+          "minProperties": 1
+        },
+        "platforms": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/platform"
+          },
+          "minProperties": 1
+        },
+        "deployment_profiles": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/deploymentProfile"
+          },
+          "minProperties": 1
+        },
+        "lifecycle_workflows": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/lifecycleWorkflow"
+          },
+          "minProperties": 1
+        },
+        "managed_settings": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/managedSetting"
+          },
+          "minProperties": 1
+        },
+        "managed_assets": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/managedAsset"
+          },
+          "minProperties": 1
+        },
+        "obsolete_components": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/obsoleteComponent"
+          },
+          "minProperties": 1
+        },
+        "platform_extensions": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/platformExtension"
+          },
+          "minProperties": 1
+        },
+        "box_artifacts": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/boxArtifact"
+          },
+          "minProperties": 1
+        },
+        "launch_profiles": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/launchProfile"
+          },
+          "minProperties": 1
+        }
+      },
+      "description": "Required object of new course catalog entries and platform package/binding additions. {} explicitly means no additions. Individual sections must be nonempty when present. Catalogs are maps keyed by stable IDs, not arrays. Existing IDs, duplicate managed-setting destinations/keys, and conflicting assets are errors; there is no last-writer-wins merge."
+    },
+    "platformExtension": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "os_packages": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/osPackage"
+          },
+          "minProperties": 1
+        },
+        "capability_bindings": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/capabilityBinding"
+          },
+          "minProperties": 1
+        }
+      },
+      "description": "Add new OS support package IDs or capability binding IDs to an existing baseline or newly added platform. An existing nested ID is a conflict even if the repeated value is identical. Use an authorized explicit override to replace an existing baseline entry.",
+      "minProperties": 1
+    },
+    "overridePermissions": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/overridePermission"
+      },
+      "description": "Baseline-owned permissions for explicit course overrides. An empty object permits no overrides. These permissions must come from a trusted, approved SOE release, not merely a locally edited baseline that passes structural validation."
+    },
+    "overridePermission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/overrideTarget"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "allowed_course_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/courseId"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Optional course allowlist. If omitted, the permission applies to any course consuming this approved baseline permission. Course IDs are matched exactly, including punctuation/case."
+        },
+        "approval_record": {
+          "$ref": "#/$defs/uriHttps"
+        }
+      },
+      "required": [
+        "target",
+        "description"
+      ],
+      "description": "Permission owned by the SOE. A course cannot create permissions. Semantic validation requires an existing baseline target and at most one permission per target. Replacement values still must satisfy this schema and all approved release constraints."
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "permission_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "target": {
+          "$ref": "#/$defs/overrideTarget"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1000,
+          "pattern": "\\S"
+        },
+        "value": {
+          "type": "object",
+          "description": "Complete replacement object. The target-specific branch validates its exact shape."
+        }
+      },
+      "required": [
+        "permission_id",
+        "target",
+        "reason",
+        "value"
+      ],
+      "description": "Explicit complete-entry replacement authorized by the named baseline permission. Runtime checks must confirm exact target equality, course eligibility, a pre-existing baseline target, unique non-overlapping targets, and a valid final CSO.",
+      "oneOf": [
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/capabilities/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/capabilityDefinition"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/products/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/product"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/software_sources/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/softwareSource"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/provider_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/providerProfile"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/platform"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/deployment_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/deploymentProfile"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/lifecycle_workflows/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/lifecycleWorkflow"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/managed_settings/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/managedSetting"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/managed_assets/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/managedAsset"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/obsolete_components/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/obsoleteComponent"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*/os_packages/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/osPackage"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*/capability_bindings/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/capabilityBinding"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/policy$"
+            },
+            "value": {
+              "$ref": "#/$defs/policy"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/logging$"
+            },
+            "value": {
+              "$ref": "#/$defs/logging"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/box_artifacts/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/boxArtifact"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/launch_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/launchProfile"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "target": {
+              "pattern": "^/virtualization$"
+            },
+            "value": {
+              "$ref": "#/$defs/virtualizationPolicy"
+            }
+          },
+          "required": [
+            "target",
+            "value"
+          ]
+        }
+      ]
+    },
+    "overrideTarget": {
+      "type": "string",
+      "oneOf": [
+        {
+          "pattern": "^/capabilities/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/products/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/software_sources/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/provider_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/deployment_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/lifecycle_workflows/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/managed_settings/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/managed_assets/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/obsolete_components/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*/os_packages/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/platforms/[a-z][a-z0-9]*(?:_[a-z0-9]+)*/capability_bindings/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/policy$"
+        },
+        {
+          "pattern": "^/logging$"
+        },
+        {
+          "pattern": "^/box_artifacts/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/launch_profiles/[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+        },
+        {
+          "pattern": "^/virtualization$"
+        }
+      ],
+      "description": "Exact JSON Pointer to an existing baseline catalog entry, platform package/binding, policy object, or logging object. Wildcards, array indexes, arbitrary leaf edits, metadata changes, and permission changes are unsupported. Replacement values are complete objects, not patches."
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+      "minLength": 2,
+      "maxLength": 80,
+      "description": "Stable lower_snake_case identifier."
+    },
+    "adapterId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "minLength": 2,
+      "maxLength": 120,
+      "description": "Identifier for reviewed executable behavior distributed with the package. Manifest data may select but not define adapters."
+    },
+    "schemaVersion": {
+      "type": "string",
+      "const": "3.2",
+      "description": "Version 3.2 uses SOE/CSO terminology and canonical manifest paths. Consumers must explicitly support 3.2 before any changing action. Legacy SCB/CDE/CSE shapes require an explicit migration; they are not aliases."
+    },
+    "pathTemplate": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$))(?!.*\\$\\{(?:PASSWORD|TOKEN|SECRET|PRIVATE_KEY|EMAIL)\\}).+$",
+      "description": "Portable path template using variables permitted by policy.allowed_path_variables: ${HOME}, ${DESKTOP}, ${COURSE_REPOSITORY}, ${ATLAS_ROOT}, ${COURSE_ROOT}, ${SCRIPT_ROOT}, ${LOG_DIR}, ${TEMP}, and ${WORKSPACE_ROOT}. Resolve Atlas/course roots from actual selected checkouts. Semantic validation rejects unknown placeholders, expands approved variables, canonicalizes results, and confirms approved boundaries."
+    },
+    "uriHttps": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "maxLength": 2048
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "stringList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "uniqueItems": true
+    },
+    "identifierList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifier"
+      },
+      "uniqueItems": true
+    },
+    "adapterIdList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/adapterId"
+      },
+      "uniqueItems": true
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_repository"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "approved",
+            "deprecated"
+          ]
+        },
+        "effective_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "approval_record": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "source_repository": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Actual provenance commit when known; mandatory for approved or deprecated manifests. A generated uncommitted draft omits this field instead of fabricating a new revision."
+        },
+        "change_summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "effective_date",
+              "approval_record",
+              "source_revision"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "deprecated"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "source_revision"
+            ]
+          }
+        }
+      ]
+    },
+    "versionRule": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comparison"
+          ],
+          "properties": {
+            "comparison": {
+              "type": "string",
+              "enum": [
+                "presence_only",
+                "managed_latest"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "comparison",
+            "value"
+          ],
+          "properties": {
+            "comparison": {
+              "type": "string",
+              "enum": [
+                "exact",
+                "minimum",
+                "compatible_range"
+              ]
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "comparison_adapter_id": {
+              "$ref": "#/$defs/adapterId"
+            }
+          }
+        }
+      ],
+      "description": "Requirement for an individual component, not a requirement for version equality across courses or platforms. presence_only accepts a usable installed implementation; minimum and compatible_range accept any supported version satisfying that rule. exact is reserved for a documented component-specific need. Preserve an installed version that satisfies the applicable requirement. managed_latest selects approved versions during an explicit update action and does not make newer availability a verification failure."
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_id"
+      ],
+      "properties": {
+        "adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "executable_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[^/\\\\\\s]+$",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "uniqueItems": true,
+          "description": "Candidate command names for locating the product. A runtime adapter may select one suitable interpreter; it must not require every platform-specific alias to exist."
+        },
+        "package_identifiers": {
+          "$ref": "#/$defs/stringList"
+        },
+        "extension_identifiers": {
+          "$ref": "#/$defs/stringList"
+        },
+        "settings_profile_ids": {
+          "$ref": "#/$defs/identifierList"
+        },
+        "expected_files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pathTemplate"
+          },
+          "uniqueItems": true
+        },
+        "network_probe_source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version_rule": {
+          "$ref": "#/$defs/versionRule"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "executable_names"
+          ]
+        },
+        {
+          "required": [
+            "package_identifiers"
+          ]
+        },
+        {
+          "required": [
+            "extension_identifiers"
+          ]
+        },
+        {
+          "required": [
+            "settings_profile_ids"
+          ]
+        },
+        {
+          "required": [
+            "expected_files"
+          ]
+        },
+        {
+          "required": [
+            "network_probe_source_id"
+          ]
+        }
+      ],
+      "description": "Evidence interpreted by the selected adapter. For programming runtimes, discover a usable interpreter and verify its applicable component version rule before falling back to package registration checks. A compatible approved runtime need not have the exact package identifier used by the installation recipe. Required product identity, functionality, integrity, and applicable settings checks still apply."
+    },
+    "retryProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximum_attempts",
+        "initial_delay_seconds",
+        "backoff_multiplier",
+        "maximum_delay_seconds"
+      ],
+      "properties": {
+        "maximum_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "initial_delay_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60
+        },
+        "backoff_multiplier": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "maximum_delay_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "course_root",
+        "script_root",
+        "minimum_free_space_bytes",
+        "network_timeout_seconds",
+        "allow_os_release_upgrade",
+        "student_cost_policy",
+        "allowed_path_variables",
+        "retry_profiles",
+        "default_retry_profile_id",
+        "integrity_algorithms",
+        "version_management"
+      ],
+      "properties": {
+        "course_root": {
+          "$ref": "#/$defs/pathTemplate",
+          "description": "Legacy-named workspace discovery/default template. ${WORKSPACE_ROOT} selects the actual course checkout in cso mode or Atlas checkout in standalone soe mode. COURSE_ROOT is valid only in cso mode. Neither repository_name nor HOME forces a clone path.",
+          "examples": [
+            "${HOME}/Repos/${COURSE_REPOSITORY}",
+            "${WORKSPACE_ROOT}"
+          ]
+        },
+        "script_root": {
+          "$ref": "#/$defs/pathTemplate",
+          "description": "Shared automation directory in the selected Atlas checkout, not a duplicated course script tree. Resolve ATLAS_ROOT before expanding this path.",
+          "examples": [
+            "${ATLAS_ROOT}/scripts"
+          ]
+        },
+        "minimum_free_space_bytes": {
+          "type": "integer",
+          "minimum": 104857600
+        },
+        "network_timeout_seconds": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 300
+        },
+        "allow_os_release_upgrade": {
+          "const": false
+        },
+        "student_cost_policy": {
+          "type": "string",
+          "const": "no_additional_course_fee"
+        },
+        "allowed_path_variables": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "HOME",
+              "DESKTOP",
+              "COURSE_ROOT",
+              "SCRIPT_ROOT",
+              "LOG_DIR",
+              "TEMP",
+              "COURSE_REPOSITORY",
+              "ATLAS_ROOT",
+              "WORKSPACE_ROOT"
+            ]
+          },
+          "minItems": 7,
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "contains": {
+                "const": "HOME"
+              }
+            },
+            {
+              "contains": {
+                "const": "COURSE_ROOT"
+              }
+            },
+            {
+              "contains": {
+                "const": "SCRIPT_ROOT"
+              }
+            },
+            {
+              "contains": {
+                "const": "LOG_DIR"
+              }
+            },
+            {
+              "contains": {
+                "const": "TEMP"
+              }
+            },
+            {
+              "contains": {
+                "const": "DESKTOP"
+              }
+            },
+            {
+              "contains": {
+                "const": "ATLAS_ROOT"
+              }
+            }
+          ]
+        },
+        "retry_profiles": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/retryProfile"
+          }
+        },
+        "default_retry_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "integrity_algorithms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "sha256",
+              "sha384",
+              "sha512",
+              "package_signature",
+              "repository_signature",
+              "provider_verified"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "version_management": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "const": "satisfy_requirements"
+            },
+            "preserve_compatible_installations": {
+              "type": "boolean",
+              "const": true
+            },
+            "allow_automatic_downgrade": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "strategy",
+            "preserve_compatible_installations",
+            "allow_automatic_downgrade"
+          ],
+          "description": "Establish common usable capabilities. Satisfying installations are preserved; normal setup does not force newest versions or match a reference machine. Install missing components and repair unmet requirements. A conflict requiring downgrade or replacement must be reported for explicit resolution, not silently applied."
+        }
+      }
+    },
+    "capabilityDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "required",
+        "implementation_kind",
+        "student_use"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "implementation_kind": {
+          "type": "string",
+          "enum": [
+            "application",
+            "command_line_tool",
+            "programming_runtime",
+            "language_package",
+            "ide",
+            "ide_extension",
+            "external_service_client"
+          ],
+          "description": "Kind of software implementing this capability. ide and ide_extension refer to actual IDE products and their extensions, such as PyCharm or Visual Studio; they do not name the whole CSO."
+        },
+        "student_use": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "depends_on": {
+          "$ref": "#/$defs/identifierList"
+        },
+        "provider_profile_required": {
+          "type": "boolean",
+          "default": false
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      }
+    },
+    "capabilityCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/capabilityDefinition"
+      },
+      "minProperties": 1,
+      "description": "SOE or resolved capability catalog. Each capability declares whether it is required. No language, IDE, testing tool, or programming-course capability is mandatory merely because of this schema."
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "vendor_or_project",
+        "product_kind",
+        "capability_roles",
+        "version_rule",
+        "student_availability"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "vendor_or_project": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "product_kind": {
+          "type": "string",
+          "enum": [
+            "application",
+            "command_line_tool",
+            "programming_runtime",
+            "language_package",
+            "ide",
+            "ide_extension",
+            "external_service_client"
+          ],
+          "description": "Kind of the concrete product. Preserve IDE terminology for an actual IDE product or extension; CSO names the complete course environment."
+        },
+        "capability_roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "version_rule": {
+          "$ref": "#/$defs/versionRule"
+        },
+        "student_availability": {
+          "type": "string",
+          "enum": [
+            "no_cost",
+            "institution_provided"
+          ]
+        },
+        "license_identifier": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "open_source": {
+          "type": "boolean"
+        },
+        "homepage": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "documentation_uri": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "productCatalog": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/product"
+      }
+    },
+    "integrityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "package_signature",
+            "repository_signature",
+            "checksum",
+            "provider_verified",
+            "tls_only"
+          ]
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "sha256",
+            "sha384",
+            "sha512"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64,128}$"
+        },
+        "signature_key_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9A-Fa-f ]{16,120}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "checksum"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "algorithm"
+            ]
+          }
+        }
+      ]
+    },
+    "softwareSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "source_type",
+        "base_uri",
+        "integrity"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "os_repository",
+            "vendor_repository",
+            "language_package_index",
+            "ide_marketplace",
+            "source_repository",
+            "direct_download",
+            "hosted_service",
+            "release_assets"
+          ],
+          "description": "Distribution channel for concrete products. ide_marketplace refers to a particular IDE's extension marketplace."
+        },
+        "base_uri": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "allowed_hosts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "hostname",
+            "minLength": 1,
+            "maxLength": 253
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrityPolicy"
+        },
+        "retry_profile_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "softwareSourceCatalog": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/softwareSource"
+      }
+    },
+    "authenticationProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "interactive",
+        "secret_storage"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "browser_device_flow",
+            "browser_oauth",
+            "external_cli_managed",
+            "none",
+            "environment_token"
+          ]
+        },
+        "interactive": {
+          "type": "boolean"
+        },
+        "secret_storage": {
+          "type": "string",
+          "enum": [
+            "provider_cli",
+            "operating_system_credential_store",
+            "not_applicable",
+            "environment"
+          ]
+        },
+        "required_scopes": {
+          "$ref": "#/$defs/stringList"
+        },
+        "status_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "login_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "token_environment_variables": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]*$",
+            "maxLength": 120
+          },
+          "description": "Approved environment variable NAMES only. Never include token values."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "environment_token"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "interactive": {
+                "const": false
+              },
+              "secret_storage": {
+                "const": "environment"
+              }
+            },
+            "required": [
+              "token_environment_variables"
+            ],
+            "not": {
+              "required": [
+                "login_adapter_id"
+              ]
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "token_environment_variables"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "privacyIdentityRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "provider_noreply_template",
+            "provider_private_identity",
+            "user_confirmed_private_identity"
+          ]
+        },
+        "template": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 300,
+          "pattern": "^(?!.*\\$\\{(?:PASSWORD|TOKEN|SECRET|PRIVATE_KEY)\\}).+$"
+        },
+        "allowed_placeholders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "USERNAME",
+              "ACCOUNT_ID",
+              "PROVIDER_DOMAIN"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "provider_noreply_template"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "template",
+              "allowed_placeholders"
+            ]
+          }
+        }
+      ]
+    },
+    "providerProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "adapter_id",
+        "service_uri",
+        "client_product_id",
+        "authentication",
+        "account_fields",
+        "privacy_identity",
+        "redacted_fields"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "service_uri": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "client_product_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "api_base_uri": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "authentication": {
+          "$ref": "#/$defs/authenticationProfile"
+        },
+        "account_fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "username",
+            "account_id"
+          ],
+          "properties": {
+            "username": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "account_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "display_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        },
+        "privacy_identity": {
+          "$ref": "#/$defs/privacyIdentityRule"
+        },
+        "redacted_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "providerProfileCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/providerProfile"
+      },
+      "description": "Service provider profiles. This catalog may be empty when no selected product needs an external provider."
+    },
+    "osRelease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_id",
+        "display_name",
+        "security_updates_required"
+      ],
+      "properties": {
+        "release_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "security_updates_required": {
+          "const": true
+        },
+        "minimum_build": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "maximum_build": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "support_end_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "packageManager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "adapter_id",
+        "source_ids"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "lock_scope": {
+          "type": "string",
+          "enum": [
+            "system_package_manager",
+            "user_package_manager"
+          ]
+        }
+      }
+    },
+    "osPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "purpose",
+        "package_identifier",
+        "required",
+        "source_id",
+        "verification"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "bootstrap_prerequisite",
+            "security_support",
+            "desktop_integration",
+            "diagnostic_utility",
+            "runtime_support",
+            "package_management_support"
+          ]
+        },
+        "package_identifier": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version_rule": {
+          "$ref": "#/$defs/versionRule"
+        },
+        "architectures": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]{2,32}$"
+          },
+          "uniqueItems": true
+        },
+        "verification": {
+          "$ref": "#/$defs/verification"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "description": "Platform support package that is not itself a Course-specific overlay capability. Course-specific overlay products must be represented under capability_bindings."
+    },
+    "capabilityBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "required",
+        "installation_scope",
+        "installer_adapter_id",
+        "source_id",
+        "verification"
+      ],
+      "properties": {
+        "product_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "installation_scope": {
+          "type": "string",
+          "enum": [
+            "system",
+            "user",
+            "provider_managed",
+            "course_environment"
+          ]
+        },
+        "installer_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "package_identifier": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "version_rule_override": {
+          "$ref": "#/$defs/versionRule"
+        },
+        "provider_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "settings_profile_ids": {
+          "$ref": "#/$defs/identifierList",
+          "description": "Known candidate settings profiles. Apply only those selected for this target; skip known inapplicable profiles. Unknown IDs are errors. This list does not make a setting applicable or bypass noninteractive workflow restrictions."
+        },
+        "dependencies": {
+          "$ref": "#/$defs/identifierList"
+        },
+        "verification": {
+          "$ref": "#/$defs/verification"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/identifier",
+          "description": "ID in the course-owned environment catalog; required exactly for course_environment scope. Semantic validation resolves it before install or verification."
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "installation_scope": {
+                "const": "provider_managed"
+              }
+            },
+            "required": [
+              "installation_scope"
+            ]
+          },
+          "then": {
+            "required": [
+              "provider_profile_id"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "installation_scope": {
+                "const": "course_environment"
+              }
+            },
+            "required": [
+              "installation_scope"
+            ]
+          },
+          "then": {
+            "required": [
+              "environment_id"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "environment_id"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "installer_adapter_id": {
+                "const": "python_venv_package"
+              }
+            },
+            "required": [
+              "installer_adapter_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "installation_scope": {
+                "const": "course_environment"
+              }
+            },
+            "required": [
+              "environment_id"
+            ]
+          }
+        }
+      ],
+      "description": "Platform-specific product implementation of a capability. Compatible installed versions may differ across platforms. package_identifier selects the installation recipe when installation is needed; it does not require replacing an already approved compatible runtime distributed under another package identifier. course_environment targets a declared per-course environment; python_venv_package requires that scope and must install/verify with the named virtual environment's interpreter instead of global pip."
+    },
+    "capabilityBindings": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/capabilityBinding"
+      },
+      "description": "Concrete product bindings for capabilities in a Course-specific overlay (CSO). Keep operating-system support packages in os_packages. Semantic validation checks required capabilities against the final enabled platform and deployment configuration."
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "abbreviation",
+        "enabled",
+        "reference_platform",
+        "platform_adapter_id",
+        "os",
+        "script",
+        "package_manager",
+        "os_packages",
+        "capability_bindings"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "abbreviation": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{3}$"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "reference_platform": {
+          "type": "boolean",
+          "description": "True for the platform implementation containing the approved reference deployment profile. Exactly one enabled reference platform is required in each complete SOE or resolved configuration."
+        },
+        "platform_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "os": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "family",
+            "name",
+            "releases",
+            "architectures"
+          ],
+          "properties": {
+            "family": {
+              "type": "string",
+              "enum": [
+                "linux",
+                "windows",
+                "macos",
+                "bsd",
+                "other"
+              ]
+            },
+            "name": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "desktop_environment": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "releases": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/osRelease"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "architectures": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._-]{2,32}$"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        },
+        "script": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "extension",
+            "interpreter_adapter_id",
+            "line_ending",
+            "filename_template"
+          ],
+          "properties": {
+            "extension": {
+              "type": "string",
+              "pattern": "^\\.[A-Za-z0-9]{1,12}$"
+            },
+            "interpreter_adapter_id": {
+              "$ref": "#/$defs/adapterId"
+            },
+            "line_ending": {
+              "const": "lf"
+            },
+            "filename_template": {
+              "type": "string",
+              "const": "{action}_{platform}{extension}"
+            }
+          }
+        },
+        "package_manager": {
+          "$ref": "#/$defs/packageManager"
+        },
+        "os_packages": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/identifier"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/osPackage"
+          },
+          "description": "Operating-system-specific prerequisites and support utilities. Do not list official Course-specific overlay products here."
+        },
+        "capability_bindings": {
+          "$ref": "#/$defs/capabilityBindings"
+        },
+        "restart_policy_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      }
+    },
+    "platformCatalog": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/platform"
+      }
+    },
+    "deploymentProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "enabled",
+        "reference_profile",
+        "platform_id",
+        "deployment_kind",
+        "session_type",
+        "allowed_workflow_ids"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "reference_profile": {
+          "type": "boolean",
+          "description": "True only for the approved environment used for primary development, documentation, support reproduction, and acceptance testing."
+        },
+        "platform_id": {
+          "$ref": "#/$defs/identifier",
+          "description": "Identifier of the platform implementation used by this deployment."
+        },
+        "deployment_kind": {
+          "type": "string",
+          "enum": [
+            "bare_metal",
+            "local_virtual_machine",
+            "hosted_virtual_desktop",
+            "cloud_virtual_machine",
+            "container",
+            "other"
+          ]
+        },
+        "provider_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "desktop_environment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "session_type": {
+          "type": "string",
+          "enum": [
+            "local_desktop",
+            "remote_desktop",
+            "headless",
+            "terminal_only",
+            "other",
+            "browser_editor"
+          ]
+        },
+        "os_release_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "architecture": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{2,32}$"
+        },
+        "profile_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "reset_method": {
+          "type": "string",
+          "enum": [
+            "fresh_os_install",
+            "image_reset",
+            "snapshot_restore",
+            "provider_reset",
+            "manual_rebuild",
+            "not_applicable"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "allowed_workflow_ids": {
+          "$ref": "#/$defs/identifierList",
+          "description": "Lifecycle workflow identifiers authorized for this deployment profile."
+        },
+        "execution_context": {
+          "type": "string",
+          "enum": [
+            "local",
+            "hosted",
+            "codespaces",
+            "github_actions"
+          ],
+          "description": "Execution context, independent of physical deployment kind. For example Actions may use a VM, container, or self-hosted physical runner."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "reference_profile": {
+                "const": true
+              }
+            },
+            "required": [
+              "reference_profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "required": [
+              "enabled"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "deployment_kind": {
+                "const": "hosted_virtual_desktop"
+              }
+            },
+            "required": [
+              "deployment_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "provider_name",
+              "desktop_environment"
+            ]
+          }
+        }
+      ],
+      "description": "A concrete environment in which a platform implementation is deployed. Deployment profiles keep provider, desktop-environment, session, reset, release, architecture, and authorized workflow details separate from software and package bindings."
+    },
+    "deploymentProfileCatalog": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/deploymentProfile"
+      },
+      "description": "Catalog of local, virtual, hosted, or other deployment environments. Semantic validation requires exactly one enabled reference profile and validates every allowed workflow reference."
+    },
+    "lifecycleAction": {
+      "type": "string",
+      "enum": [
+        "prepare",
+        "install",
+        "configure",
+        "verify",
+        "update"
+      ]
+    },
+    "workflowTransitionTarget": {
+      "type": "string",
+      "enum": [
+        "prepare",
+        "install",
+        "configure",
+        "verify",
+        "update",
+        "complete"
+      ]
+    },
+    "lifecycleWorkflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "deployment_profile_ids",
+        "operating_roles",
+        "starting_state_id",
+        "ordered_actions",
+        "success_transitions"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "deployment_profile_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "operating_roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "local_user",
+              "cvd_administrator",
+              "cvd_student",
+              "automation_service"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "starting_state_id": {
+          "type": "string",
+          "enum": [
+            "local_unmanaged_environment",
+            "provider_baseline_master",
+            "course_master",
+            "initialized_environment",
+            "uninitialized_runtime"
+          ],
+          "description": "Course-independent starting state. course_master replaces the legacy course-specific state name."
+        },
+        "ordered_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lifecycleAction"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "update_mode": {
+          "type": "string",
+          "enum": [
+            "initial_provider_baseline",
+            "initial_course_master",
+            "periodic_maintenance"
+          ]
+        },
+        "success_transitions": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "enum": [
+              "prepare",
+              "install",
+              "configure",
+              "verify",
+              "update"
+            ]
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/workflowTransitionTarget"
+          }
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "interaction_mode": {
+          "type": "string",
+          "enum": [
+            "interactive",
+            "noninteractive"
+          ],
+          "description": "Noninteractive automation must not prompt for browser/device login or write personal/global identity/editor settings. Adapters enforce this."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ordered_actions": {
+                "contains": {
+                  "const": "update"
+                }
+              }
+            },
+            "required": [
+              "ordered_actions"
+            ]
+          },
+          "then": {
+            "required": [
+              "update_mode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "starting_state_id": {
+                "const": "provider_baseline_master"
+              }
+            },
+            "required": [
+              "starting_state_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operating_roles": {
+                "contains": {
+                  "const": "cvd_administrator"
+                }
+              },
+              "update_mode": {
+                "const": "initial_provider_baseline"
+              }
+            },
+            "required": [
+              "update_mode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "starting_state_id": {
+                "const": "course_master"
+              }
+            },
+            "required": [
+              "starting_state_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operating_roles": {
+                "contains": {
+                  "const": "cvd_student"
+                }
+              },
+              "update_mode": {
+                "const": "initial_course_master"
+              }
+            },
+            "required": [
+              "update_mode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "starting_state_id": {
+                "const": "initialized_environment"
+              }
+            },
+            "required": [
+              "starting_state_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "update_mode": {
+                "const": "periodic_maintenance"
+              }
+            },
+            "required": [
+              "update_mode"
+            ]
+          }
+        }
+      ],
+      "description": "Declarative, non-executable lifecycle sequence selected from deployment profile, operating role, and starting state. Applies to any STEM course."
+    },
+    "lifecycleWorkflowCatalog": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/lifecycleWorkflow"
+      },
+      "description": "Controlled workflow catalog. Semantic validation confirms ordered actions and success transitions agree and that each workflow is authorized by every referenced deployment profile."
+    },
+    "managedSetting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "target_capability_role",
+        "scope",
+        "settings_adapter_id",
+        "merge_policy",
+        "values"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target_capability_role": {
+          "$ref": "#/$defs/identifier"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "system",
+            "user",
+            "workspace"
+          ],
+          "description": "workspace targets versioned repository-local configuration/assets beneath the actual WORKSPACE_ROOT, including .vscode JSON. It is distinct from personal/global user settings and may be configured noninteractively by approved adapters. Resolve and canonicalize paths before writing/removing."
+        },
+        "settings_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "target_path": {
+          "$ref": "#/$defs/pathTemplate"
+        },
+        "platform_ids": {
+          "$ref": "#/$defs/identifierList"
+        },
+        "merge_policy": {
+          "type": "string",
+          "enum": [
+            "merge_preserve_unmanaged",
+            "replace_managed_keys",
+            "create_if_missing"
+          ]
+        },
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "description": "Concrete product-specific settings. Keys and values are validated by the selected settings adapter."
+        },
+        "verification_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "workspace"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_path": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/pathTemplate"
+                  },
+                  {
+                    "pattern": "^\\$\\{WORKSPACE_ROOT\\}/[^/\\\\].*$"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "target_path"
+            ]
+          }
+        }
+      ]
+    },
+    "managedSettingsCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/managedSetting"
+      }
+    },
+    "assetIntegrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "repository_revision",
+            "checksum",
+            "provider_verified"
+          ]
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "sha256",
+            "sha384",
+            "sha512"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64,128}$"
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "checksum"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "algorithm",
+              "digest"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "repository_revision"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "source_revision"
+            ]
+          }
+        }
+      ]
+    },
+    "managedAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "asset_type",
+        "scope",
+        "source_id",
+        "source_path",
+        "destination",
+        "integrity",
+        "replacement_mode",
+        "managed_by"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "automation_script",
+            "manifest",
+            "manifest_schema",
+            "workspace_configuration",
+            "managed_documentation",
+            "extension_definition",
+            "launcher",
+            "file_association",
+            "browser_policy",
+            "bookmark_definition"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "system",
+            "user",
+            "workspace"
+          ],
+          "description": "workspace targets versioned repository-local configuration/assets beneath the actual WORKSPACE_ROOT, including .vscode JSON. It is distinct from personal/global user settings and may be configured noninteractively by approved adapters. Resolve and canonicalize paths before writing/removing."
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "destination": {
+          "$ref": "#/$defs/pathTemplate"
+        },
+        "platform_ids": {
+          "$ref": "#/$defs/identifierList"
+        },
+        "integrity": {
+          "$ref": "#/$defs/assetIntegrity"
+        },
+        "replacement_mode": {
+          "type": "string",
+          "enum": [
+            "atomic_replace",
+            "merge_managed_keys",
+            "create_if_missing"
+          ]
+        },
+        "managed_by": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "setup",
+              "configure",
+              "update"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "executable": {
+          "type": "boolean",
+          "default": false
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "workspace"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "then": {
+            "properties": {
+              "destination": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/pathTemplate"
+                  },
+                  {
+                    "pattern": "^\\$\\{WORKSPACE_ROOT\\}/[^/\\\\].*$"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "destination"
+            ]
+          }
+        }
+      ]
+    },
+    "managedAssetCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/managedAsset"
+      }
+    },
+    "obsoleteComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "scope",
+        "target_path",
+        "platform_ids",
+        "remove_after_release",
+        "reason",
+        "safety_check_adapter_id"
+      ],
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "system",
+            "user",
+            "workspace"
+          ],
+          "description": "workspace targets versioned repository-local configuration/assets beneath the actual WORKSPACE_ROOT, including .vscode JSON. It is distinct from personal/global user settings and may be configured noninteractively by approved adapters. Resolve and canonicalize paths before writing/removing."
+        },
+        "target_path": {
+          "$ref": "#/$defs/pathTemplate"
+        },
+        "platform_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "remove_after_release": {
+          "$ref": "#/$defs/semanticVersion"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "safety_check_adapter_id": {
+          "$ref": "#/$defs/adapterId"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "workspace"
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_path": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/pathTemplate"
+                  },
+                  {
+                    "pattern": "^\\$\\{WORKSPACE_ROOT\\}/[^/\\\\].*$"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "target_path"
+            ]
+          }
+        }
+      ]
+    },
+    "obsoleteComponentCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/obsoleteComponent"
+      }
+    },
+    "logging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format_version",
+        "directory",
+        "filename_template",
+        "encoding",
+        "retention",
+        "redaction",
+        "support_bundle"
+      ],
+      "properties": {
+        "format_version": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "directory": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/pathTemplate"
+            },
+            {
+              "enum": [
+                "${COURSE_ROOT}/logs",
+                "${WORKSPACE_ROOT}/logs"
+              ]
+            }
+          ],
+          "description": "Workspace-local logs; standalone SOE mode uses WORKSPACE_ROOT."
+        },
+        "filename_template": {
+          "type": "string",
+          "const": "{action}_{platform}_{timestamp}.log"
+        },
+        "encoding": {
+          "const": "utf-8"
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "maximum_files",
+            "maximum_age_days"
+          ],
+          "properties": {
+            "maximum_files": {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 500
+            },
+            "maximum_age_days": {
+              "type": "integer",
+              "minimum": 7,
+              "maximum": 3650
+            }
+          }
+        },
+        "redaction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "adapter_id",
+            "prohibited_field_names"
+          ],
+          "properties": {
+            "adapter_id": {
+              "$ref": "#/$defs/adapterId"
+            },
+            "prohibited_field_names": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "password",
+                  "token",
+                  "access_token",
+                  "refresh_token",
+                  "private_key",
+                  "browser_data",
+                  "complete_personal_email"
+                ]
+              },
+              "minItems": 7,
+              "uniqueItems": true
+            }
+          }
+        },
+        "support_bundle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "explicit_confirmation_required",
+            "allowed_content_types",
+            "prohibited_content_types"
+          ],
+          "properties": {
+            "explicit_confirmation_required": {
+              "const": true
+            },
+            "allowed_content_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "sanitized_log",
+                  "sanitized_verification_report",
+                  "manifest_release_summary",
+                  "platform_facts",
+                  "version_summary"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "prohibited_content_types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "student_source_files",
+                  "repository_contents",
+                  "version_control_history",
+                  "authentication_data",
+                  "browser_data"
+                ]
+              },
+              "minItems": 5,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "versionDateTimeGroup": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-([0-2][0-9]|3[01])-([01][0-9]|2[0-3])-[0-5][0-9]$",
+      "description": "Local version date-time group in YYYY-MM-DD-HH-MM format using a 24-hour clock. Semantic validation must confirm that the calendar date is valid."
+    },
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$",
+      "description": "Semantic Versioning 2.0.0 version with optional pre-release and build metadata."
+    },
+    "courseEnvironmentCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/courseEnvironment"
+      },
+      "description": "Optional course-owned environments keyed by stable ID. Omit or use {} when none are needed. These declarations do not add capabilities or install packages by themselves; environment-bound platform bindings name an environment_id."
+    },
+    "courseEnvironment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "python_venv"
+        },
+        "path": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/pathTemplate"
+            },
+            {
+              "pattern": "^\\$\\{COURSE_ROOT\\}/[^/\\\\].*$"
+            }
+          ],
+          "examples": [
+            "${COURSE_ROOT}/.venv"
+          ],
+          "description": "Course-local environment directory. Resolve and canonicalize beneath the actual COURSE_ROOT; reject aliases/symlinks escaping that boundary or sharing another course's environment."
+        },
+        "runtime_capability_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/deploymentApplicability"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "runtime_capability_id"
+      ],
+      "description": "An isolated Python virtual environment owned by this course. Use a supported interpreter implementing runtime_capability_id and install/verify packages inside this environment. Its packages may differ from other courses without changing shared tools."
+    },
+    "deploymentApplicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "deployment_profile_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "deployment_kinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "bare_metal",
+              "local_virtual_machine",
+              "hosted_virtual_desktop",
+              "cloud_virtual_machine",
+              "container",
+              "other"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "session_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "local_desktop",
+              "remote_desktop",
+              "headless",
+              "terminal_only",
+              "other",
+              "browser_editor"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [],
+      "description": "Deployment restriction evaluated after SOE/course composition. Provide at least one nonempty selector. When profile IDs, deployment kinds, or session types are supplied together, all supplied restrictions must match. All IDs must resolve, including planned disabled profiles. Kind selectors also include future course-added profiles of that kind. An omitted applies_to means all otherwise applicable deployments. Intersect with existing platform_ids; required is evaluated only after filtering. Exclusion is not an uninstall instruction.",
+      "anyOf": [
+        {
+          "required": [
+            "deployment_profile_ids"
+          ]
+        },
+        {
+          "required": [
+            "deployment_kinds"
+          ]
+        },
+        {
+          "required": [
+            "session_types"
+          ]
+        }
+      ]
+    },
+    "safeRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?!.*//)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*(?:^|/)\\.(?:/|$))(?!.*[\\\\:\\x00-\\x1f]).+$",
+      "description": "Normalized repository-relative POSIX path. No absolute/drive/UNC paths, backslashes, dot segments, traversal, or control characters. Runtime canonicalization must still reject symlink escapes."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "providerName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "maxLength": 80
+    },
+    "githubRepositoryUri": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/uriHttps"
+        },
+        {
+          "pattern": "^https://github\\.com/[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9][A-Za-z0-9._-]*/?$"
+        }
+      ]
+    },
+    "virtualizationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_provider": {
+          "$ref": "#/$defs/providerName"
+        },
+        "reference_provider": {
+          "$ref": "#/$defs/providerName"
+        },
+        "install_provider_automatically": {
+          "const": false
+        },
+        "provider_selection": {
+          "const": "vagrant_native"
+        },
+        "box_repository_source_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "required": [
+        "default_provider",
+        "reference_provider",
+        "install_provider_automatically",
+        "provider_selection",
+        "box_repository_source_id"
+      ],
+      "description": "Host-side VM launch policy, independent of authenticated service provider_profiles. Honor --provider then VAGRANT_DEFAULT_PROVIDER, otherwise configure Vagrant to prefer default_provider. reference_provider is the qualified VM reference, not the overall SOE reference environment. No hypervisor is a mandatory automatically installed SOE component."
+    },
+    "boxPart": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "url": {
+          "$ref": "#/$defs/uriHttps"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "sequence",
+        "url",
+        "sha256",
+        "size_bytes"
+      ],
+      "description": "One ordered release asset, strictly below GitHub's 2-GiB per-asset limit. Runtime validation requires contiguous unique sequence numbers and distinct URLs."
+    },
+    "boxDistribution": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "single_file"
+            },
+            "url": {
+              "$ref": "#/$defs/uriHttps"
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "size_bytes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "kind",
+            "url",
+            "sha256",
+            "size_bytes"
+          ],
+          "description": "A URL yielding one complete Vagrant .box. Enforce hosting-source asset limits at runtime."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "multipart"
+            },
+            "assembly": {
+              "enum": [
+                "binary_concatenation",
+                "seven_zip_volumes"
+              ]
+            },
+            "box_filename": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.box$",
+              "maxLength": 240
+            },
+            "parts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/boxPart"
+              },
+              "minItems": 2,
+              "uniqueItems": true
+            },
+            "assembled_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "assembled_size_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "assembly_adapter_id": {
+              "$ref": "#/$defs/adapterId"
+            },
+            "requires_host_product_id": {
+              "$ref": "#/$defs/identifier"
+            }
+          },
+          "required": [
+            "kind",
+            "assembly",
+            "box_filename",
+            "parts",
+            "assembled_sha256",
+            "assembled_size_bytes",
+            "assembly_adapter_id"
+          ],
+          "description": "Custom host-side acquisition metadata, not native Vagrant catalog metadata. Download/verify parts, reconstruct and verify the complete .box before box import or VM startup. A guest provisioner is too late. For binary concatenation sizes must sum; for seven_zip_volumes verify the extracted box_filename and its checksum.",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "assembly": {
+                    "const": "seven_zip_volumes"
+                  }
+                },
+                "required": [
+                  "assembly"
+                ]
+              },
+              "then": {
+                "required": [
+                  "requires_host_product_id"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "boxArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "box_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)?$",
+          "maxLength": 200
+        },
+        "provider_name": {
+          "$ref": "#/$defs/providerName"
+        },
+        "architecture": {
+          "enum": [
+            "amd64",
+            "arm64"
+          ]
+        },
+        "guest_deployment_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "source_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "$ref": "#/$defs/semanticVersion"
+        },
+        "distribution": {
+          "$ref": "#/$defs/boxDistribution"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "display_name",
+        "enabled",
+        "box_name",
+        "provider_name",
+        "architecture",
+        "guest_deployment_profile_id",
+        "source_id"
+      ],
+      "description": "One provider/architecture-specific SOE or CSO box artifact. A disabled planned entry may omit unreleased version/distribution details; never invent release URLs or checksums. Enabled artifacts require qualified actual assets. Normalize Vagrant amd64 to platform x86_64 only in approved semantic validation.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "required": [
+              "enabled"
+            ]
+          },
+          "then": {
+            "required": [
+              "version",
+              "distribution"
+            ]
+          }
+        }
+      ]
+    },
+    "boxArtifactCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/boxArtifact"
+      }
+    },
+    "launchProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "vagrant",
+            "codespaces",
+            "vscode_web"
+          ]
+        },
+        "runtime_available": {
+          "type": "boolean"
+        },
+        "repository_context": {
+          "const": "selected_checkout"
+        },
+        "deployment_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "vagrantfile_path": {
+          "$ref": "#/$defs/safeRelativePath"
+        },
+        "box_artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "devcontainer_path": {
+          "$ref": "#/$defs/safeRelativePath"
+        },
+        "launch_uri_template": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "configuration_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/safeRelativePath"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "display_name",
+        "enabled",
+        "kind",
+        "runtime_available",
+        "repository_context"
+      ],
+      "description": "Repository-local entry point. Resolve {owner}/{repository} from the selected checkout using approved identity discovery, never inherited faculty/template identity. Enabled launchers require real implemented configuration/adapters and qualified runtime assets; structural schema alone cannot prove readiness. vscode_web has no runtime deployment and cannot claim full SOE/CSO verification.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "vagrant"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "runtime_available": {
+                "const": true
+              }
+            },
+            "required": [
+              "deployment_profile_id",
+              "vagrantfile_path",
+              "box_artifact_ids"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "devcontainer_path"
+                  ]
+                },
+                {
+                  "required": [
+                    "launch_uri_template"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "codespaces"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "runtime_available": {
+                "const": true
+              },
+              "launch_uri_template": {
+                "const": "https://codespaces.new/{owner}/{repository}"
+              }
+            },
+            "required": [
+              "deployment_profile_id",
+              "devcontainer_path",
+              "launch_uri_template"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "vagrantfile_path"
+                  ]
+                },
+                {
+                  "required": [
+                    "box_artifact_ids"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "vscode_web"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "runtime_available": {
+                "const": false
+              },
+              "launch_uri_template": {
+                "const": "https://github.dev/{owner}/{repository}"
+              }
+            },
+            "required": [
+              "launch_uri_template"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "deployment_profile_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "vagrantfile_path"
+                  ]
+                },
+                {
+                  "required": [
+                    "box_artifact_ids"
+                  ]
+                },
+                {
+                  "required": [
+                    "devcontainer_path"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "launchProfileCatalog": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/launchProfile"
+      }
+    },
+    "studentDistribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "faculty_directory": {
+          "const": ".faculty"
+        },
+        "retained_faculty_paths": {
+          "const": [
+            ".faculty/README.md"
+          ]
+        },
+        "publish_mode": {
+          "const": "sanitized_snapshot"
+        },
+        "include_source_history": {
+          "const": false
+        },
+        "rewrite_repository_identity": {
+          "const": true
+        },
+        "destination_repository": {
+          "$ref": "#/$defs/githubRepositoryUri"
+        },
+        "workflow_path": {
+          "$ref": "#/$defs/safeRelativePath"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "enabled",
+        "faculty_directory",
+        "retained_faculty_paths",
+        "publish_mode",
+        "include_source_history",
+        "rewrite_repository_identity"
+      ],
+      "description": "Faculty-source distribution policy, not an SOE package requirement or implemented GitHub Action. Publish a sanitized student snapshot with only .faculty/README.md inside .faculty and without faculty Git history. Rewrite destination course identity/launch links, remove faculty-only access/distribution metadata, and externally verify destination access. Disabled plans may omit unpublished destination/workflow details.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            },
+            "required": [
+              "enabled"
+            ]
+          },
+          "then": {
+            "required": [
+              "destination_repository",
+              "workflow_path"
+            ]
+          }
+        }
+      ]
+    },
+    "resolvedCsoConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "manifest_type": {
+          "type": "string",
+          "const": "resolved"
+        },
+        "course": {
+          "$ref": "#/$defs/course"
+        },
+        "baseline": {
+          "$ref": "#/$defs/baselineReference"
+        },
+        "automation_release": {
+          "$ref": "#/$defs/semanticVersion"
+        },
+        "automation_release_date_time_group": {
+          "$ref": "#/$defs/versionDateTimeGroup"
+        },
+        "control": {
+          "$ref": "#/$defs/control"
+        },
+        "baseline_control": {
+          "$ref": "#/$defs/control"
+        },
+        "policy": {
+          "$ref": "#/$defs/policy"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilityCatalog"
+        },
+        "products": {
+          "$ref": "#/$defs/productCatalog"
+        },
+        "software_sources": {
+          "$ref": "#/$defs/softwareSourceCatalog"
+        },
+        "provider_profiles": {
+          "$ref": "#/$defs/providerProfileCatalog"
+        },
+        "platforms": {
+          "$ref": "#/$defs/platformCatalog"
+        },
+        "deployment_profiles": {
+          "$ref": "#/$defs/deploymentProfileCatalog"
+        },
+        "lifecycle_workflows": {
+          "$ref": "#/$defs/lifecycleWorkflowCatalog"
+        },
+        "managed_settings": {
+          "$ref": "#/$defs/managedSettingsCatalog"
+        },
+        "managed_assets": {
+          "$ref": "#/$defs/managedAssetCatalog"
+        },
+        "obsolete_components": {
+          "$ref": "#/$defs/obsoleteComponentCatalog"
+        },
+        "logging": {
+          "$ref": "#/$defs/logging"
+        },
+        "baseline_release": {
+          "$ref": "#/$defs/baselineIdentity"
+        },
+        "course_environments": {
+          "$ref": "#/$defs/courseEnvironmentCatalog"
+        },
+        "virtualization": {
+          "$ref": "#/$defs/virtualizationPolicy"
+        },
+        "box_artifacts": {
+          "$ref": "#/$defs/boxArtifactCatalog"
+        },
+        "launch_profiles": {
+          "$ref": "#/$defs/launchProfileCatalog"
+        },
+        "configuration_kind": {
+          "const": "cso"
+        },
+        "selected_deployment_profile_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "student_distribution": {
+          "$ref": "#/$defs/studentDistribution"
+        }
+      },
+      "required": [
+        "schema_version",
+        "manifest_type",
+        "course",
+        "baseline",
+        "automation_release",
+        "automation_release_date_time_group",
+        "control",
+        "baseline_control",
+        "policy",
+        "capabilities",
+        "products",
+        "software_sources",
+        "provider_profiles",
+        "platforms",
+        "deployment_profiles",
+        "lifecycle_workflows",
+        "managed_settings",
+        "managed_assets",
+        "obsolete_components",
+        "logging",
+        "baseline_release",
+        "course_environments",
+        "configuration_kind",
+        "selected_deployment_profile_id"
+      ],
+      "description": "In-memory complete course CSO. Compose both required manifests before deployment filtering. control is course control, baseline_control/baseline_release record the actual SOE, and course_environments is the course declaration or {}. selected_deployment_profile_id records the target; semantic validation still checks enabled state, applicability, dependencies, and authorization.",
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "student_distribution"
+            ]
+          },
+          "then": {
+            "properties": {
+              "course": {
+                "properties": {
+                  "repository_visibility": {
+                    "const": "private"
+                  },
+                  "repository_audience": {
+                    "const": "assigned_faculty"
+                  }
+                },
+                "required": [
+                  "repository_visibility",
+                  "repository_audience"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resolvedSoeConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "manifest_type": {
+          "const": "resolved"
+        },
+        "baseline": {
+          "$ref": "#/$defs/baselineIdentity"
+        },
+        "automation_release": {
+          "$ref": "#/$defs/semanticVersion"
+        },
+        "automation_release_date_time_group": {
+          "$ref": "#/$defs/versionDateTimeGroup"
+        },
+        "control": {
+          "$ref": "#/$defs/control"
+        },
+        "policy": {
+          "$ref": "#/$defs/policy"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilityCatalog"
+        },
+        "products": {
+          "$ref": "#/$defs/productCatalog"
+        },
+        "software_sources": {
+          "$ref": "#/$defs/softwareSourceCatalog"
+        },
+        "provider_profiles": {
+          "$ref": "#/$defs/providerProfileCatalog"
+        },
+        "platforms": {
+          "$ref": "#/$defs/platformCatalog"
+        },
+        "deployment_profiles": {
+          "$ref": "#/$defs/deploymentProfileCatalog"
+        },
+        "lifecycle_workflows": {
+          "$ref": "#/$defs/lifecycleWorkflowCatalog"
+        },
+        "managed_settings": {
+          "$ref": "#/$defs/managedSettingsCatalog"
+        },
+        "managed_assets": {
+          "$ref": "#/$defs/managedAssetCatalog"
+        },
+        "obsolete_components": {
+          "$ref": "#/$defs/obsoleteComponentCatalog"
+        },
+        "logging": {
+          "$ref": "#/$defs/logging"
+        },
+        "virtualization": {
+          "$ref": "#/$defs/virtualizationPolicy"
+        },
+        "box_artifacts": {
+          "$ref": "#/$defs/boxArtifactCatalog"
+        },
+        "launch_profiles": {
+          "$ref": "#/$defs/launchProfileCatalog"
+        },
+        "configuration_kind": {
+          "const": "soe"
+        },
+        "selected_deployment_profile_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "required": [
+        "schema_version",
+        "manifest_type",
+        "baseline",
+        "automation_release",
+        "automation_release_date_time_group",
+        "control",
+        "policy",
+        "capabilities",
+        "products",
+        "software_sources",
+        "provider_profiles",
+        "platforms",
+        "deployment_profiles",
+        "lifecycle_workflows",
+        "managed_settings",
+        "managed_assets",
+        "obsolete_components",
+        "logging",
+        "configuration_kind",
+        "selected_deployment_profile_id"
+      ],
+      "description": "In-memory standalone SOE target configuration. baseline is baselineIdentity and control is SOE control. No course identity, course baseline reference, or course environment catalog exists; no cso_manifest.json is required. WORKSPACE_ROOT is the selected Atlas checkout. Semantic validation selects only applicable components."
+    }
+  }
+}

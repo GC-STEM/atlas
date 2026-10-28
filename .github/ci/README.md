@@ -9,6 +9,7 @@ tests and student assessment logic belong in the applicable course repository.
 | Workflow | Checks | Runs |
 | -------- | ------ | ---- |
 | Core Validation | Required files, configuration syntax, EoL policy agreement, Python automation, regression tests, and GitHub Actions syntax | Push, pull request, or manual |
+| Codespaces SOE | Ubuntu 22.04/Python 3.10 image build, resolver tests, and non-root course setup/isolation | Push, pull request, or manual |
 | Documentation Command Syntax | Bash code-block syntax on Linux, macOS, and Windows Git Bash | Push, pull request, or manual |
 | Internal Links | Local file, image, directory, and heading links | Push, pull request, manual, and weekly |
 | External Links | HTTP/HTTPS destinations and supported heading anchors | Manual and weekly |
@@ -35,6 +36,9 @@ repositories, but course workflows require an intentional configuration review.
 * **requirements.txt:** Pinned Core CI dependencies.
 * **test_ci.py:** Regression tests for the validators, safe command syntax
   checking, and link failure detection.
+* **test_soe.py:** SOE/CSO composition and Codespaces launcher regression tests.
+* **smoke_codespaces.py:** Real container provisioning, course isolation,
+  workspace-setting preservation, and repeated-setup qualification.
 
 The former assignment starter checker and empty synchronization workflow have
 been removed. Downstream synchronization remains unimplemented. Add it after
