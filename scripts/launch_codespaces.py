@@ -7,13 +7,14 @@ import re
 import subprocess
 import sys
 import webbrowser
+from collections.abc import Sequence
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
 from soe import ConfigurationError, load_plan, read_json, require
 
 
-def github_identity(remote):
+def github_identity(remote: str) -> str:
     if remote.startswith("git@github.com:"):
         path = remote.removeprefix("git@github.com:")
     else:
@@ -46,7 +47,7 @@ def github_identity(remote):
     return path
 
 
-def git(workspace, *args):
+def git(workspace: Path, *args: str) -> str:
     return subprocess.run(
         ["git", "-C", str(workspace), *args],
         check=True,
@@ -55,7 +56,12 @@ def git(workspace, *args):
     ).stdout.strip()
 
 
-def launch_url(workspace, atlas_root, branch=None, schema_path=None):
+def launch_url(
+    workspace: Path,
+    atlas_root: Path,
+    branch: str | None = None,
+    schema_path: str | Path | None = None,
+) -> str:
     plan = load_plan(atlas_root, workspace, schema_path=schema_path)
     launcher = plan["resolved"]["launch_profiles"].get("github_codespaces")
     require(
@@ -99,7 +105,7 @@ def launch_url(workspace, atlas_root, branch=None, schema_path=None):
     return f"https://codespaces.new/{identity}/tree/{quote(branch, safe='')}"
 
 
-def main(argv=None):
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", type=Path, default=Path.cwd())
     parser.add_argument(

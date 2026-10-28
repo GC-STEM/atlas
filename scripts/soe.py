@@ -11,8 +11,10 @@ import re
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable, Iterable
 from functools import lru_cache
 from pathlib import Path
+from typing import Any, TypedDict, cast
 from urllib.request import urlopen
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -50,24 +52,49 @@ SOURCES = {
 }
 
 
+JsonObject = dict[str, Any]
+
+
+class Plan(TypedDict):
+    """Stable outputs of the schema-validated SOE/CSO resolver."""
+
+    configuration_kind: str
+    workspace: str
+    deployment: str
+    platform: str
+    profile: JsonObject
+    packages: list[str]
+    extensions: list[str]
+    bindings: dict[str, JsonObject]
+    environments: dict[str, str]
+    settings: list[JsonObject]
+    resolved: JsonObject
+
+
+class LoadedPlan(Plan):
+    """A plan with the selected schema source recorded by load_plan."""
+
+    schema_path: str | None
+
+
 class ConfigurationError(ValueError):
     """A configuration cannot be executed safely or completely."""
 
 
-def require(condition, message):
+def require(condition: object, message: str) -> None:
     if not condition:
         raise ConfigurationError(message)
 
 
-def unique_object(pairs):
-    result = {}
+def unique_object(pairs: list[tuple[str, Any]]) -> JsonObject:
+    result: JsonObject = {}
     for key, value in pairs:
         require(key not in result, f"Duplicate JSON key: {key}")
         result[key] = value
     return result
 
 
-def read_json(path):
+def read_json(path: str | Path) -> Any:
     return json.loads(
         Path(path).read_text(encoding="utf-8-sig"),
         object_pairs_hook=unique_object,
@@ -75,7 +102,7 @@ def read_json(path):
 
 
 @lru_cache(maxsize=1)
-def read_published_schema():
+def read_published_schema() -> Any:
     """Read the canonical published schema once per invocation."""
     try:
         with urlopen(CANONICAL_SCHEMA_URI, timeout=60) as response:
@@ -90,26 +117,32 @@ def read_published_schema():
         ) from error
 
 
-def load_schema(schema_path=None):
+def load_schema(schema_path: str | Path | None = None) -> JsonObject:
     """Use an explicitly selected canonical file or its published URL."""
     source = schema_path or os.environ.get("SOE_SCHEMA_PATH")
     schema = (
         read_json(source) if source else copy.deepcopy(read_published_schema())
     )
     require(
-        isinstance(schema, dict) and schema.get("$id") == CANONICAL_SCHEMA_URI,
+        isinstance(schema, dict)
+        and cast(JsonObject, schema).get("$id") == CANONICAL_SCHEMA_URI,
         "Expected the canonical GC-STEM/.github manifest schema",
     )
     try:
-        Draft202012Validator.check_schema(schema)
+        check_schema: Callable[[JsonObject], None] = getattr(
+            Draft202012Validator, "check_schema"
+        )
+        check_schema(cast(JsonObject, schema))
     except SchemaError as error:
         raise ConfigurationError(
             f"Invalid canonical schema: {error.message}"
         ) from error
-    return schema
+    return cast(JsonObject, schema)
 
 
-def validate(data, schema, definition=None):
+def validate(
+    data: JsonObject, schema: JsonObject, definition: str | None = None
+) -> None:
     contract = schema
     if definition:
         contract = {"$ref": f"#/$defs/{definition}", "$defs": schema["$defs"]}
@@ -128,7 +161,7 @@ def validate(data, schema, definition=None):
     )
 
 
-def inside(root, path):
+def inside(root: Path, path: str | Path) -> Path:
     resolved = Path(path).resolve()
     require(
         resolved.is_relative_to(root.resolve()),
@@ -137,26 +170,30 @@ def inside(root, path):
     return resolved
 
 
-def merge_new(target, additions, label):
+def merge_new(target: JsonObject, additions: JsonObject, label: str) -> None:
     for key, value in additions.items():
         require(key not in target, f"Duplicate catalog ID: {label}/{key}")
         target[key] = copy.deepcopy(value)
 
 
-def pointer_parent(document, pointer):
+def pointer_parent(
+    document: JsonObject, pointer: str
+) -> tuple[JsonObject, str]:
     keys = pointer.lstrip("/").split("/")
-    node = document
+    node: Any = document
     for key in keys[:-1]:
         require(
             isinstance(node, dict) and key in node,
             f"Missing override target: {pointer}",
         )
-        node = node[key]
+        node = cast(JsonObject, node)[key]
     require(keys[-1] in node, f"Missing override target: {pointer}")
-    return node, keys[-1]
+    return cast(JsonObject, node), keys[-1]
 
 
-def compose(soe, course, schema):
+def compose(
+    soe: JsonObject, course: JsonObject | None, schema: JsonObject
+) -> JsonObject:
     validate(soe, schema)
     require(soe["manifest_type"] == "soe", "Expected an SOE manifest")
     resolved = copy.deepcopy(soe)
@@ -194,7 +231,7 @@ def compose(soe, course, schema):
                 entries,
                 f"platforms/{platform_id}/{catalog}",
             )
-    targets = []
+    targets: list[str] = []
     for override in course["overrides"]:
         target = override["target"]
         require(
@@ -254,7 +291,12 @@ def compose(soe, course, schema):
     return resolved
 
 
-def applies(entry, profile_id, profile, platform_id):
+def applies(
+    entry: JsonObject,
+    profile_id: str,
+    profile: JsonObject,
+    platform_id: str,
+) -> bool:
     if "platform_ids" in entry and platform_id not in entry["platform_ids"]:
         return False
     selector = entry.get("applies_to", {})
@@ -269,23 +311,23 @@ def applies(entry, profile_id, profile, platform_id):
     )
 
 
-def scan_selectors(node, profiles):
+def scan_selectors(node: object, profiles: JsonObject) -> None:
     if isinstance(node, dict):
-        for profile_id in node.get("applies_to", {}).get(
+        for profile_id in cast(JsonObject, node).get("applies_to", {}).get(
             "deployment_profile_ids", []
         ):
             require(
                 profile_id in profiles,
                 f"Unknown applicability profile: {profile_id}",
             )
-        for value in node.values():
+        for value in cast(JsonObject, node).values():
             scan_selectors(value, profiles)
     elif isinstance(node, list):
-        for value in node:
+        for value in cast(list[object], node):
             scan_selectors(value, profiles)
 
 
-def version_ok(version, rule):
+def version_ok(version: str, rule: JsonObject) -> bool:
     comparison = rule.get("comparison", "presence_only")
     if comparison in {"presence_only", "managed_latest"}:
         return True
@@ -297,7 +339,7 @@ def version_ok(version, rule):
     return Version(version) in SpecifierSet(value)
 
 
-def version_rules(product, binding):
+def version_rules(product: JsonObject, binding: JsonObject) -> list[JsonObject]:
     return [
         rule
         for rule in (
@@ -309,7 +351,7 @@ def version_rules(product, binding):
     ]
 
 
-def environment_path(workspace, definition):
+def environment_path(workspace: Path, definition: JsonObject) -> Path:
     template = definition["path"]
     require(
         template.startswith("${COURSE_ROOT}/"),
@@ -325,7 +367,9 @@ def environment_path(workspace, definition):
     return result
 
 
-def make_plan(resolved, schema, workspace, profile_id):
+def make_plan(
+    resolved: JsonObject, schema: JsonObject, workspace: Path, profile_id: str
+) -> Plan:
     profiles = resolved["deployment_profiles"]
     scan_selectors(resolved, profiles)
     require(profile_id in profiles, f"Unknown deployment: {profile_id}")
@@ -387,15 +431,15 @@ def make_plan(resolved, schema, workspace, profile_id):
     resolved["selected_deployment_profile_id"] = profile_id
     validate(resolved, schema, "resolvedConfiguration")
 
-    def selected(entry):
+    def selected(entry: JsonObject) -> bool:
         return applies(entry, profile_id, profile, platform_id)
 
-    capabilities = {
+    capabilities: dict[str, JsonObject] = {
         key: value
         for key, value in resolved["capabilities"].items()
         if selected(value)
     }
-    bindings = {}
+    bindings: dict[str, JsonObject] = {}
     for key, binding in platform["capability_bindings"].items():
         require(
             key in resolved["capabilities"],
@@ -416,7 +460,9 @@ def make_plan(resolved, schema, workspace, profile_id):
             not capability["required"] or key in bindings,
             f"Missing required capability: {key}",
         )
-    packages, extensions, environments = [], [], {}
+    packages: list[str] = []
+    extensions: list[str] = []
+    environments: dict[str, str] = {}
     for key, definition in platform["os_packages"].items():
         if definition["required"] and selected(definition):
             require(
@@ -567,8 +613,8 @@ def make_plan(resolved, schema, workspace, profile_id):
         ),
         "Applicable removal operations need a supported Codespaces adapter",
     )
-    settings = []
-    setting_keys = set()
+    settings: list[JsonObject] = []
+    setting_keys: set[tuple[str, str]] = set()
     for setting in resolved["managed_settings"].values():
         if selected(setting) and setting["scope"] == "workspace":
             require(
@@ -608,12 +654,12 @@ def make_plan(resolved, schema, workspace, profile_id):
 
 
 def load_plan(
-    atlas_root,
-    workspace,
-    mode="auto",
-    profile_id="github_codespaces",
-    schema_path=None,
-):
+    atlas_root: Path,
+    workspace: Path,
+    mode: str = "auto",
+    profile_id: str = "github_codespaces",
+    schema_path: str | Path | None = None,
+) -> LoadedPlan:
     atlas_root, workspace = atlas_root.resolve(), workspace.resolve()
     schema_path = schema_path or os.environ.get("SOE_SCHEMA_PATH")
     schema = load_schema(schema_path)
@@ -628,8 +674,9 @@ def load_plan(
             "choose --mode soe explicitly for an SOE-only workspace",
         )
     course = read_json(course_path) if mode == "cso" else None
-    plan = make_plan(
-        compose(soe, course, schema), schema, workspace, profile_id
+    plan = cast(
+        LoadedPlan,
+        make_plan(compose(soe, course, schema), schema, workspace, profile_id),
     )
     plan["schema_path"] = (
         str(Path(schema_path).resolve()) if schema_path else None
@@ -637,17 +684,23 @@ def load_plan(
     return plan
 
 
-def run(args, **kwargs):
-    return subprocess.run([str(arg) for arg in args], check=True, **kwargs)
+def run(
+    args: Iterable[object], **kwargs: Any
+) -> subprocess.CompletedProcess[Any]:
+    return cast(
+        subprocess.CompletedProcess[Any],
+        subprocess.run([str(arg) for arg in args], check=True, **kwargs),
+    )
 
 
-def check_host(plan):
+def check_host(plan: Plan) -> None:
     require(sys.platform == "linux", "Provisioning requires a Linux container")
-    facts = dict(
-        line.split("=", 1)
+    facts = {
+        key: value
         for line in Path("/etc/os-release").read_text().splitlines()
         if "=" in line
-    )
+        for key, value in [line.split("=", 1)]
+    }
     require(facts.get("ID", "").strip('"') == "ubuntu", "Expected Ubuntu")
     require(
         facts["VERSION_ID"].strip('"') == plan["profile"]["os_release_id"],
@@ -662,7 +715,7 @@ def check_host(plan):
     )
 
 
-def apt_installed(package):
+def apt_installed(package: str) -> bool:
     result = subprocess.run(
         ["dpkg-query", "-W", "-f=${Status}", package],
         capture_output=True,
@@ -671,9 +724,10 @@ def apt_installed(package):
     return result.returncode == 0 and result.stdout == "install ok installed"
 
 
-def install_system(plan):
+def install_system(plan: Plan) -> None:
     check_host(plan)
-    require(os.geteuid() == 0, "System installation requires root")
+    geteuid: Callable[[], int] = getattr(os, "geteuid")
+    require(geteuid() == 0, "System installation requires root")
     missing = [
         package for package in plan["packages"] if not apt_installed(package)
     ]
@@ -685,12 +739,12 @@ def install_system(plan):
         )
 
 
-def interpreter(environment):
+def interpreter(environment: str | Path) -> Path:
     return Path(environment) / "bin/python"
 
 
-def pip_requirement(plan, binding):
-    requirements = []
+def pip_requirement(plan: Plan, binding: JsonObject) -> str:
+    requirements: list[str] = []
     product = plan["resolved"]["products"][binding["product_id"]]
     for rule in version_rules(product, binding):
         comparison = rule["comparison"]
@@ -703,7 +757,9 @@ def pip_requirement(plan, binding):
     return binding["package_identifier"] + ",".join(requirements)
 
 
-def installed_package_version(python, binding):
+def installed_package_version(
+    python: str | Path, binding: JsonObject
+) -> str | None:
     query = (
         "import importlib.metadata,sys; "
         "print(importlib.metadata.version(sys.argv[1]))"
@@ -718,7 +774,9 @@ def installed_package_version(python, binding):
     return result.stdout.strip()
 
 
-def package_satisfied(python, binding, plan):
+def package_satisfied(
+    python: str | Path, binding: JsonObject, plan: Plan
+) -> bool:
     installed = installed_package_version(python, binding)
     if installed is None:
         return False
@@ -728,27 +786,29 @@ def package_satisfied(python, binding, plan):
     )
 
 
-def merge_settings(target, values):
+def merge_settings(target: JsonObject, values: JsonObject) -> None:
     for key, value in values.items():
         if isinstance(value, dict) and isinstance(target.get(key), dict):
-            merge_settings(target[key], value)
+            merge_settings(target[key], cast(JsonObject, value))
         else:
-            target[key] = copy.deepcopy(value)
+            target[key] = copy.deepcopy(cast(object, value))
 
 
-def contains_settings(actual, expected):
+def contains_settings(actual: object, expected: JsonObject) -> bool:
     return isinstance(actual, dict) and all(
         key in actual
         and (
-            contains_settings(actual[key], value)
+            contains_settings(
+                cast(JsonObject, actual)[key], cast(JsonObject, value)
+            )
             if isinstance(value, dict)
-            else actual[key] == value
+            else cast(JsonObject, actual)[key] == value
         )
         for key, value in expected.items()
     )
 
 
-def python_runtime_version(python):
+def python_runtime_version(python: str | Path) -> str:
     result = run(
         [
             python,
@@ -768,7 +828,7 @@ def python_runtime_version(python):
     return facts["version"]
 
 
-def verify_course_interpreter(plan, environment):
+def verify_course_interpreter(plan: Plan, environment: str | Path) -> None:
     python = interpreter(environment)
     require(python.is_file(), "Missing course environment")
     version = python_runtime_version(python)
@@ -783,9 +843,12 @@ def verify_course_interpreter(plan, environment):
     )
 
 
-def setup(plan, workspace, atlas_root, mode):
+def setup(
+    plan: LoadedPlan, workspace: Path, atlas_root: Path, mode: str
+) -> None:
     check_host(plan)
-    require(os.geteuid() != 0, "Course setup must run as the development user")
+    geteuid: Callable[[], int] = getattr(os, "geteuid")
+    require(geteuid() != 0, "Course setup must run as the development user")
     if any(not apt_installed(package) for package in plan["packages"]):
         run(
             [
@@ -847,14 +910,16 @@ def setup(plan, workspace, atlas_root, mode):
         )
         if target.exists() and setting["merge_policy"] == "create_if_missing":
             continue
-        values = read_json(target) if target.exists() else {}
+        values: JsonObject = read_json(target) if target.exists() else {}
         merge_settings(values, setting["values"])
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(values, indent=2) + "\n", encoding="utf-8")
     verify(plan, editor=False)
 
 
-def verify(plan, editor=False, course_packages=True):
+def verify(
+    plan: Plan, editor: bool = False, course_packages: bool = True
+) -> None:
     check_host(plan)
     verified_python = "not selected"
     if course_packages:
@@ -881,7 +946,9 @@ def verify(plan, editor=False, course_packages=True):
         adapter = binding["installer_adapter_id"]
         product = plan["resolved"]["products"][binding["product_id"]]
         if adapter == "apt_package":
-            commands = binding["verification"].get("executable_names", [])
+            commands: list[str] = binding["verification"].get(
+                "executable_names", []
+            )
             require(
                 not commands
                 or any(shutil.which(command) for command in commands),
@@ -946,7 +1013,7 @@ def verify(plan, editor=False, course_packages=True):
     )
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "action",

@@ -6,9 +6,10 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import cast
 
 
-def check_command(label, executable):
+def check_command(label: str, executable: str) -> bool:
     """Print an installed CLI's version and return whether it is available."""
     path = shutil.which(executable)
     if not path:
@@ -35,7 +36,7 @@ def check_command(label, executable):
     return True
 
 
-def check_extensions():
+def check_extensions() -> bool:
     """Check installed extensions against workspace recommendations."""
     config = Path(__file__).resolve().parent / "extensions.json"
 
@@ -49,7 +50,8 @@ def check_extensions():
             ("unwantedRecommendations", unwanted),
         ):
             if not isinstance(items, list) or not all(
-                isinstance(item, str) and item for item in items
+                isinstance(item, str) and item
+                for item in cast(list[object], items)
             ):
                 raise ValueError(f"{name} must be an array of extension IDs")
 
@@ -117,7 +119,7 @@ def check_extensions():
     return True
 
 
-def main():
+def main() -> int:
     print("Course-specific overlay readiness check\n")
 
     if (

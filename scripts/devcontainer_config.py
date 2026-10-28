@@ -1,7 +1,12 @@
 """Generate editor declarations from resolved SOE/CSO requirements."""
 
+from collections.abc import Mapping
+from typing import Any
 
-def configuration(plan, image=None):
+
+def configuration(
+    plan: Mapping[str, Any], image: str | None = None
+) -> dict[str, Any]:
     if plan["configuration_kind"] == "cso" and not image:
         raise ValueError(
             "Course generation requires --image with a published SOE image"
@@ -10,7 +15,7 @@ def configuration(plan, image=None):
         "/opt/gc-stem/runtime/bin/python",
         "/opt/gc-stem/atlas/scripts/soe.py",
     ]
-    result = {
+    result: dict[str, Any] = {
         "name": "GC-STEM SOE - Ubuntu 24.04 / Python 3.12",
         "remoteUser": "vscode",
         "containerUser": "vscode",
