@@ -20,16 +20,16 @@ This **Software Requirements Specification (SRS)** defines what the software mus
 
 This Software Requirements Specification (SRS) defines what the ATLAS **Repository Automation Scripts** (RAS) package must do and the conditions it must satisfy. An SRS is an agreement about required software behavior. It describes the required results before developers choose the detailed design or write the final code.
 
-The RAS package supports the STEM Computing Baseline (SCB) and course-specific tools and settings. Together, the SCB and course-specifics comprise a Course Development Environment (CDE). A CDE is a collection of tools and settings used to write, run, test, debug, and manage software programs for a specific course.
+The RAS package supports the Standard Operating Environment (SOE) and course-specific tools and settings. Together, the SOE and course-specifics comprise a Course-specific overlay (CSO). A CSO is a collection of tools and settings used to write, run, test, debug, and manage software programs for a specific course.
 
 The RAS package consists of coordinated platform implementations, listed below in lifecycle order:
 
 1. `bootstrap.<ext> atlas` provides the platform-native bootstrap commands that acquire or refresh the ATLAS repo and RAS package and make the remaining lifecycle scripts available.
-2. `install.<ext> <crs000>` establishes or repairs the CRS-000 CDE system-level software based on the course manifest.
-3. `configure.<ext> <crs000>` establishes or repairs the current user's CRS-000 CDE settings.
+2. `install.<ext> <crs000>` establishes or repairs the CRS-000 CSO system-level software based on the course manifest.
+3. `configure.<ext> <crs000>` establishes or repairs the current user's CRS-000 CSO settings.
 4. `verify.<ext> <crs000>` inspects the system and user layers without changing them.
-5. `update.<ext> <crs000>` maintains approved CRS-000 CDE software and assets over time.
-6. `setup.<ext> <crs000>` orchestrates the overall setup process for the CRS-000 CDE restarting as needed to ensure that all required components are installed, configured, and verified.
+5. `update.<ext> <crs000>` maintains approved CRS-000 CSO software and assets over time.
+6. `setup.<ext> <crs000>` orchestrates the overall setup process for the CRS-000 CSO restarting as needed to ensure that all required components are installed, configured, and verified.
 
 On first use, the user copies and runs the documented bootstrap command block located in the repo README because the local `atlas` repo does not yet exist. After first use, the installed `bootstrap.<ext> atlas` artifact may be executed directly to refresh the automation package from the authorized course repository.
 
@@ -160,7 +160,7 @@ The package shall:
 
   **Why:** A script written for another operating system could fail or damage the environment.
 
-- **PKG-FR-004** Read shared environment requirements from the ATLAS SCB manifest (`"$HOME/Repos/atlas/.config/scb_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<crs000>/.config/cde_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
+- **PKG-FR-004** Read shared environment requirements from the ATLAS SOE manifest (`"$HOME/Repos/atlas/.config/scb_manifest.json"`) and repository/course manifest (`"$HOME/Repos/<crs000>/.config/cde_manifest.json"`) , if present, rather than maintaining independent authoritative software lists in each script.
 
   **Why:** One set of authoritative lists prevents installation, configuration, verification, and maintenance from disagreeing.
 
@@ -908,7 +908,7 @@ Log file : ~/crs000/logs/prepare_ide_20260731_112000.log
 
 ```text
 ============================================================
-CRS-000 COURSE DEVELOPMENT ENVIRONMENT INSTALL
+CRS-000 COURSE-SPECIFIC OVERLAY INSTALL
 ============================================================
 Script version  : 0.2.0
 Version date-time group    : 2026-07-31
@@ -939,7 +939,7 @@ Log file           : ~/crs000/logs/install_ref_20260731_113000.log
 
 ```text
 ============================================================
-CRS-000 COURSE DEVELOPMENT ENVIRONMENT CONFIGURATION
+CRS-000 COURSE-SPECIFIC OVERLAY CONFIGURATION
 ============================================================
 Script version: 0.2.0
 Version date-time group  : 2026-07-31
@@ -972,7 +972,7 @@ Next step: Run verify.sh
 
 ```text
 ============================================================
-CRS-000 COURSE DEVELOPMENT ENVIRONMENT VERIFICATION
+CRS-000 COURSE-SPECIFIC OVERLAY VERIFICATION
 ============================================================
 Script version   : 0.2.0
 Version date-time group     : 2026-07-31
@@ -1011,7 +1011,7 @@ Course continuity: You can continue your CRS-000 coursework in the Codio Virtual
 
 ```text
 ============================================================
-CRS-000 COURSE DEVELOPMENT ENVIRONMENT UPDATE
+CRS-000 COURSE-SPECIFIC OVERLAY UPDATE
 ============================================================
 Script version: 0.2.0
 Version date-time group  : 2026-07-31
@@ -1176,7 +1176,7 @@ Where the repository baseline did not pin an exact product version, this appendi
 | Version control | Git | Ubuntu 24.04 approved package version | Track file changes and interact with repositories. |
 | Source-code hosting | GitHub | Hosted service release | Store course and student repositories and support collaboration. |
 | Source-code-hosting CLI | GitHub CLI (`gh`) | Current approved release from the official GitHub package source | Authenticate and perform approved repository actions from the terminal. |
-| Programming-language runtime | Python 3.12 | Python 3.12 major and minor version | Write, run, and test CDE programs. |
+| Programming-language runtime | Python 3.12 | Python 3.12 major and minor version | Write, run, and test CSO programs. |
 | Language package and environment tools | `pip` and `venv` | Versions compatible with the approved Python runtime | Install course tools and create isolated environments when required. |
 | Integrated development environment | Visual Studio Code (`code`) | Current approved stable release from the official product source | Edit, run, test, debug, and manage course files. |
 | Web browser | Google Chrome | Version included in the approved reference image | Access course resources and approved authentication flows. |

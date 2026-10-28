@@ -1,19 +1,19 @@
 # syntax=docker/dockerfile:1
 
-# GC-STEM STEM Computing Baseline (SCB)
+# GC-STEM Standard Operating Environment (SOE)
 # Course Reference Environment (CRE) -- Ubuntu container
 #
 # Source of truth:
 #   GC-STEM/atlas/.config/scb_manifest.json
 #
-# This image contains the SCB only.
+# This image contains the SOE only.
 # Course-specific requirements belong in downstream CRE images.
 
 ARG UBUNTU_RELEASE=24.04
 FROM ubuntu:${UBUNTU_RELEASE}
 
-LABEL org.opencontainers.image.title="GC-STEM SCB"
-LABEL org.opencontainers.image.description="Manifest-driven STEM Computing Baseline"
+LABEL org.opencontainers.image.title="GC-STEM SOE"
+LABEL org.opencontainers.image.description="Manifest-driven Standard Operating Environment"
 LABEL org.opencontainers.image.source="https://github.com/GC-STEM/atlas"
 
 ARG SCB_PLATFORM=cvd
@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     SCB_MANIFEST=/opt/gc-stem/scb_manifest.json
 
 # Bootstrap dependencies for the manifest-driven installer.
-# These are installer prerequisites, not a duplicated SCB package list.
+# These are installer prerequisites, not a duplicated SOE package list.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -34,10 +34,10 @@ RUN apt-get update \
         python3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the authoritative SCB manifest from the Atlas build context.
+# Copy the authoritative SOE manifest from the Atlas build context.
 COPY .config/scb_manifest.json /opt/gc-stem/scb_manifest.json
 
-# Resolve and install required SCB components.
+# Resolve and install required SOE components.
 RUN python3 - <<'PY'
 import json
 import os
@@ -58,7 +58,7 @@ def require(condition, message):
     if not condition:
         raise SystemExit(message)
 
-require(manifest["manifest_type"] == "scb", "Expected SCB manifest")
+require(manifest["manifest_type"] == "scb", "Expected SOE manifest")
 require(manifest["schema_version"] == "3.0", "Unsupported schema version")
 
 platform = manifest["platforms"][platform_id]
@@ -76,7 +76,7 @@ supported = {
     item["release_id"]
     for item in platform["os"]["releases"]
 }
-require(installed_release in supported, "Ubuntu release does not match SCB")
+require(installed_release in supported, "Ubuntu release does not match SOE")
 
 architecture = run(
     "dpkg", "--print-architecture",
@@ -85,7 +85,7 @@ architecture = run(
 architecture_map = {"amd64": "x86_64", "arm64": "arm64"}
 require(
     architecture_map.get(architecture) in platform["os"]["architectures"],
-    "Architecture does not match SCB"
+    "Architecture does not match SOE"
 )
 
 capabilities = manifest["capabilities"]
@@ -317,7 +317,7 @@ run("apt-get", "clean")
 shutil.rmtree("/var/lib/apt/lists", ignore_errors=True)
 
 print(
-    f"SCB {manifest['baseline']['version']}: "
+    f"SOE {manifest['baseline']['version']}: "
     f"{len(packages)} APT packages, "
     f"{len(extensions)} VS Code extensions selected"
 )
@@ -400,7 +400,7 @@ for setting_id in sorted(settings_ids):
             f"Unsupported settings adapter: {adapter}"
         )
 
-print("SCB extensions and user settings configured")
+print("SOE extensions and user settings configured")
 PY
 
 WORKDIR /workspace

@@ -4,14 +4,14 @@
   "manifest_type": "scb",
   "baseline": {
     "baseline_id": "stem_computing_baseline",
-    "display_name": "STEM Computing Baseline",
+    "display_name": "Standard Operating Environment",
     "version": "1.0.0"
   },
   "automation_release": "1.0.4",
   "control": {
     "status": "draft",
     "source_repository": "https://github.com/GC-STEM/atlas",
-    "change_summary": "Extend the shared SCB with deployment-aware requirements; require Vagrant CLI only on bare-metal installs without prescribing a hypervisor. Declare VirtualBox as the default/reference Vagrant provider and plan GitHub Releases box distribution, Codespaces, GitHub Actions, and browser editing. New compute/box launch profiles remain disabled pending implementations and published artifacts. Preserve the existing Codio reference and baseline/automation release metadata; this is an uncommitted schema 3.1 draft, not a newly approved automation release."
+    "change_summary": "Extend the shared SOE with deployment-aware requirements; require Vagrant CLI only on bare-metal installs without prescribing a hypervisor. Declare VirtualBox as the default/reference Vagrant provider and plan GitHub Releases box distribution, Codespaces, GitHub Actions, and browser editing. New compute/box launch profiles remain disabled pending implementations and published artifacts. Preserve the existing Codio reference and baseline/automation release metadata; this is an uncommitted schema 3.1 draft, not a newly approved automation release."
   },
   "policy": {
     "course_root": "${WORKSPACE_ROOT}",
@@ -211,7 +211,7 @@
       "display_name": "Virtual Machine Orchestration",
       "required": true,
       "implementation_kind": "command_line_tool",
-      "student_use": "Launch the SCB or course environment using an installed, compatible Vagrant provider and box.",
+      "student_use": "Launch the SOE or course environment using an installed, compatible Vagrant provider and box.",
       "applies_to": {
         "deployment_kinds": [
           "bare_metal"
@@ -415,7 +415,7 @@
       "student_availability": "no_cost",
       "homepage": "https://developer.hashicorp.com/vagrant",
       "documentation_uri": "https://developer.hashicorp.com/vagrant/docs",
-      "notes": "Required on bare-metal SCB installations only. A working launch also requires a compatible installed provider and provider/architecture-specific box. No hypervisor is installed automatically."
+      "notes": "Required on bare-metal SOE installations only. A working launch also requires a compatible installed provider and provider/architecture-specific box. No hypervisor is installed automatically."
     }
   },
   "software_sources": {
@@ -2849,7 +2849,7 @@
       "execution_context": "local"
     },
     "ubuntu_vagrant_guest": {
-      "display_name": "SCB Ubuntu Desktop Vagrant Guest",
+      "display_name": "SOE Ubuntu Desktop Vagrant Guest",
       "enabled": false,
       "reference_profile": false,
       "platform_id": "ubuntu_gnome",
@@ -2865,10 +2865,10 @@
         "runtime_initial_install",
         "runtime_verify"
       ],
-      "notes": "Planned SCB desktop guest. Launch with a compatible installed provider and released provider/architecture-specific box. Vagrant and hypervisors belong on the host and are excluded from guest requirements. No box release is assumed to exist."
+      "notes": "Planned SOE desktop guest. Launch with a compatible installed provider and released provider/architecture-specific box. Vagrant and hypervisors belong on the host and are excluded from guest requirements. No box release is assumed to exist."
     },
     "github_codespaces": {
-      "display_name": "GitHub Codespaces SCB or CDE",
+      "display_name": "GitHub Codespaces SOE or CSO",
       "enabled": false,
       "reference_profile": false,
       "platform_id": "ubuntu_headless",
@@ -2884,7 +2884,7 @@
         "runtime_initial_install",
         "runtime_verify"
       ],
-      "notes": "Planned devcontainer using the same resolved SCB/CDE requirements, with a managed editor and applicable remote extensions. Enable after devcontainer implementation, qualification, and institution/account access and cost-policy checks."
+      "notes": "Planned devcontainer using the same resolved SOE/CSO requirements, with a managed editor and applicable remote extensions. Enable after devcontainer implementation, qualification, and institution/account access and cost-policy checks."
     },
     "github_actions_ubuntu": {
       "display_name": "GitHub Actions Ubuntu Verification Runtime",
@@ -3051,7 +3051,7 @@
         "configure": "verify",
         "verify": "complete"
       },
-      "notes": "Resolve standalone SCB or course CDE, select the runtime deployment, and provision only applicable requirements. Skip interactive login and personal/global settings; consume ambient credentials only when an operation needs access, never prompt or persist token values."
+      "notes": "Resolve standalone SOE or course CSO, select the runtime deployment, and provision only applicable requirements. Skip interactive login and personal/global settings; consume ambient credentials only when an operation needs access, never prompt or persist token values."
     },
     "runtime_verify": {
       "display_name": "Noninteractive Runtime Verification",
@@ -3190,19 +3190,19 @@
   },
   "box_artifacts": {
     "scb_virtualbox_amd64": {
-      "display_name": "Planned SCB VirtualBox AMD64 Box",
+      "display_name": "Planned SOE VirtualBox AMD64 Box",
       "enabled": false,
       "box_name": "GC-STEM/scb",
       "provider_name": "virtualbox",
       "architecture": "amd64",
       "guest_deployment_profile_id": "ubuntu_vagrant_guest",
       "source_id": "github_boxes_releases",
-      "notes": "Build the shared SCB box first; SCB-only courses reuse it. Add real release version and complete single-file or multipart distribution with verified SHA-256 metadata before enabling. GitHub release parts must each be under 2 GiB. Reconstruct and verify multipart boxes on the host before Vagrant imports them."
+      "notes": "Build the shared SOE box first; SOE-only courses reuse it. Add real release version and complete single-file or multipart distribution with verified SHA-256 metadata before enabling. GitHub release parts must each be under 2 GiB. Reconstruct and verify multipart boxes on the host before Vagrant imports them."
     }
   },
   "launch_profiles": {
     "scb_vagrant": {
-      "display_name": "Launch SCB or CDE with Vagrant",
+      "display_name": "Launch SOE or CSO with Vagrant",
       "enabled": false,
       "kind": "vagrant",
       "runtime_available": true,
@@ -3212,7 +3212,7 @@
       "box_artifact_ids": [
         "scb_virtualbox_amd64"
       ],
-      "notes": "Planned entry point: run vagrant up in Atlas for the SCB or in a course checkout for its CDE. Respect explicit provider and environment preferences; prefer VirtualBox otherwise. Enable only after launcher, host acquisition, guest provisioning, and matching box artifacts are implemented and qualified."
+      "notes": "Planned entry point: run vagrant up in Atlas for the SOE or in a course checkout for its CSO. Respect explicit provider and environment preferences; prefer VirtualBox otherwise. Enable only after launcher, host acquisition, guest provisioning, and matching box artifacts are implemented and qualified."
     },
     "github_codespaces": {
       "display_name": "Run in GitHub Codespaces",

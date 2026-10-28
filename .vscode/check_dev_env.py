@@ -1,4 +1,4 @@
-"""Read-only checks for the course development environment (CDE)."""
+"""Read-only checks for the course-specific overlay (CSO)."""
 
 import json
 import shutil
@@ -117,7 +117,7 @@ def check_extensions():
 
 
 def main():
-    print("Course development environment readiness check\n")
+    print("Course-specific overlay readiness check\n")
 
     if sys.version_info.major != 3:
         print("MISSING  Python 3")

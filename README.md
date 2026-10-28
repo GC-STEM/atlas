@@ -13,18 +13,18 @@
 
 ## Table of Contents <!-- omit from toc -->
 
-1. [STEM Computing Baseline](#stem-computing-baseline)
+1. [Standard Operating Environment](#stem-computing-baseline)
 2. [STEM Shared Libraries](#stem-shared-libraries)
-3. [CDE Automation Scripts](#cde-automation-scripts)
-4. [CDE Isolation](#cde-isolation)
+3. [CSO Automation Scripts](#cde-automation-scripts)
+4. [CSO Isolation](#cde-isolation)
 
-## STEM Computing Baseline
+## Standard Operating Environment
 
 ## STEM Shared Libraries
 
-## CDE Automation Scripts
+## CSO Automation Scripts
 
-## CDE Isolation
+## CSO Isolation
 
 ### Course-Activity Environments
 
@@ -51,11 +51,13 @@
 - [npm Workspaces](https://docs.npmjs.com/cli/using-npm/workspaces/)
 - [pnpm Workspaces](https://pnpm.io/workspaces)
 
-### Virtual Containers
+### Development Containers
 
-[Codio Boxes](https://www.codio.com/blog/codio-boxes-and-box-parts)
+Cloud: [GitHub Codespaces](https://github.com/features/codespaces)
 
-[Docker Containers](https://www.docker.com/resources/what-container/)
+Remote: [Codio Boxes](https://www.codio.com/blog/codio-boxes-and-box-parts)
+
+Local: [Docker Containers](https://www.docker.com/resources/what-container/)
 
 ### Virtual Machines
 

@@ -21,7 +21,7 @@
 
 ### Setup Script
 
-The purpose of the setup script is to automate the entire repository lifecycle, including preparation, installation, configuration, updates, repairs, and verification of the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE) based on the SCB and CDE manifest files.
+The purpose of the setup script is to automate the entire repository lifecycle, including preparation, installation, configuration, updates, repairs, and verification of the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) based on the SOE and CSO manifest files.
 
 ```shell
 setup.<ext> <repo>
@@ -29,7 +29,7 @@ setup.<ext> <repo>
 
 ### Preparation Script
 
-The purpose of the preparation script is to set up the environment and prerequisites required for the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE) before running the setup script.
+The purpose of the preparation script is to set up the environment and prerequisites required for the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) before running the setup script.
 
 ```shell
 prepare.<ext> <repo>
@@ -37,7 +37,7 @@ prepare.<ext> <repo>
 
 ### Install Script
 
-The purpose of the install script is to install the the specified Course Development Environment (CDE) on top of STEM Computing Baseline (SCB).
+The purpose of the install script is to install the the specified Course-specific overlay (CSO) on top of Standard Operating Environment (SOE).
 
 ```shell
 install.<ext> <repo>
@@ -45,7 +45,7 @@ install.<ext> <repo>
 
 ### Configure Script
 
-The purpose of the configure script is to configure the STEM Computing Baseline (SCB), if not already, and the specified Course Development Environment (CDE) after installation.
+The purpose of the configure script is to configure the Standard Operating Environment (SOE), if not already, and the specified Course-specific overlay (CSO) after installation.
 
 ```shell
 configure.<ext> <repo>
@@ -53,7 +53,7 @@ configure.<ext> <repo>
 
 ### Update Script
 
-The purpose of the update script is to update the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE) to the latest versions.
+The purpose of the update script is to update the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) to the latest versions.
 
 ```shell
 update.<ext> <repo>
@@ -61,7 +61,7 @@ update.<ext> <repo>
 
 ### Repair Script
 
-The purpose of the repair script is to repair the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE) if any issues are detected.
+The purpose of the repair script is to repair the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) if any issues are detected.
 
 ```shell
 repair.<ext> <repo>
@@ -69,7 +69,7 @@ repair.<ext> <repo>
 
 ### Verify Script
 
-The purpose of this read-only verify script is to verify that the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE) are installed and configured correctly.
+The purpose of this read-only verify script is to verify that the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO) are installed and configured correctly.
 
 ```shell
 verify.<ext> <repo>
@@ -79,7 +79,7 @@ verify.<ext> <repo>
 
 ## System Information Script
 
-The purpose of the system information script is to gather and display detailed information about the system environment, including hardware, software, and configuration details relevant to the STEM Computing Baseline (SCB) and the specified Course Development Environment (CDE).
+The purpose of the system information script is to gather and display detailed information about the system environment, including hardware, software, and configuration details relevant to the Standard Operating Environment (SOE) and the specified Course-specific overlay (CSO).
 
 ```shell
 sysinfo.<ext> <repo>

@@ -3,9 +3,9 @@
 ## Table of Contents <!-- omit from toc -->
 
 1. [GC-STEM Repositories](#gc-stem-repositories)
-2. [STEM Computing Baseline](#stem-computing-baseline)
-3. [Course Development Environment](#course-development-environment)
-4. [CDE Automation Scripts](#cde-automation-scripts)
+2. [Standard Operating Environment](#stem-computing-baseline)
+3. [Course-specific overlay](#course-development-environment)
+4. [CSO Automation Scripts](#cde-automation-scripts)
 
 ## GC-STEM Repositories
 
@@ -21,7 +21,7 @@ This **{{public | internal}}** repository contains the organization's default co
 
 ### GC-STEM/atlas
 
-This **public** (at least during dev) repository contains the ATLAS project, which includes the STEM Computing Baseline (SCB) and course development environment (CDE) automation scripts. All students and faculty in a course that use a GC-sTEM repository should clone this repository to access the common resources. Cloning this repository is only necessary once per device and can be reused throughout a program of study. Users can pull updates from this repository as needed by running `git pull`.
+This **public** (at least during dev) repository contains the ATLAS project, which includes the Standard Operating Environment (SOE) and course-specific overlay (CSO) automation scripts. All students and faculty in a course that use a GC-sTEM repository should clone this repository to access the common resources. Cloning this repository is only necessary once per device and can be reused throughout a program of study. Users can pull updates from this repository as needed by running `git pull`.
 
 **Visibility Recommendation**. Permanently  **public** so all SNHU can easily access and utilize the ATLAS project resources. Public visibility also eliminates duplicate setup across courses, as well as reduces maintenance overhead. In addition, ATLAS can attract prospective students interested in STEM computing.
 
@@ -47,8 +47,8 @@ This private repository template serves as the foundation for creating new cours
 
 ---
 
-## STEM Computing Baseline
+## Standard Operating Environment
 
-## Course Development Environment
+## Course-specific overlay
 
-## CDE Automation Scripts
+## CSO Automation Scripts
