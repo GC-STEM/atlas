@@ -122,6 +122,41 @@ Commit the generated course configuration. Regenerate and rebuild after
 changing course extensions. Image publication is separate from this
 repository's Codespaces implementation; no DockerHub artifact is assumed.
 
+## Local Docker build and launch
+
+The local Compose configuration uses the headless SOE image and maps the
+host's `$HOME/Repos` to `/home/vscode/Repos`, which is `~/Repos` for the
+container's `vscode` user. The shell starts in that directory. Changes made
+there are written to the host's repositories.
+
+Create the host directory if needed:
+
+```bash
+mkdir -p "$HOME/Repos"
+```
+
+On the host, run this command from the Atlas checkout to build the image
+and open an interactive container shell:
+
+```bash
+docker compose -f .devcontainer/compose.local.yaml run --build --rm soe bash
+```
+
+Compose uses the host's `HOME`, with `USERPROFILE` as the Windows fallback.
+The source directory must already exist. On Windows PowerShell, create it
+with `New-Item -ItemType Directory -Force "$HOME/Repos"` if needed, then use
+the same Docker Compose command.
+
+The Dockerfile prepares the container directory; the host bind mount is
+applied when Compose starts the container. For a direct Docker launch after
+building the local image:
+
+```bash
+docker run --rm -it \
+  --mount "type=bind,source=$HOME/Repos,target=/home/vscode/Repos" \
+  --workdir /home/vscode/Repos gc-stem-soe:local bash
+```
+
 ## Local qualification
 
 ```bash

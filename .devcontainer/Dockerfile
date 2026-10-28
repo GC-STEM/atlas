@@ -45,10 +45,12 @@ RUN chmod 0755 /opt/gc-stem/schema \
     && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash vscode \
     && echo 'vscode ALL=(root) NOPASSWD:ALL' > /etc/sudoers.d/vscode \
     && chmod 440 /etc/sudoers.d/vscode \
-    && mkdir -p /workspaces \
-    && chown vscode:vscode /workspaces
+    && mkdir -p /workspaces /home/vscode/Repos \
+    && chown vscode:vscode /workspaces /home/vscode/Repos
 
 USER vscode
+# Local Compose bind-mounts the host's Repos folder at /home/vscode/Repos.
+# Codespaces supplies its workspace mount and working directory separately.
 WORKDIR /workspaces
 RUN /opt/gc-stem/runtime/bin/python /opt/gc-stem/atlas/scripts/soe.py \
     verify --workspace /opt/gc-stem/atlas --mode soe
