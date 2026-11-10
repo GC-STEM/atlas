@@ -7,8 +7,6 @@
         "charliermarsh.ruff",
         "hediet.vscode-drawio",
         "bierner.markdown-preview-github-styles",
-        "davidanson.vscode-markdownlint",
-        "yzhang.markdown-all-in-one",
         "yzane.markdown-pdf",
         "streetsidesoftware.code-spell-checker"
     ],

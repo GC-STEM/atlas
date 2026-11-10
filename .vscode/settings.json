@@ -17,6 +17,9 @@
     ".gitattributes": "properties",
     ".gitignore": "properties"
   },
+  "files.readonlyInclude": {
+    "**/*": true
+  },
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
   "files.eol": "\r\n",
